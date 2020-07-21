@@ -3,21 +3,33 @@
  * @description description
  * @time 2020-07-10
  */
+const path = require("path");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 module.exports = function (isDev) {
-
+    const parse = isDev ? {
+      loader: "ts-loader",
+      options: {
+        configFile: path.join(__dirname,"../tsconfig.json"),
+      }
+    } : {
+      loader: "babel-loader",
+      options: {
+      }
+    };
+    const eslintPath = isDev ? "../.eslintrc.json" :"../.eslintrc.build.js";
     return {
       rules: [
         {
-          test: /\.(js|vue)$/,
+          test: /\.ts$/,
           enforce: 'pre',
           exclude: /node_modules|assert/, // 排除不处理的目录
-          use: [
-            {
-						  loader: isDev? "ts-loader" : "babel-loader"
-				  	},
+          use: [ 
+            parse,
             {
               loader: 'eslint-loader',
+              options:{
+                eslintPath: path.join(__dirname, eslintPath)
+              }
             },
           ],
         },

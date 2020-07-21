@@ -13,7 +13,7 @@ module.exports = function () {
       inline: true, // 开启页面自动刷新,
       hot: true,
       hotOnly: true, // 开启后，页面不会刷新，不然一改页面就会刷新
-      lazy: true,
+      lazy: false,
       publicPath: '/',
       compress: true,
       disableHostCheck: true, // 让外网可以访问代理地址

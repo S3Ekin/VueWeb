@@ -6,7 +6,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin: CleanDistPlugin } = require('clean-webpack-plugin'); // 清理指定文件夹
+const { CleanWebpackPlugin } = require('clean-webpack-plugin'); // 清理指定文件夹
 const MiniCssExtractPlugin = require('mini-css-extract-plugin'); // 打包时分离css
 const CopyWebpackPlugin = require('copy-webpack-plugin'); // 复制静态文件
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');// 查看打包进度
@@ -26,8 +26,12 @@ module.exports = function (isDev) {
         chunks: ["manifest", "vendor", "index", "commonMain"],
       }),
       new ProgressBarPlugin(),
-      new CopyWebpackPlugin([{ from: './src/assert', to: './assert' }]),
-      new CleanDistPlugin(),
+      new CopyWebpackPlugin({
+        patterns: [
+          { from: './src/assert', to: './assert' },
+        ],
+      }),
+      new CleanWebpackPlugin(),
       new webpack.HotModuleReplacementPlugin(), // 模块的热替换
       new webpack.NamedModulesPlugin(), // 热更新时显示更新的模块的名字，默认是模块的id
       new webpack.HashedModuleIdsPlugin(), // so that file hashes don't change unexpectedly

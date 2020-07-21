@@ -4,5 +4,10 @@
     "terminal.integrated.fontSize": 18,
     "markdown.preview.fontSize": 18,
     "debug.console.fontSize": 18,
-    
+    "eslint.options": {
+    "extensions": [
+        ".vue",
+        ".ts",
+    ]
+  },
 }
