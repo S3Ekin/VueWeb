@@ -1,9 +1,12 @@
 import Vue from 'vue'
-new Vue({
-  // el:"#app",
-  data: {
-    message: 'Hello 4Vue!',
-    t: 'ee'
-  },
-  template: '<p>{{t}}</p>'
-}).$mount('#app')
+import App from "./App"
+
+new Vue(App).$mount("#app")
+if (module.hot) {
+  module.hot.accept("./App.ts", () => {
+    import("./App").then(res => {
+      const config = res.default
+      new Vue(config).$mount("#app")
+    })
+  })
+}

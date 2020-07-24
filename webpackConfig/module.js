@@ -16,7 +16,7 @@ module.exports = function (isDev) {
       options: {
       }
     };
-    const eslintPath = isDev ? "../.eslintrc.json" :"../.eslintrc.build.js";
+    // const eslintPath = isDev ? "../.eslintrc.json" :"../.eslintrc.build.js";
     return {
       rules: [
         {
@@ -28,7 +28,7 @@ module.exports = function (isDev) {
             {
               loader: 'eslint-loader',
               options:{
-                eslintPath: path.join(__dirname, eslintPath)
+             //   eslintPath: path.join(__dirname, eslintPath)
               }
             },
           ],

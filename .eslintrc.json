@@ -1,5 +1,5 @@
 {
-    "parserOptions":{
+    "parserOptions": {
         "ecmaVersion": 2018,
         "sourceType": "module",
         "ecmaFeatures": {
@@ -20,7 +20,9 @@
         "node": true
     },
     "rules": {
-        "no-console":"error"
+       // "no-console":"error",
+        "quotes":"off",
+        "indent":"off"
     }
     
 }
