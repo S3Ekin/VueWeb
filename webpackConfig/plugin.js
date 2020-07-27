@@ -10,10 +10,12 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin'); // 清理指定�
 const MiniCssExtractPlugin = require('mini-css-extract-plugin'); // 打包时分离css
 const CopyWebpackPlugin = require('copy-webpack-plugin'); // 复制静态文件
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');// 查看打包进度
+const { VueLoaderPlugin } = require('vue-loader')
 
 module.exports = function (isDev) {
 
     return [
+      new VueLoaderPlugin(),
       new MiniCssExtractPlugin({
           filename: 'css/[name].css', 
           chunkFilename: "css/[name].chunk.css"

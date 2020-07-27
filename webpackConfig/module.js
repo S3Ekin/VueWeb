@@ -10,28 +10,42 @@ module.exports = function (isDev) {
       loader: "ts-loader",
       options: {
         configFile: path.join(__dirname,"../tsconfig.json"),
+        appendTsSuffixTo: [/\.vue$/],
+        transpileOnly: true,
+       // happyPackMode: false
       }
     } : {
       loader: "babel-loader",
       options: {
       }
     };
-    // const eslintPath = isDev ? "../.eslintrc.json" :"../.eslintrc.build.js";
     return {
       rules: [
         {
-          test: /\.ts$/,
-          enforce: 'pre',
+          test: /\.(vue|ts|tsx)$/,
+          // enforce:'post' 的含义是把该 Loader 的执行顺序放到最后
+          // enforce 的值还可以是 pre，代表把 Loader 的执行顺序放到最前面
+          enforce: "pre", // 需要把这个放执行的最前面，否则会有报错
           exclude: /node_modules|assert/, // 排除不处理的目录
-          use: [ 
-            parse,
-            {
-              loader: 'eslint-loader',
-              options:{
-             //   eslintPath: path.join(__dirname, eslintPath)
-              }
-            },
-          ],
+          loader: "eslint-loader",
+          options: {
+            fix: false,
+            extensions: [".vue", ".ts", ".tsx"],
+            cache: false,
+          },
+        },
+        {
+          test: /\.vue$/,
+          exclude: /node_modules|assert/, // 排除不处理的目录
+          loader: "vue-loader",
+          options: {
+            hotReload: false, // 关闭热重载
+          },
+        },
+        {
+          test: /\.ts(x)?$/,
+          exclude: /node_modules|assert/, // 排除不处理的目录
+          use: [parse],
         },
         {
           test: /.(css|scss)$/,
@@ -43,20 +57,20 @@ module.exports = function (isDev) {
               ? {
                   loader: MiniCssExtractPlugin.loader,
                   options: {
-                    publicPath: '/',
+                    publicPath: "/",
                   },
                 }
               : {
-                  loader: 'style-loader',
+                  loader: "vue-style-loader",
                 },
             {
-              loader: 'css-loader',
+              loader: "css-loader",
             },
             {
-              loader: 'postcss-loader'
+              loader: "postcss-loader",
             },
             {
-              loader: 'sass-loader',
+              loader: "sass-loader",
             },
           ],
         },
@@ -65,14 +79,14 @@ module.exports = function (isDev) {
           // exclude: /assert/, // 排除不处理的目录
           use: [
             {
-              loader: 'url-loader',
+              loader: "url-loader",
               options: {
-                name: '[name].[ext]',
+                name: "[name].[ext]",
                 limit: 100,
-                publicPath: '../img', // 文件中 替换有关图片路径的引用 为这个
-                outputPath: 'img/', // 文件的输出位置路径 是相对于入口文件的路径
-                // 有关webpack 打包时路径问题看这个 
-                // https://juejin.im/post/5b8d1e926fb9a019b66e4657#comment  
+                publicPath: "../img", // 文件中 替换有关图片路径的引用 为这个
+                outputPath: "img/", // 文件的输出位置路径 是相对于入口文件的路径
+                // 有关webpack 打包时路径问题看这个
+                // https://juejin.im/post/5b8d1e926fb9a019b66e4657#comment
                 // https://www.jianshu.com/p/d3f34c3872a5
               },
             },
@@ -83,12 +97,12 @@ module.exports = function (isDev) {
           //  exclude://,
           use: [
             {
-              loader: 'url-loader',
+              loader: "url-loader",
               options: {
                 limit: 5000,
-                name: '[name].[ext]',
-                publicPath: '../fonts/',
-                outputPath: 'fonts/',
+                name: "[name].[ext]",
+                publicPath: "../fonts/",
+                outputPath: "fonts/",
               },
             },
           ],

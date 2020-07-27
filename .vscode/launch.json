@@ -15,15 +15,6 @@
 			"internalConsoleOptions": "neverOpen"
 		},
 		{
-			"type": "node",
-			"request": "launch",
-			"name": "Launch Program",
-			"program": "${workspaceFolder}/dist/server.js",
-			"preLaunchTask": "npm: build",
-			"outFiles": ["${workspaceFolder}/dist/**/*.js"]
-		},
-
-		{
 			"name": "Current TS File",
 			"type": "node",
 			"request": "launch",
@@ -36,22 +27,6 @@
 			"protocol": "inspector",
 		//	"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen"
-		},
-		{
-			"name": "nodemon",
-			"type": "node",
-			"request": "launch",
-			"args": [
-				"${workspaceRoot}/src/server.ts" // 入口文件
-			],
-			"runtimeExecutable": "npx",
-			"runtimeArgs": ["nodemon","--inspect","--exec","node", "-r" ,"ts-node/register","-r","tsconfig-paths/register"],       
-			"sourceMaps": true,
-			"cwd": "${workspaceRoot}",
-			"protocol": "inspector",
-	//		"console": "integratedTerminal",
-            "restart": true,
-			//"internalConsoleOptions": "neverOpen"
 		},
 	]
 }

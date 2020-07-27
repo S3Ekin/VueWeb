@@ -12,7 +12,7 @@ Vue.component('button-counter', {
 const obj: Vue.ComponentOptions<Vue> = {
   el: "#app",
   data: {
-    message: 'Hel2o 幅度萨芬啊手动3阀!',
+    message: 'Hel2o 幅度erer萨芬啊手动3阀!',
     t: 'eeeee',
     child: "child"
   },
