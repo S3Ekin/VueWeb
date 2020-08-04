@@ -39,7 +39,11 @@ module.exports = function (isDev) {
           exclude: /node_modules|assert/, // 排除不处理的目录
           loader: "vue-loader",
           options: {
-            hotReload: false, // 关闭热重载
+            // hotReload: false, // 关闭热重载
+            loaders: {
+              scss: 'vue-style-loader!css-loader!sass-loader',
+               sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax',
+            }
           },
         },
         {
@@ -61,7 +65,7 @@ module.exports = function (isDev) {
                   },
                 }
               : {
-                  loader: "vue-style-loader",
+                  loader: "style-loader",
                 },
             {
               loader: "css-loader",

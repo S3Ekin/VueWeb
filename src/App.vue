@@ -1,11 +1,13 @@
 <template>
   <div id="app">
-    {{ message }}
+    <p class="test">
+      {{ message }}
+    </p>
   </div>
 </template>
 
 <script lang="ts">
-
+import "./css/common.scss"
 type obj = {
     message: string;
     t:string;
@@ -14,7 +16,7 @@ type obj = {
 export default {
     data: function ():obj {
         return {
-            message: 'ee !aeeeeeeeee7',
+            message: 'ee !aeee7',
             t: 'eeeee',
             child: "child"
         }
@@ -22,8 +24,8 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
   .test {
-    font-size: 14px;
+    color: red;
   }
 </style>

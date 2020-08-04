@@ -20,6 +20,7 @@ module.exports = function () {
           },
         }),
       ],
+      usedExports: true, //使用 tree-shakingjj
       namedModules: true,
       namedChunks: true,
       chunkIds: 'named',
