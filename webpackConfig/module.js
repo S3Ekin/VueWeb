@@ -47,6 +47,19 @@ module.exports = function (isDev) {
           },
         },
         {
+          test: /\.tsx$/,
+          exclude: /node_modules|assert/, // 排除不处理的目录
+          use:[
+            "babel-loader" ,
+            {
+              loader:"ts-loader",
+              options:{
+                appendTsSuffixTo: [/\.vue$/],
+              }
+            }
+          ]
+        },
+        {
           test: /\.ts(x)?$/,
           exclude: /node_modules|assert/, // 排除不处理的目录
           use: [parse],

@@ -3,25 +3,42 @@
     <p class="test">
       {{ message }}
     </p>
+    <div>
+      {{ test }}
+    </div>
+    <TSXCom />
   </div>
 </template>
 
 <script lang="ts">
-import "./css/common.scss"
+// import Vue, { VNode, CreateElement } from "vue"
+import Vue from "vue"
+import Component from "vue-class-component"
+import TSXCom from "./component/test"
 type obj = {
     message: string;
     t:string;
     child: string;
-};
-export default {
-    data: function ():obj {
-        return {
-            message: 'ee !aeee7',
-            t: 'eeeee',
-            child: "child"
-        }
-    }
 }
+@Component({
+  components: {
+    TSXCom
+  }
+})
+ class App extends Vue {
+   test = "t333est"
+   data ():obj {
+     return {
+       message: "message",
+       t: "er",
+       child: "er"
+     }
+   }
+  //  render (h:CreateElement): VNode {
+  //    return h("span", "tttt")
+  //  }
+}
+export default App
 </script>
 
 <style lang="scss">

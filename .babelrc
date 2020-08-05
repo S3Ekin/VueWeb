@@ -1,6 +1,6 @@
 {
     "plugins": [
-[
+		[
 			"@babel/plugin-transform-runtime",
 			{
 				"corejs": false, // 默认值，可以不写
@@ -10,11 +10,12 @@
 				"useESModules": true // 使用 es modules helpers, 减少 commonJS 语法代码
 			}
 		],
+		"transform-vue-jsx",
 		"@babel/proposal-class-properties",
 		"@babel/proposal-object-rest-spread"
     ],
     "presets": [
-    [
+   		[
 			"@babel/preset-env",
 			{
 				"useBuiltIns": "entry",
