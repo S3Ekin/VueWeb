@@ -5,14 +5,11 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"type": "node",
+			"type": "chrome",
 			"request": "launch",
-			"name": "Node调试",
-			"runtimeExecutable": "nodemon",
-			"program": "${workspaceFolder}/dist/server.js",
-			"restart": true,
-			"console": "integratedTerminal",
-			"internalConsoleOptions": "neverOpen"
+			"name": "chorme",
+			"url": "http://localhost:8035/login.html",
+            "webRoot": "${workspaceFolder}"
 		},
 		{
 			"name": "Current TS File",

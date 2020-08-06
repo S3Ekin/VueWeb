@@ -11,13 +11,18 @@
     "allowSyntheticDefaultImports": true,
     "jsxFactory": "h",
     "jsx": "preserve",
-    "rootDir": "src",
+    "rootDir": "./",
     "baseUrl": "./",
     "outDir": "./dist",
     "typeRoots": ["./typings"],
     "types": ["node"],
     "noImplicitThis":true,
-    "sourceMap": true
+    "sourceMap": true,
+    "paths": {
+      "@js/*": ["./src/js/*"],
+      "@api/*": ["./src/api/*"],
+      "@css/*": ["./src/css/*"]
+    },
   },
   "include": ["src/**/*", "typings/**/*"],
   "exclude": ["node_modules"],

@@ -4,3 +4,7 @@ interface NodeModule {
         data: boolean;
     }
 }
+
+interface Window {
+    loginApp():void;
+}

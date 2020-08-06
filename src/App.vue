@@ -1,67 +1,123 @@
 <template>
   <div id="app">
-    <button
-      class="test"
-      @click="hello"
+    <aside
+      :class="{active:menuSlide,}"
+      class="left-aside"
+      :style="{width:`${menuSlide ? 50 : 220 }px`}"
     >
-      {{ message }}
-    </button>
-    <div>
-      {{ test }}
-      <input
-        v-model="name"
-      >
+      <div class="app-logo">
+        <span class="logo" />
+        <span
+          class="j-menu"
+          @click="toggleSlideMenu"
+        >
+          <i class="fa fa-bars fa-lg" />
+        </span>
+      </div>
+      <Menu />
+    </aside>
+    <div id="main">
+      <header class="main-header">
+        <Head />
+      </header>
+      <article id="content">
+        arcicle
+      </article>
     </div>
-    <TSXCom />
   </div>
 </template>
 
 <script lang="ts">
-// import Vue, { VNode, CreateElement } from "vue"
 import Vue from "vue"
 import Component from "vue-class-component"
-import TSXCom from "./component/test"
+import Menu from "./js/main/menu.vue"
+import Head from "./js/main/AppHead.vue"
+import { fetchApi } from "@api/postData"
 type obj = {
     message: string;
     t:string;
     child: string;
 }
-@Component({ components: { TSXCom } })
+type appInfo = {
+  appName: string;
+  code: "user";
+  logo: string;
+  version: string;
+}
+@Component({
+  components: {
+    Menu,
+    Head
+  }
+})
  class App extends Vue {
-   test = "t333est"
-   data ():obj {
-     return {
-       message: "message",
-       t: "er",
-       child: "er"
-     }
+   menuSlide = false;
+   appInfo: appInfo | null = null;
+   mounted ():void {
+     fetchApi.post("login/appinfo", {
+       code: "user"
+     }).then(res => {
+       console.log(res.json())
+     })
    }
 
-   created ():void{
-      console.log(23)
+   toggleSlideMenu ():void {
+     this.menuSlide = !this.menuSlide
    }
-
-   get name ():string {
-     return this.test
-   }
-
-   set name (value:string) {
-     this.test = value + "val"
-   }
-
-   hello ():void {
-     alert("hello")
-   }
-
-  //  render (h:CreateElement): VNode {
-  //    return h("span", "tttt")
-  //  }
 }
 export default App
 </script>
 
 <style lang="scss">
-  .test {
-    color: red;
+@import "./css/scss/variate";
+$headH: 60px;
+
+#app {
+  height: 100%;
+  display: flex;
+}
+
+.left-aside {
+  background: #577aaf;
+  height: 100%;
+}
+
+.app-logo {
+  display: flex;
+  height: $headH;
+  color: white;
+  background: #5576aa;
+  align-items: center;
+  padding: 0 10px;
+
+  .logo {
+    flex: 1;
+    height: 50px;
+    background: url("./assert/imgs/app_logo.svg") no-repeat center;
   }
+
+  .j-menu {
+    cursor: pointer;
+  }
+}
+
+.left-aside.active {
+  .logo {
+    display: none;
+  }
+}
+
+#main {
+  flex: 1;
+  height: 100%;
+}
+
+.main-header {
+  height: $headH;
+  box-shadow: $shadow;
+}
+
+#content {
+  height: calc(100% - #{$headH});
+}
 </style>
