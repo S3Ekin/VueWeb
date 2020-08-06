@@ -9,7 +9,7 @@ import Component from "vue-class-component"
 
  @Component
  class TSXCom extends Vue {
-   test = "SEkeeeein";
+   test = "SEkn";
 
    render ():VNode {
      return (

@@ -47,6 +47,11 @@ module.exports = function (isDev) {
           },
         },
         {
+          test: /\.ts(x)?$/,
+          exclude: /node_modules|assert/, // 排除不处理的目录
+          use: [parse],
+        },
+         {
           test: /\.tsx$/,
           exclude: /node_modules|assert/, // 排除不处理的目录
           use:[
@@ -58,11 +63,6 @@ module.exports = function (isDev) {
               }
             }
           ]
-        },
-        {
-          test: /\.ts(x)?$/,
-          exclude: /node_modules|assert/, // 排除不处理的目录
-          use: [parse],
         },
         {
           test: /.(css|scss)$/,

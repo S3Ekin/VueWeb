@@ -1,10 +1,16 @@
 <template>
   <div id="app">
-    <p class="test">
+    <button
+      class="test"
+      @click="hello"
+    >
       {{ message }}
-    </p>
+    </button>
     <div>
       {{ test }}
+      <input
+        v-model="name"
+      >
     </div>
     <TSXCom />
   </div>
@@ -20,11 +26,7 @@ type obj = {
     t:string;
     child: string;
 }
-@Component({
-  components: {
-    TSXCom
-  }
-})
+@Component({ components: { TSXCom } })
  class App extends Vue {
    test = "t333est"
    data ():obj {
@@ -34,6 +36,23 @@ type obj = {
        child: "er"
      }
    }
+
+   created ():void{
+      console.log(23)
+   }
+
+   get name ():string {
+     return this.test
+   }
+
+   set name (value:string) {
+     this.test = value + "val"
+   }
+
+   hello ():void {
+     alert("hello")
+   }
+
   //  render (h:CreateElement): VNode {
   //    return h("span", "tttt")
   //  }

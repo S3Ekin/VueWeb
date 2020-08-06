@@ -16,6 +16,8 @@
     "outDir": "./dist",
     "typeRoots": ["./typings"],
     "types": ["node"],
+    "noImplicitThis":true,
+    "sourceMap": true
   },
   "include": ["src/**/*", "typings/**/*"],
   "exclude": ["node_modules"],
