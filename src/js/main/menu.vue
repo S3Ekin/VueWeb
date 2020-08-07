@@ -24,7 +24,10 @@
   export default class Menu extends Vue {
      menuData: menuItem[] | null= null;
      mounted ():void {
-         fetchApi.get("power/getMyAllMenu?userCode=demo&appCode=user").then(res => {
+         fetchApi.get("power/getMyAllMenu", {
+           userCode: "demo",
+           appCode: "user"
+         }).then(res => {
              console.log(res)
          })
      }

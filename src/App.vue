@@ -57,7 +57,7 @@ type appInfo = {
      fetchApi.post("login/appinfo", {
        code: "user"
      }).then(res => {
-       console.log(res.json())
+       console.log(res)
      })
    }
 
