@@ -18,7 +18,7 @@
     </aside>
     <div id="main">
       <header class="main-header">
-        <Head />
+        <Head :app-name="appInfo.appName" />
       </header>
       <article id="content">
         arcicle
@@ -52,12 +52,18 @@ type appInfo = {
 })
  class App extends Vue {
    menuSlide = false;
-   appInfo: appInfo | null = null;
+   appInfo: appInfo = {
+      appName: "",
+      code: "user",
+      logo: "",
+      version: ""
+   };
+
    mounted ():void {
      fetchApi.post("login/appinfo", {
        code: "user"
      }).then(res => {
-       console.log(res.json())
+       this.appInfo = res.data
      })
    }
 
@@ -88,7 +94,7 @@ $headH: 60px;
   color: white;
   background: #5576aa;
   align-items: center;
-  padding: 0 10px;
+  padding-right: 10px;
 
   .logo {
     flex: 1;

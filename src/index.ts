@@ -2,6 +2,7 @@
 import Vue from 'vue'
 import App from "./App.vue"
 import "./css/common/common.scss"
+import "./assert/fonts/iconfont.js"
 import { fetchApi } from "@api/postData"
 new Vue({
   // 注意要是不用render 方法渲染组件，直接把配置传入会导致 热更新失败

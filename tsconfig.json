@@ -18,6 +18,7 @@
     "types": ["node"],
     "noImplicitThis":true,
     "sourceMap": true,
+    "lib": ["DOM","DOM.Iterable","ESNext"],
     "paths": {
       "@js/*": ["./src/js/*"],
       "@api/*": ["./src/api/*"],

@@ -14,7 +14,7 @@ const optimizationFn = require("./webpackConfig/optimization");
 module.exports = function (env) {
     const dev = env === "dev"
     return {
-      devtool: dev? 'eval-source-map' : 'none',
+      devtool: dev? 'source-map' : 'none',
       entry: {
         index: "./src/index.ts",
       },
