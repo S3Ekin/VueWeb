@@ -36,7 +36,7 @@
             @click="navMenuItem"
           >
             <div>
-              {{ menu.name }}
+              <a :href="'/'+menu.url">{{ menu.name }}</a>
             </div>
           </div>
         </div>
@@ -69,7 +69,7 @@
      menuData: menuItem[] = [];
      mounted ():void {
          fetchApi.get("power/getMyAllMenu", {
-           userCode: "demo",
+           userCode: "admin",
            appCode: "user"
          }).then(res => {
            this.menuData = res.data.menuChildList.map((val: menuItem) => {

@@ -6,7 +6,6 @@
  */
 import Vue, { VNode } from "vue"
 import Component from "vue-class-component"
-
  @Component
  class TSXCom extends Vue {
    test = "SEkn";

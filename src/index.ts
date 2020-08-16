@@ -12,7 +12,7 @@ new Vue({
 }).$mount("#app")
 window.loginApp = function () {
 fetchApi.postJson("login/loginValue", {
-    code: "demo",
+    code: "admin",
     password: "F59BD65F7EDAFB087A81D4DCA06C4910"
 })
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Vue from 'vue'
 declare module "vue/types/vue" {
  export interface Vue {
@@ -9,5 +10,8 @@ declare module "vue/types/vue" {
    updated(): void;
    beforeDestroy(): void;
    destroyed(): void;
+   computed:{
+     [key:string]:any;
+   }
  }
 }

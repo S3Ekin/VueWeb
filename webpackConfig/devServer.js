@@ -32,7 +32,8 @@ module.exports = function () {
       openPage: 'index.html', // 导航页面
       proxy: {
         '/user': {
-          target: "http://172.16.13.130:8080",
+          // target: "http://172.16.13.130:8080",
+          target: " http://139.159.246.191:8080",
           secure: false,
           changeOrigin: true,
         },
