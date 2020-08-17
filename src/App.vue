@@ -21,7 +21,7 @@
         <Head :app-name="appInfo.appName" />
       </header>
       <article id="content">
-        <Router />
+        <router-view />
       </article>
     </div>
   </div>
@@ -33,7 +33,6 @@ import Component from "vue-class-component"
 import Menu from "./js/main/menu.vue"
 import Head from "./js/main/AppHead.vue"
 import { fetchApi } from "@api/postData"
-import Router from "./js/Router"
 type obj = {
     message: string;
     t:string;
@@ -48,8 +47,7 @@ type appInfo = {
 @Component({
   components: {
     Menu,
-    Head,
-    Router
+    Head
   }
 })
  class App extends Vue {

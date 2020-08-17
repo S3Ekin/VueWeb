@@ -6,13 +6,11 @@
  * @description:  路由管理;
  * @Last Modified time: 2020-08-16 17:42:09 ;
  */
-import Vue from "vue"
-
-type data = any;
-
+import VueRouter from "vue-router"
+import application from "./application/index.vue"
 const page1 = {
   render: function (h:any) {
-    return <div>page1</div>
+    return h(application)
   }
 }
 const page2 = {
@@ -20,28 +18,15 @@ const page2 = {
     return <div>page2</div>
   }
 }
-const router = {
-    "/system/application": page1,
-    "/system/menu": page2
-}
-
-// eslint-disable-next-line @typescript-eslint/ban-types
-export default Vue.extend<data, {}, {}>({
-  data: function () {
-        return {
-            currentRoute: window.location.pathname
-        }
-  },
-  computed: {
-    ViewComponent () {
-      return router[this.currentRoute as keyof typeof router] || {
-        render: function (h) {
-          return h("p", window.location.href)
-        }
-      }
-    }
-  },
-  render (h) {
-    return h(this.ViewComponent)
-  }
+const router = new VueRouter({
+  mode: 'history',
+  routes: [
+    // 动态路径参数 以冒号开头
+    { path: '/system/application', component: page1 },
+    { path: '/system/menu', component: page2 }
+  ]
 })
+
+export {
+  router
+}

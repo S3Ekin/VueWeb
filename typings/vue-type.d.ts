@@ -10,8 +10,5 @@ declare module "vue/types/vue" {
    updated(): void;
    beforeDestroy(): void;
    destroyed(): void;
-   computed:{
-     [key:string]:any;
-   }
  }
 }

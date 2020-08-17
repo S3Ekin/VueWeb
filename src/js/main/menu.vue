@@ -35,9 +35,12 @@
             class="menu-item menu-child"
             @click="navMenuItem"
           >
-            <div>
-              <a :href="'/'+menu.url">{{ menu.name }}</a>
-            </div>
+            <router-link
+              :to="'/'+menu.url"
+              class="nav-item"
+            >
+              {{ menu.name }}
+            </router-link>
           </div>
         </div>
       </transition>
@@ -139,7 +142,6 @@ $activeBg: #7899cb;
 }
 
 .menu-item {
-  padding: 14px 12px 14px 20px;
   cursor: pointer;
 
   &:hover {
@@ -147,8 +149,6 @@ $activeBg: #7899cb;
   }
 
   &.menu-child {
-    padding-left: 42px;
-
     &.active {
       background: $activeBg;
     }
@@ -158,6 +158,20 @@ $activeBg: #7899cb;
     font-size: 16px;
     display: flex;
     justify-content: space-between;
+    padding: 14px 12px 14px 20px;
+  }
+
+  .nav-item {
+    display: block;
+    color: white;
+    padding: 14px 12px 14px 20px;
+    padding-left: 40px;
+
+    &.router-link-active {
+      color: lighten($color:$activeBg, $amount: 8);
+    }
+
+    height: 100%;
   }
 }
 
