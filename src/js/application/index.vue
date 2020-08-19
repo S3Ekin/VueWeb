@@ -5,6 +5,7 @@
     >
       按钮
     </Button>
+    <Test />
   </div>
 </template>
 
@@ -12,11 +13,13 @@
 import Vue from "vue"
 import Component from "vue-class-component"
 import Button from "../../component/button/index.vue"
+import Test from "@component/test"
 const app = Vue.extend({
 })
 @Component({
  components: {
-        Button
+        Button,
+        Test
     }
 })
 class Application extends app {

@@ -22,7 +22,8 @@
     "paths": {
       "@js/*": ["./src/js/*"],
       "@api/*": ["./src/api/*"],
-      "@css/*": ["./src/css/*"]
+      "@css/*": ["./src/css/*"],
+      "@component/*": ["./src/component/*"]
     },
   },
   "include": ["src/**/*", "typings/**/*"],

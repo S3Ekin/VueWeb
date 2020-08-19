@@ -4,18 +4,14 @@
  * @description: TSX来写 ;
  * @Last Modified time: 2020-08-05 10:45:36 ;
  */
-import Vue, { VNode } from "vue"
-import Component from "vue-class-component"
- @Component
- class TSXCom extends Vue {
-   test = "SEkn";
+ import { Component, Prop, Vue } from 'vue-property-decorator'
 
-   render ():VNode {
-     return (
-         <div>
-             {this.test}
-         </div>
-     )
-   }
+@Component
+export default class Child extends Vue {
+    @Prop(String) private value!: string;
+    render ():Vue.VNode {
+      return (
+        <div>测试</div>
+      )
+    }
 }
-export default TSXCom

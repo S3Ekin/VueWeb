@@ -19,16 +19,19 @@ type DataRes = {
     msg: string;
 }
 
+const checkTimeOut = function (res:Response) {
+    return res.redirected ? Promise.reject(new Error("session过期")) : res.json()
+}
+
 const fetchApi = {
     baseUrl: "/user/",
     get (url:string, pramas?:{[k:string]:string}):Promise<DataRes> {
         const str = pramas ? "?" + paramsForm(pramas) : ""
         return fetch(this.baseUrl + url + str, {
         }).then((res) => {
-            const data = res.json()
-            return data
+           return checkTimeOut(res)
         }).catch(err => {
-            console.log(err)
+            return Promise.reject(err)
         })
     },
     post (url:string, body?:{[k:string]:string}):Promise<DataRes> {
@@ -40,9 +43,9 @@ const fetchApi = {
             credentials: "include",
             body: body ? paramsForm(body) : undefined
         }).then(res => {
-            return res.json()
+           return checkTimeOut(res)
         }).catch(err => {
-            console.log(err)
+            return Promise.reject(err)
         })
     },
     postJson (url:string, body?:{[k:string]:string}):Promise<DataRes> {
@@ -56,7 +59,7 @@ const fetchApi = {
         }).then(res => {
             return res.json()
         }).catch(err => {
-            console.log(err)
+            return Promise.reject(err)
         })
     }
 }

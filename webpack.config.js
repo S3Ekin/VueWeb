@@ -36,6 +36,7 @@ module.exports = function (env) {
           js: path.join(__dirname, "src/js"),
           api: path.join(__dirname, "src/api"),
           assert: path.join(__dirname, "src/assert"),
+          component: path.join(__dirname, "src/component"),
         },
       },
       mode: dev ? "development" : "production",
