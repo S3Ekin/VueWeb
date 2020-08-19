@@ -23,6 +23,7 @@
       "@js/*": ["./src/js/*"],
       "@api/*": ["./src/api/*"],
       "@css/*": ["./src/css/*"],
+      "@assert/*": ["./src/assert/*"],
       "@component/*": ["./src/component/*"]
     },
   },

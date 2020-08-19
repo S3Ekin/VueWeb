@@ -1,0 +1,45 @@
+$pagePad:20px;
+
+.g-content {
+  height: 100%;
+  padding: $pagePad;
+  overflow: hidden;
+
+  .g-article {
+    height: 100%;
+    background: white;
+    overflow: auto;
+    border-radius: 4px;
+    padding: 22px 20px;
+  }
+
+  .g-grid {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .page-head {
+      padding-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .page-main {
+      background: white;
+      border-radius: 4px;
+      box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.08);
+      flex: 1;
+    }
+  }
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+body {
+  color: #333;
+  min-width: 980px;
+  overflow: auto;
+}

@@ -1,0 +1,80 @@
+@import "../scss/unit","../scss/variate";
+
+.g-notification {
+  position: absolute;
+  right: 20px;
+  top: 10px;
+  z-index: 20;
+  text-align: right;
+  max-width: 50%;
+  overflow: hidden;
+  padding: 0 6px;
+
+  .g-alertInfo {
+    @extend %shadow;
+
+    background: white;
+    display: inline-flex;
+    padding: 18px 18px;
+    min-width: 320px;
+    margin: 8px 0;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
+    border-left: 4px solid red;
+
+    &.border-error {
+      border-color: $error;
+    }
+
+    &.border-success {
+      border-color: $success;
+    }
+
+    &.border-warn {
+      border-color: $warn;
+    }
+  }
+}
+
+.g-alertInfo {
+  position: relative;
+
+  .txt {
+    text-align: left;
+  }
+
+  .notice-item {
+    .fa {
+      font-size: 30px;
+    }
+  }
+
+  .warn {
+    color: $warn;
+  }
+
+  .notice-item {
+    padding-right: 8px;
+    font-size: 24px;
+  }
+
+  .error {
+    color: $error;
+  }
+
+  .success {
+    color: $success;
+  }
+
+  .m-alert-close {
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+
+    &:hover {
+      color: $theme-color;
+    }
+  }
+}

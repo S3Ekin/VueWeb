@@ -29,7 +29,7 @@ module.exports = function () {
       },
       clientLogLevel: 'none', // cancel console client log
       port: '8035', // 设置端口号
-      openPage: 'index.html', // 导航页面
+      openPage: 'login.html', // 导航页面
       proxy: {
         '/user': {
           // target: "http://172.16.13.130:8080",
