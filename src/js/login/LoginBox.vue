@@ -14,7 +14,7 @@
             type="text"
             placeholder="用户名"
             autocomplete="off"
-            @keydown="login"
+            @keydown.enter="login"
           >
 
         </label>
@@ -29,7 +29,7 @@
             type="password"
             placeholder="登录密码"
             autocomplete="off"
-            @keydown="login"
+            @keydown.enter="login"
           >
 
         </label>
@@ -57,6 +57,8 @@ import Vue from "vue"
 import Component from "vue-class-component"
 import { ROOTSRC, NOIDEA } from "../../global"
 import { fetchApi } from "@api/postData"
+import { hexMd5 } from "@assert/js/md5.js"
+
 @Component
 export default class Login extends Vue {
     userName= ""
@@ -69,7 +71,7 @@ export default class Login extends Vue {
             return
         }
         this.warnTxt = ""
-        const psd = window.hex_md5(window.hex_md5(this.password))
+        const psd = hexMd5(hexMd5(this.password))
         fetchApi.postJson(`login/loginValue`, {
             code: this.userName,
             password: psd

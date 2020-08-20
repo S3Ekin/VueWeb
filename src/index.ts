@@ -4,7 +4,6 @@ import App from "./App.vue"
 import VueRouter from "vue-router"
 import "./css/common/common.scss"
 import "./assert/fonts/iconfont.js"
-import { fetchApi } from "@api/postData"
 import { router } from "./js/Router"
 Vue.use(VueRouter)
 new Vue({
@@ -14,9 +13,3 @@ new Vue({
     return h(App)
   }
 }).$mount("#app")
-window.loginApp = function () {
-fetchApi.postJson("login/loginValue", {
-    code: "admin",
-    password: "F59BD65F7EDAFB087A81D4DCA06C4910"
-})
-}
