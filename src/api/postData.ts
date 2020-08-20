@@ -13,14 +13,36 @@ const paramsForm = (obj:{[key:string]:string}) => {
 }
 
 type DataRes = {
-    code: 100 | 200 | 300;
+    code: 100 | 200 | 300 | 999;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: any;
     msg: string;
 }
 
+const resAlertTip = function (data:DataRes) {
+    console.log(data)
+}
+
 const checkTimeOut = function (res:Response) {
-    return res.redirected ? Promise.reject(new Error("session过期")) : res.json()
+    if (!res.ok) {
+        return Promise.reject(new Error("请求出错"))
+    }
+    if (res.redirected) {
+        window.location.href = "/login.html"
+        return Promise.reject(new Error("session过期"))
+    } else {
+        return res.json().then((data:DataRes) => {
+            if (data.code === 100) {
+                return data
+            } else if (data.code === 200) {
+                resAlertTip(data)
+                return Promise.reject(data)
+            } else {
+                resAlertTip(data)
+                return Promise.reject(data)
+            }
+        })
+    }
 }
 
 const fetchApi = {
@@ -57,7 +79,7 @@ const fetchApi = {
             },
             body: body ? JSON.stringify(body) : undefined
         }).then(res => {
-            return res.json()
+            return checkTimeOut(res)
         }).catch(err => {
             return Promise.reject(err)
         })

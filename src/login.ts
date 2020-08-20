@@ -1,15 +1,18 @@
+/**
+ * @author: SEKin ;
+ * @Date: 2020-08-19 11:34:22 ;
+ * @description: 登录页 ;
+ * @Last Modified time: 2020-08-19 11:34:22 ;
+ */
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Vue from 'vue'
-import App from "./App.vue"
-import VueRouter from "vue-router"
 import "./css/common/common.scss"
-import "./assert/fonts/iconfont.js"
-import { router } from "./js/Router"
-Vue.use(VueRouter)
+import "@css/page/login.scss"
+import Login from "@js/login/index.vue"
 new Vue({
-  router,
   // 注意要是不用render 方法渲染组件，直接把配置传入会导致 热更新失败
   render: function (h) {
-    return h(App)
+    return h(Login)
   }
 }).$mount("#app")

@@ -19,7 +19,7 @@ const page2 = {
   }
 }
 const router = new VueRouter({
-  mode: 'history',
+ // mode: 'history',
   routes: [
     // 动态路径参数 以冒号开头
     { path: '/system/application', component: page1 },

@@ -27,6 +27,13 @@ module.exports = function (isDev) {
         template: path.join(__dirname, "../src/index.html"), // 这里是 以这个 plugin.js 文件的路径为基础
         chunks: ["manifest", "vendor", "index", "commonMain"],
       }),
+       new HtmlWebpackPlugin({
+        filename: `login.html`,
+        inject: 'body',
+        hash: true,
+        template: path.join(__dirname, "../src/login.html"), // 这里是 以这个 plugin.js 文件的路径为基础
+        chunks: ["manifest", "vendor", "login", "commonMain"],
+      }),
       new ProgressBarPlugin(),
       new CopyWebpackPlugin({
         patterns: [

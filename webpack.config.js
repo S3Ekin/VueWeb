@@ -17,6 +17,7 @@ module.exports = function (env) {
       devtool: dev? 'source-map' : 'none',
       entry: {
         index: "./src/index.ts",
+        login: "./src/login.ts",
       },
       output: {
         path: path.join(__dirname, "dist"),

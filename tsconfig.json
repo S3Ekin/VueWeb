@@ -9,6 +9,7 @@
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
+    "allowJs": true,
     "jsxFactory": "h",
     "jsx": "preserve",
     "rootDir": "./",
@@ -23,6 +24,7 @@
       "@js/*": ["./src/js/*"],
       "@api/*": ["./src/api/*"],
       "@css/*": ["./src/css/*"],
+      "@assert/*": ["./src/assert/*"],
       "@component/*": ["./src/component/*"]
     },
   },

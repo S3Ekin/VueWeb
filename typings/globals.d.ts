@@ -6,5 +6,6 @@ interface NodeModule {
 }
 
 interface Window {
-    loginApp():void;
+    // eslint-disable-next-line camelcase
+    hex_md5(str:string):string;
 }

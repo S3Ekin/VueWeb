@@ -16,10 +16,8 @@
       </div>
       <Menu />
     </aside>
-    <div id="main">
-      <header class="main-header">
-        <Head :app-name="appInfo.appName" />
-      </header>
+    <div class="main">
+      <Head :app-name="appInfo.appName" />
       <article id="content">
         <router-view />
       </article>
@@ -113,7 +111,7 @@ $headH: 60px;
   }
 }
 
-#main {
+.main {
   flex: 1;
   height: 100%;
 }
