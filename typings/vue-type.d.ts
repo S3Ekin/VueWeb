@@ -7,7 +7,7 @@ declare module "vue/types/vue" {
    beforeMount(): void;
    mounted(): void;
    beforeUpdate(): void;
-   updated(): void;
+   updated(...arg:any[]): void;
    beforeDestroy(): void;
    destroyed(): void;
  }

@@ -24,7 +24,9 @@
     "rules": {
        // "no-console":"error",
         "quotes":"off",
-        "indent":"off"
+        "indent":"off",
+        "no-non-null-assertion":"off",
+        "@typescript-eslint/no-non-null-assertion" :"off"
     }
     
 }

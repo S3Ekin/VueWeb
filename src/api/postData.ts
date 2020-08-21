@@ -12,7 +12,7 @@ const paramsForm = (obj:{[key:string]:string}) => {
     return strArr.join("&")
 }
 
-type DataRes = {
+ type DataRes = {
     code: 100 | 200 | 300 | 999;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: any;
@@ -86,4 +86,4 @@ const fetchApi = {
     }
 }
 
-export { fetchApi }
+export { fetchApi, DataRes }
