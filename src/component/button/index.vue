@@ -1,8 +1,9 @@
 <template>
   <button
     class="s-btn"
-    :class="[className,borderType,colorType]"
+    :class="[className,borderType,colorType,sizeName]"
     @click="handle"
+    @mouseup="keyUp"
   >
     <slot />
   </button>
@@ -25,6 +26,10 @@
             colorType: { // 颜色
                 type: String as PropType<"danger" | "primary" | "green" | "yellow">,
                 default: "primary"
+            },
+            size: {
+                type: String as PropType<"big" | "small">,
+                default: ""
             },
             className: {
                 type: String,
@@ -49,7 +54,27 @@
 
     @Component
     class Button extends BtnProps {
+      timeId = 0
 
+    get sizeName ():string {
+      return this.size ? "btn-" + this.size : ""
+    }
+
+    keyUp (e: MouseEventEl<HTMLButtonElement>):void {
+        if (this.noAnimate) {
+          return
+        }
+        const target = e.currentTarget!
+        const timeId = this.timeId
+        if (timeId) {
+          window.clearTimeout(timeId)
+        }
+        target.classList.add("btn-clicked")
+        const newTimeid = window.setTimeout(function () {
+          target.classList.remove("btn-clicked")
+        }, 400)
+          this.timeId = newTimeid
+      }
     }
 
     export default Button
