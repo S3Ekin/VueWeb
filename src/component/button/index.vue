@@ -109,6 +109,10 @@ $yellow:#e4d619;
     color: white !important;
   }
 
+  &.btn-big {
+    min-width: 100px;
+  }
+
   &.has-icon {
     padding-right: 0.5em;
   }
@@ -217,18 +221,6 @@ $yellow:#e4d619;
     right: -$width;
     border-width: $width;
   }
-}
-
-/* 描边效果 */
-%position_1 {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 0;
-  border: solid 2px transparent;
-  z-index: 3;
-  box-sizing: border-box;
-  border-radius: inherit;
 }
 
 /* 按钮组 */

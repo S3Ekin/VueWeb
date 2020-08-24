@@ -33,10 +33,95 @@
           >
             地址：
           </SInp>
+          <div class="inp-item">
+            <Checkbox
+              :handle="change"
+              :select="logoType"
+              name="logo"
+              :data="logoCheckboxArr"
+            >
+              LOGO图片：
+            </Checkbox>
+          </div>
+          <div class="logo-box">
+            <div
+              v-if="logoType==='Y'"
+              class="logo-item"
+            >
+              <div id="default-logo" />
+            </div>
+            <div
+              v-else
+              class="logo-item"
+            >
+              <div>
+                <UpFile
+                  :handle="upFile"
+                  name="logo"
+                  :file-reg="/(png)|(jpg)/"
+                >
+                  logo上传
+                </UpFile>
+              </div>
+              <div
+                class="customer-box"
+              >
+                <img
+                  v-if="information.logo"
+                  :src="information.logo"
+                  alt="logo"
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <SInp
+            :val="information.city"
+            name="city"
+            :handle="change"
+          >
+            城市：
+          </SInp>
+          <SInp
+            :val="information.email"
+            name="email"
+            :handle="change"
+          >
+            邮箱：
+          </SInp>
+          <SInp
+            :val="information.code"
+            name="code"
+            :handle="change"
+          >
+            简称：
+          </SInp>
+          <SInp
+            :val="information.website"
+            name="website"
+            :handle="change"
+          >
+            官网：
+          </SInp>
+          <SInp
+            :val="information.remark"
+            name="remark"
+            row="4"
+            is-text-area
+            :reg="/\d/"
+            reg-tip="必须为数字"
+            :handle="change"
+          >
+            描述：
+          </SInp>
         </div>
       </div>
       <div class="submit-box">
-        <Button :handle="submit">
+        <Button
+          :handle="submit"
+          size="big"
+        >
           保存
         </Button>
       </div>
@@ -49,6 +134,9 @@ import Vue from "vue"
 import Component from "vue-class-component"
 import Button from "@component/button/index.vue"
 import SInp from "@component/input/index.vue"
+import Checkbox from "@component/checkbox/index.vue"
+import UpFile from "@component/upfileBox/index.vue"
+import { fetchApi } from "@api/postData"
 type data = {
     name: string;
     enName: string;
@@ -65,7 +153,9 @@ type data = {
 @Component({
     components: {
         Button,
-        SInp
+        SInp,
+        Checkbox,
+        UpFile
     }
 })
 
@@ -84,9 +174,31 @@ information:data={
     code: ''
 }
 
+logoType = "Y"
+
+logoCheckboxArr = [
+  { name: "默认", val: "Y" },
+  { name: "自定义图片", val: "N" }
+  ]
+
+mounted ():void {
+  fetchApi.get("company/list").then(res => {
+    this.information = res.data
+    this.logoType = res.data.logo ? "N" : "Y"
+  })
+}
+
 change (e:MouseEventEl<HTMLInputElement>):void {
     const name = e.target.name
-    this.information[name as keyof data] = e.target.value
+    if (name !== "logo") {
+      this.information[name as keyof data] = e.target.value
+    } else {
+      this.logoType = e.target.value
+    }
+}
+
+upFile (e:MouseEventEl<HTMLInputElement>):void {
+  console.log(e.target)
 }
 
 submit ():void{

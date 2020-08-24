@@ -1,14 +1,14 @@
 <template>
   <div class="inp-item">
     <label
-      class="g-inp"
-      :class="{'g-inp-lab': !vertical,'g-inp-vertical':vertical}"
+      :class="{'g-inp-lab': !vertical,'g-inp-vertical':vertical,'g-inp': !isTextArea,'g-txt': isTextArea}"
     >
       <span
         v-show="$slots"
         class="lab-tit"
       ><slot /></span>
       <input
+        v-if="!isTextArea"
         class="s-inp"
         :name="name"
         :data-set="dataSet"
@@ -18,6 +18,18 @@
         :style="{width: width ? width +'px':null}"
         @change="handle"
       >
+      <textarea
+        v-else
+        class="s-txt"
+        :rows="rows"
+        :name="name"
+        :data-set="dataSet"
+        :value="val"
+        :class="[className,noFill]"
+        :disabled="disabled"
+        :style="{width: width ? width +'px':null}"
+        @change="handle"
+      />
       <span
         v-show="warnTxt"
         class="lab-tip-box"
@@ -32,7 +44,7 @@
     import Vue, { PropType } from "vue"
     import Component from "vue-class-component"
     const InpProps = Vue.extend({
-        name: "Button",
+        name: "SInp",
         props: {
             handle: {
                 type: Function as PropType<(e:MouseEvent)=>void>,
@@ -70,6 +82,11 @@
                 type: String,
                 default: ""
             },
+            rows: {
+                type: Number,
+                default: 3
+            },
+            isTextArea: Boolean,
             noRequired: Boolean,
             disabled: Boolean,
             vertical: Boolean
@@ -173,20 +190,6 @@ $color:#5b5b5b;
   display: flex;
 }
 
-.s-slecte {
-  border-radius: 4px;
-  height: $inp-h;
-  line-height: 1.5em;
-  padding: 0 6px;
-  box-sizing: border-box;
-  background: none;
-  color: $text-color;
-
-  option {
-    color: $text-color;
-  }
-}
-
 .s-inp.normal {
   cursor: pointer;
   border: 1px solid;
@@ -206,103 +209,6 @@ $color:#5b5b5b;
 
   &.s-txt {
     border-color: $error;
-  }
-}
-
-.upfile-box {
-  display: flex;
-  line-height: 36px;
-  height: 36px;
-
-  .file-name {
-    border: 1px solid $normal;
-    height: 100%;
-    flex: 1;
-    padding: 0 1em;
-    word-break: break-all;
-  }
-
-  .upfile-inp {
-    position: absolute;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    opacity: 0;
-    cursor: pointer;
-  }
-
-  .j-btn {
-    cursor: pointer;
-    padding: 0 10px;
-    background: #1182fb;
-    color: white;
-    text-align: center;
-    position: relative;
-    border-radius: 0 4px 4px 0;
-  }
-}
-
-.g-check-item {
-  display: flex;
-  align-items: center;
-}
-
-%inpbox {
-  height: $inp-h;
-  display: flex;
-  align-items: center;
-
-  .m-label {
-    margin: 0 6px;
-  }
-}
-
-.m-label {
-  display: inline-flex;
-  align-items: center;
-  margin-right: 30px;
-  cursor: pointer;
-
-  .wrap-icon {
-    position: relative;
-    padding-right: 8px;
-  }
-
-  .fa {
-    color: $text-color;
-    cursor: pointer;
-    font-size: 18px;
-    margin-right: 8px;
-  }
-
-  .fa-checked,
-  .fa-radio {
-    color: #1182fb;
-  }
-
-  .checkBox-inp {
-    opacity: 0;
-    cursor: pointer;
-    position: absolute;
-    display: none;
-  }
-
-  &.active {
-    color: #3b90f2;
-  }
-}
-
-.disabled-box {
-  cursor: not-allowed;
-  color: #c6c9cf;
-
-  .checkBox-inp {
-    cursor: not-allowed;
-  }
-
-  .icon {
-    cursor: not-allowed;
   }
 }
 
@@ -338,129 +244,4 @@ $color:#5b5b5b;
     }
   }
 }
-
-/* radio */
-.m-radio {
-  @extend %inpbox;
-}
-
-.m-checkbox {
-  @extend %inpbox;
-}
-
-.file-inp {
-  position: absolute;
-  left: 0;
-  opacity: 0;
-}
-//search
-.m-search {
-  display: flex;
-  justify-content: space-between;
-
-  .input-box {
-    flex: 1;
-    position: relative;
-
-    .s-inp {
-      width: 100%;
-      height: 32px;
-    }
-  }
-
-  .s-btn {
-    height: 32px;
-    width: 66px;
-    min-width: 66px;
-    padding: 0;
-    margin-left: 1em;
-  }
-
-  .search-close {
-    padding: 4px;
-    cursor: pointer;
-    position: absolute;
-    right: 6px;
-    top: 4px;
-    display: none;
-
-    &:hover {
-      color: $error;
-    }
-  }
-
-  &.active-search {
-    .search-close {
-      display: block;
-    }
-  }
-}
-
-.g-SCombo {
-  position: relative;
-  cursor: pointer;
-
-  .m-combo-inp {
-    border: 1px solid $inp-border-color;
-    height: $inp-h - 6px;
-    display: flex;
-    justify-content: space-evenly;
-    padding: 0 14px 0 10px;
-    align-items: center;
-  }
-
-  .m-combo-val {
-    flex: 1;
-  }
-
-  .m-combo-pannel {
-    position: absolute;
-    background: white;
-    box-shadow: $shadow;
-    width: 100%;
-    max-height: 400px;
-    z-index: 10;
-    text-align: left;
-    padding: 16px 4px;
-    border-radius: 4px;
-  }
-
-  .drop-item {
-    padding: 6px 10px;
-
-    &.selected {
-      background: rgba(24, 144, 255, 0.17);
-      color: $active;
-    }
-  }
-
-  &.active {
-    .m-combo-inp {
-      border-color: $active;
-    }
-  }
-}
-
-@mixin inp-placeholder {
-  color: #aab2bd;
-  font-size: 12px;
-  text-align: left;
-}
-// // 不能使用css规则 a,b{}
-// input::-webkit-input-placeholder {
-//   @include inp-placeholder;
-// }
-
-// input:-moz-placeholder {
-//   @include inp-placeholder;
-// }
-
-// input::-moz-placeholder {
-//   @include inp-placeholder;
-// }
-
-// input::-ms-input-placeholder {
-//   @include inp-placeholder;
-// }
-
 </style>
