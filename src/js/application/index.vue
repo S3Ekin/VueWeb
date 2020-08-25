@@ -5,21 +5,29 @@
     >
       按钮
     </Button>
-    <Test />
+    <div>
+      <Modal
+        title="modal"
+      >
+        <div>
+          我是模态框
+        </div>
+      </Modal>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue"
 import Component from "vue-class-component"
-import Button from "../../component/button/index.vue"
-import Test from "@component/test"
+import Button from "@component/button/index.vue"
+import Modal from "@component/modal/index.vue"
 const app = Vue.extend({
 })
 @Component({
  components: {
         Button,
-        Test
+        Modal
     }
 })
 class Application extends app {
