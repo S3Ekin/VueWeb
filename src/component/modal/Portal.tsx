@@ -22,11 +22,17 @@ export default class Portal extends PortalProps {
     mounted ():void {
          const targetDom = document.createElement("div")
         this.container.appendChild(targetDom)
-        const head = this.$slots.default!
-        console.log(this.$slots)
+        //   const head = this.$slots.default!
+        //  console.log(this.$slots)
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        const parent = this
         this.targetComponent = new Vue({
             el: targetDom,
+            updated: function () {
+                console.log("err")
+            },
             render: function ():VNode {
+              const head = parent.$slots.default!
                return (
                 <div class="g-modal">
                     {head}
@@ -36,9 +42,17 @@ export default class Portal extends PortalProps {
         })
     }
 
+    updated ():void {
+        console.log("portal updata")
+        console.log(this.targetComponent)
+        this.targetComponent?.$forceUpdate()
+    }
+
     destroyed ():void{
         this.targetComponent?.$destroy()
-        this.container.removeChild(this.targetComponent!.$el)
+        if (this.container) {
+            this.container.removeChild(this.targetComponent!.$el)
+        }
     }
 
     render ():VNode {

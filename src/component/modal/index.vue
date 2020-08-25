@@ -2,13 +2,22 @@
   <Portal
     :container="containerDom"
   >
-    <div class="m-Mwrap">
+    <div
+      ref="modalDom"
+      class="m-Mwrap"
+      @mouseup="mouseUp"
+    >
       <div class="m-Mask" />
-      <div class="m-Modal">
+      <div
+        class="m-Modal"
+        :data-set="position.pointY"
+        :data-name="test"
+        :style="{transform:`translate(${position.pointX}px, ${position.pointY}px)`}"
+      >
         <div class="m-Mtit">
           <span
             class="tit-name"
-            @mousedown="move"
+            @mousedown="headMouseDown"
           >{{ title }}</span>
           <span class="m-Mclose">
             <i class="fa fa-close" />
@@ -19,6 +28,11 @@
           class="m-Mbody"
           :style="{width: width ? width + 'px' : null}"
         >
+          <input
+            v-model="test"
+            type="text"
+          >
+          <span>{{ test }}</span>
           <slot />
         </div>
       </div>
@@ -58,6 +72,17 @@ const ModalProps = Vue.extend({
 })
 @Component
 export default class Modal extends ModalProps {
+  $refs!:{
+    modalDom: HTMLDivElement
+  }
+
+  test = 0
+
+  position = {
+    pointX: 50,
+    pointY: 0
+  }
+
   get containerDom ():HTMLElement {
     if (this.isOut) {
       return document.getElementById("outModalRoot")!
@@ -65,28 +90,28 @@ export default class Modal extends ModalProps {
       return document.getElementById("innerModalRoot")!
   }
 
-  move (event:MouseEventEl<HTMLSpanElement>):void {
-      const target = event.currentTarget
-      const contentDom = document.getElementById("content")!
-      const maxH = contentDom.clientHeight - 50
-      const maxW = contentDom.clientWidth - 50
-      const moveTarget = target.parentElement!.parentElement!
-      const curx = event.offsetX + contentDom.offsetLeft
-      const cury = event.offsetY + contentDom.offsetTop
-      const mouseMove = (e:MouseEvent) => {
-          let x = e.clientX - curx
-          let y = e.clientY - cury
-          x = x < 0 ? 0 : x > maxW ? maxW : x
-          y = y < 0 ? 0 : y > maxH ? maxH : y
-          moveTarget.style.cssText = `transform:translate(${x}px,${y}px);top:0;left:0;`
+  mouseUp ():void{
+        this.$refs.modalDom.onmousemove = null
+          console.log(this.position.pointY, "this")
+  }
+
+  updated (old:string, newOld:string):void{
+    console.log("updata", old, newOld)
+  }
+
+  headMouseDown (e: MouseEventEl<HTMLDivElement>):void {
+      const modalDom = this.$refs.modalDom
+      const { pointY, pointX } = this.position
+      // 主要减去上一次移动留下的位置
+      const diffPointX = e.clientX - pointX
+      const diffPointY = e.clientY - pointY
+      console.log(diffPointX)
+      modalDom.onmousemove = (originE:MouseEvent) => {
+        console.log(1)
+            this.position.pointX = originE.clientX - diffPointX
+            this.position.pointY = originE.clientY - diffPointY
+          console.log(this.position.pointY)
       }
-      window.addEventListener("mousemove", mouseMove)
-      window.addEventListener("mouseup", function mouseUp () {
-        // window.removeEventListener("mouseup", mouseUp)
-        window.removeEventListener("mousemove", mouseMove)
-      }, {
-        once: true
-      })
   }
 }
 </script>

@@ -9,8 +9,9 @@
       <Modal
         title="modal"
       >
-        <div>
+        <div ref="dom">
           我是模态框
+          {{ test }}
         </div>
       </Modal>
     </div>
@@ -32,8 +33,17 @@ const app = Vue.extend({
 })
 class Application extends app {
     test = "23"
+    $refs!:{
+      dom:HTMLDivElement
+    }
+
+    mounted ():void{
+      console.log(this.$refs.dom)
+    }
+
     click (e:MouseEvent):void {
         console.log(e)
+        this.test += "sekin"
     }
 }
 
