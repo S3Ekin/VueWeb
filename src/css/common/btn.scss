@@ -30,6 +30,10 @@ $black: #4d4f5c;
     border: none;
     color: white !important;
   }
+
+  &.btn-big {
+    width: 90px;
+  }
 }
 //按钮点击时的状态，用于点击时加类名
 .btn-clicked {

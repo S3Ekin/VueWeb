@@ -117,6 +117,7 @@ body {
   min-height: 268px;
   padding: 32px 34px;
   padding-bottom: 40px;
+  box-sizing: content-box;
 
   .login-title {
     font-size: 24px;

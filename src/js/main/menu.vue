@@ -3,12 +3,12 @@
     <div
       v-for="list in menuData"
       :key="list.code"
+      :class="{active: list.active}"
       class="menu-par-box"
     >
       <div
         class="menu-par menu-item"
         :data-code="list.code"
-        :class="{active: list.active}"
         @click="toggleMenu"
       >
         <span>
@@ -25,7 +25,7 @@
           />
         </span>
       </div>
-      <transition name="">
+      <div class="menu-list-box">
         <div class="menu-list">
           <div
             v-for="menu in list.menuChildList"
@@ -43,7 +43,7 @@
             </router-link>
           </div>
         </div>
-      </transition>
+      </div>
     </div>
   </div>
 </template>
@@ -51,7 +51,7 @@
 <script lang="ts">
   import Vue from "vue"
   import Component from "vue-class-component"
-  import { fetchApi } from "@api/postData"
+  import Api from "@api/main"
   type menuItem = {
     // eslint-disable-next-line camelcase
     app_code: string;
@@ -67,14 +67,31 @@
     version: string;
     active: boolean;
   }
+  const Props = Vue.extend({
+    watch: {
+      menuData: function () {
+        this.$nextTick().then(() => {
+          this.initListBoxHeight()
+        })
+      }
+    },
+    methods: {
+      initListBoxHeight ():void {
+        const listBoxElArr = (this.$el as HTMLDivElement).getElementsByClassName("menu-list-box")
+          const arr = [...listBoxElArr] as HTMLDivElement[]
+          arr.forEach(dom => {
+            const child = dom.firstElementChild!
+            dom.style.cssText = `height:${child.clientHeight}px`
+          })
+     }
+    }
+  })
   @Component
-  export default class Menu extends Vue {
+  export default class Menu extends Props {
      menuData: menuItem[] = [];
+
      mounted ():void {
-         fetchApi.get("power/getMyAllMenu", {
-           userCode: "admin",
-           appCode: "user"
-         }).then(res => {
+         Api.getMyAllMenu("admin").then(res => {
            this.menuData = res.data.menuChildList.map((val: menuItem) => {
              val.active = false
              val.menuChildList = val.menuChildList.map((node:menuItem) => {
@@ -86,22 +103,33 @@
          })
      }
 
+     slideFn (dom:HTMLDivElement, isSlide:boolean):void {
+       const slideDom = dom.nextElementSibling as HTMLDivElement
+       if (!slideDom) {
+         return
+       }
+       const child = slideDom.firstElementChild as HTMLDivElement
+       const listH = child.clientHeight
+       slideDom.style.cssText = `height:${!isSlide ? listH : 0}px`
+     }
+
      toggleMenu (e:MouseEvent & {currentTarget:HTMLDivElement}):void {
        const dom = e.currentTarget
        const code = dom.dataset.code
-       this.menuData = this.menuData.map(val => {
-         if (val.code === code) {
-           val.active = !val.active
-         }
-         return val
-       })
+       let isSlide = false
+       const node = this.menuData.find(val => val.code === code)
+       if (node) {
+         node.active = !node.active
+         isSlide = node.active
+       }
+       this.slideFn(dom, isSlide)
      }
 
      navMenuItem (e:MouseEvent & {currentTarget:HTMLDivElement}):void {
        const dom = e.currentTarget
        const code = dom.dataset.code
-       const parCode = (dom.parentElement?.previousElementSibling as HTMLDivElement).dataset.code
-       this.menuData = this.menuData.map(val => {
+       const parCode = (dom.parentElement?.parentElement?.previousElementSibling as HTMLDivElement).dataset.code
+       this.menuData.forEach(val => {
          if (val.code === parCode) {
            val.menuChildList = val.menuChildList.map(node => {
              if (node.code === code) {
@@ -137,8 +165,27 @@ $activeBg: #7899cb;
   box-sizing: border-box;
 }
 
+.menu-list-box {
+  position: relative;
+  overflow: hidden;
+  transition: height 0.6s ease-in-out;
+
+  .menu-list {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    background: #577aaf;
+    z-index: 10;
+  }
+}
+
 .menu-par-box {
   position: relative;
+
+  // &.active {
+  //   .menu-list {
+  //   }
+  // }
 }
 
 .menu-item {
@@ -192,18 +239,22 @@ $activeBg: #7899cb;
     padding-left: 16px;
   }
 
-  .menu-list {
+  .menu-list-box {
     position: absolute;
     width: 220px;
-    background: #577aaf;
     left: 50px;
     top: 0;
     display: none;
+    overflow: initial;
+  }
+
+  .menu-list {
+    position: relative;
   }
 
   .menu-par-box {
     &:hover {
-      .menu-list {
+      .menu-list-box {
         display: block;
       }
     }

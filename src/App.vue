@@ -18,7 +18,10 @@
     </aside>
     <div class="main">
       <Head :app-name="appInfo.appName" />
-      <article id="content">
+      <article
+        id="content"
+        class="main-content"
+      >
         <router-view />
       </article>
     </div>
@@ -114,6 +117,12 @@ $headH: 60px;
 .main {
   flex: 1;
   height: 100%;
+
+  .main-content {
+    background: #fafafb;
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .main-header {
