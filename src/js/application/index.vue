@@ -5,6 +5,11 @@
     >
       按钮
     </Button>
+    <Button
+      :handle="open"
+    >
+      按钮2
+    </Button>
     <div>
       <Modal
         title="modal"
@@ -26,6 +31,7 @@ import Vue from "vue"
 import Component from "vue-class-component"
 import Button from "@component/button/index.vue"
 import Modal from "@component/modal/index.vue"
+import toastFn from "@component/Toast/index"
 const app = Vue.extend({
 })
 @Component({
@@ -45,6 +51,10 @@ class Application extends app {
         console.log(e)
         this.showModal = true
         this.test += "sekin"
+    }
+
+    open ():void {
+      toastFn.add("sdfasd")
     }
 
     modalOpt (filed: "showModal", isOpen:boolean):void {

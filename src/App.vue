@@ -23,6 +23,7 @@
         class="main-content"
       >
         <div id="innerModalRoot" />
+        <div id="innerToastRoot" />
         <router-view />
       </article>
     </div>
