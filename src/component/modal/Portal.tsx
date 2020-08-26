@@ -4,7 +4,7 @@
  * @description: 实现Portal原理 ;
  * @Last Modified time: 2020-08-25 10:44:56 ;
  */
-import Vue, { VNode } from "vue"
+import Vue, { VNode, CreateElement } from "vue"
 import Component from "vue-class-component"
 const PortalProps = Vue.extend({
     name: "Portal",
@@ -22,29 +22,19 @@ export default class Portal extends PortalProps {
     mounted ():void {
          const targetDom = document.createElement("div")
         this.container.appendChild(targetDom)
-        //   const head = this.$slots.default!
-        //  console.log(this.$slots)
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
-        const parent = this
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const chidldFn:any = () => {
+            return this.$scopedSlots.default!({})
+        }
         this.targetComponent = new Vue({
             el: targetDom,
-            updated: function () {
-                console.log("err")
-            },
             render: function ():VNode {
-              const head = parent.$slots.default!
-               return (
-                <div class="g-modal">
-                    {head}
-                </div>
-               )
+               return chidldFn()
             }
         })
     }
 
     updated ():void {
-        console.log("portal updata")
-        console.log(this.targetComponent)
         this.targetComponent?.$forceUpdate()
     }
 
@@ -55,7 +45,7 @@ export default class Portal extends PortalProps {
         }
     }
 
-    render ():VNode {
-        return <span>测试</span>
+    render (h:CreateElement):VNode {
+        return h()
     }
 }

@@ -3,37 +3,57 @@
     :container="containerDom"
   >
     <div
-      ref="modalDom"
-      class="m-Mwrap"
-      @mouseup="mouseUp"
+      v-show="show"
+      class="g-modal"
     >
-      <div class="m-Mask" />
       <div
-        class="m-Modal"
-        :data-set="position.pointY"
-        :data-name="test"
-        :style="{transform:`translate(${position.pointX}px, ${position.pointY}px)`}"
+        ref="modalDom"
+        class="m-Mwrap"
+        @mouseup="mouseUp"
       >
-        <div class="m-Mtit">
-          <span
-            class="tit-name"
-            @mousedown="headMouseDown"
-          >{{ title }}</span>
-          <span class="m-Mclose">
-            <i class="fa fa-close" />
-          </span>
-        </div>
-
+        <div class="m-Mask" />
         <div
-          class="m-Mbody"
-          :style="{width: width ? width + 'px' : null}"
+          class="m-Modal"
+          :class="className"
+          data-point="0,0"
+          :style="{width:width ? width+ 'px':null}"
         >
-          <input
-            v-model="test"
-            type="text"
+          <div class="m-Mtit">
+            <span
+              class="tit-name"
+              @mousedown="headMouseDown"
+            >{{ title }}</span>
+            <span
+              class="m-Mclose"
+              @click="close"
+            >
+              <i class="fa fa-close" />
+            </span>
+          </div>
+          <div
+            class="m-Mbody"
+            :style="{width: width ? width + 'px' : null}"
           >
-          <span>{{ test }}</span>
-          <slot />
+            <slot
+              name="default"
+              :slotProps="'asdf'"
+            />
+            <slot name="foot">
+              <div className="m-Mfooter">
+                <Button
+                  :handle="close"
+                >
+                  确定
+                </Button>
+                <Button
+                  border-type="line-btn"
+                  :handle="close"
+                >
+                  关闭
+                </Button>
+              </div>
+            </slot>
+          </div>
         </div>
       </div>
     </div>
@@ -41,22 +61,28 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue"
+import Vue, { PropType } from "vue"
 import Component from "vue-class-component"
 import Portal from "./Portal"
+import Button from "@component/button/index.vue"
 const ModalProps = Vue.extend({
     name: "Modal",
     components: {
-      Portal
+      Portal,
+      Button
     },
     props: {
             className: {
-                type: String,
+                type: String as PropType<string>,
                 default: ""
+            },
+            toggleModal: {
+                type: Function as PropType<(filed:string, isClose:boolean)=>void>,
+                required: true
             },
             field: {
                 type: String,
-                default: ""
+                required: true
             },
             width: {
                 type: Number,
@@ -76,13 +102,6 @@ export default class Modal extends ModalProps {
     modalDom: HTMLDivElement
   }
 
-  test = 0
-
-  position = {
-    pointX: 50,
-    pointY: 0
-  }
-
   get containerDom ():HTMLElement {
     if (this.isOut) {
       return document.getElementById("outModalRoot")!
@@ -90,27 +109,28 @@ export default class Modal extends ModalProps {
       return document.getElementById("innerModalRoot")!
   }
 
-  mouseUp ():void{
-        this.$refs.modalDom.onmousemove = null
-          console.log(this.position.pointY, "this")
+  close ():void {
+    console.log(this.$slots)
+   this.toggleModal(this.field, false)
   }
 
-  updated (old:string, newOld:string):void{
-    console.log("updata", old, newOld)
+  mouseUp ():void{
+        this.$refs.modalDom.onmousemove = null
   }
 
   headMouseDown (e: MouseEventEl<HTMLDivElement>):void {
       const modalDom = this.$refs.modalDom
-      const { pointY, pointX } = this.position
+      const childDom = modalDom.lastElementChild! as HTMLDivElement
+      const pointArr = childDom.dataset.point!.split(",")
+      const [pointX, pointY] = pointArr
       // 主要减去上一次移动留下的位置
-      const diffPointX = e.clientX - pointX
-      const diffPointY = e.clientY - pointY
-      console.log(diffPointX)
+      const diffPointX = e.clientX - +pointX
+      const diffPointY = e.clientY - +pointY
       modalDom.onmousemove = (originE:MouseEvent) => {
-        console.log(1)
-            this.position.pointX = originE.clientX - diffPointX
-            this.position.pointY = originE.clientY - diffPointY
-          console.log(this.position.pointY)
+            const x = originE.clientX - diffPointX
+            const y = originE.clientY - diffPointY
+           childDom.dataset.point = x + "," + y
+           childDom.style.transform = `translate(${x}px,${y}px)`
       }
   }
 }
@@ -141,6 +161,9 @@ $padding: 40px;
 
   .m-Mwrap {
     height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 
@@ -151,10 +174,6 @@ $padding: 40px;
   box-shadow: $shadow;
   border-radius: 4px;
   background-color: $bg;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 
   .m-Mtit {
     height: 48px;

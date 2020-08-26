@@ -8,11 +8,14 @@
     <div>
       <Modal
         title="modal"
+        field="showModal"
+        :toggle-modal="modalOpt"
+        :show="showModal"
       >
-        <div ref="dom">
-          我是模态框
-          {{ test }}
-        </div>
+        <template v-slot:default="ty">
+          {{ ty.slotProps }}
+          sadf
+        </template>
       </Modal>
     </div>
   </div>
@@ -37,13 +40,15 @@ class Application extends app {
       dom:HTMLDivElement
     }
 
-    mounted ():void{
-      console.log(this.$refs.dom)
-    }
-
+    showModal = false
     click (e:MouseEvent):void {
         console.log(e)
+        this.showModal = true
         this.test += "sekin"
+    }
+
+    modalOpt (filed: "showModal", isOpen:boolean):void {
+      this[filed] = isOpen
     }
 }
 
