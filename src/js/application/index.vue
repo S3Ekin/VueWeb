@@ -55,6 +55,8 @@ class Application extends app {
 
     open ():void {
       toastFn.add("sdfasd")
+      toastFn.add("test", "warn")
+      toastFn.add("sdaf", "error", true)
     }
 
     modalOpt (filed: "showModal", isOpen:boolean):void {

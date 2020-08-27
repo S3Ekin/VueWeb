@@ -29,12 +29,17 @@ const props = Vue.extend({
 export default class SvgIcon extends props {
 }
 </script>
-<style>
+<style lang="scss">
 .icon {
   width: 16px;
   height: 16px;
   vertical-align: -0.15em;
   fill: currentColor;
   overflow: hidden;
+
+  &.middle {
+    width: 24px;
+    height: 24px;
+  }
 }
 </style>

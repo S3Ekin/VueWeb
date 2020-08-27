@@ -1,27 +1,29 @@
 <template>
-  <span class="g-alertInfo">
-    <span>
-      <span
-        class="notice-item"
-        :class="type"
-      >
-        <SvgIcon
-          :class-name="type"
-          size="middle"
-        />
+  <div>
+    <span class="g-alertInfo">
+      <span>
+        <span
+          class="notice-item"
+          :class="type"
+        >
+          <SvgIcon
+            :class-name="iconObj[type]"
+            size="middle"
+          />
+        </span>
+        <span class="txt">
+          <slot />
+        </span>
       </span>
-      <span class="txt">
-        <slot />
-      </span>
-    </span>
 
-    <span
-      class="m-alert-close"
-      :data-id="id"
-    >
-      <i class="fa fa-close" />
+      <span
+        class="m-alert-close"
+        :data-id="id"
+      >
+        <i class="fa fa-close" />
+      </span>
     </span>
-  </span>
+  </div>
 </template>
 
 <script lang="ts">
@@ -29,7 +31,7 @@ import Vue, { PropType } from "vue"
 import Component from "vue-class-component"
 import { SvgIcon } from "@component/Icon/index"
 
-const ModalProps = Vue.extend({
+const NoticeProps = Vue.extend({
     components: {
         SvgIcon
     },
@@ -46,7 +48,12 @@ const ModalProps = Vue.extend({
 })
 
 @Component
-export default class Modal extends ModalProps {
+export default class Notice extends NoticeProps {
+  iconObj = {
+    success: "fa-fill-success",
+    error: "fa-fill-error",
+    warn: "fa-warning"
+  }
 }
 </script>
 
@@ -64,7 +71,6 @@ export default class Modal extends ModalProps {
 
   .notice-item {
     padding-right: 8px;
-    font-size: 24px;
   }
 
   .error {
@@ -86,15 +92,6 @@ export default class Modal extends ModalProps {
 }
 
 .g-notification {
-  position: absolute;
-  right: 20px;
-  top: 10px;
-  z-index: 20;
-  text-align: right;
-  width: 50%;
-  overflow: hidden;
-  padding: 0 6px;
-
   .g-alertInfo {
     @extend %shadow;
 
