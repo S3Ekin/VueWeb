@@ -6,6 +6,11 @@
       按钮
     </Button>
     <Button
+      :handle="loading"
+    >
+      按钮3
+    </Button>
+    <Button
       :handle="open"
     >
       按钮2
@@ -32,6 +37,7 @@ import Component from "vue-class-component"
 import Button from "@component/button/index.vue"
 import Modal from "@component/modal/index.vue"
 import toastFn from "@component/Toast/index"
+import loadFn from "@component/loading/index"
 const app = Vue.extend({
 })
 @Component({
@@ -53,10 +59,18 @@ class Application extends app {
         this.test += "sekin"
     }
 
+    loading () :void {
+      loadFn.open("ddd")
+      setTimeout(function () {
+        loadFn.close()
+      }, 2000)
+    }
+
     open ():void {
       toastFn.add("sdfasd")
-      toastFn.add("test", "warn")
-      toastFn.add("sdaf", "error", true)
+      toastFn.add("sdfasd", "warn")
+      toastFn.add("sdfasd", "error")
+      toastFn.add("sdfasd", "success", true)
     }
 
     modalOpt (filed: "showModal", isOpen:boolean):void {

@@ -1,5 +1,6 @@
 <template>
   <Portal
+    v-if="hasInit"
     :container="containerDom"
   >
     <div
@@ -39,9 +40,9 @@
               :slotProps="'asdf'"
             />
             <slot name="foot">
-              <div className="m-Mfooter">
+              <div class="m-Mfooter">
                 <Button
-                  :handle="close"
+                  :handle="sure"
                 >
                   确定
                 </Button>
@@ -80,6 +81,11 @@ const ModalProps = Vue.extend({
                 type: Function as PropType<(filed:string, isClose:boolean)=>void>,
                 required: true
             },
+            sure: {
+                type: Function as PropType<(e:MouseEvent)=> void>,
+                // eslint-disable-next-line @typescript-eslint/no-empty-function
+                default: function () {}
+            },
             field: {
                 type: String,
                 required: true
@@ -94,8 +100,21 @@ const ModalProps = Vue.extend({
             },
             isOut: Boolean,
             show: Boolean
+    },
+    data: function () {
+      return {
+        hasInit: false
+      }
+    },
+    watch: {
+      show: function () {
+        if (!this.hasInit) {
+          this.hasInit = true
+        }
+      }
     }
 })
+
 @Component
 export default class Modal extends ModalProps {
   $refs!:{
@@ -110,7 +129,6 @@ export default class Modal extends ModalProps {
   }
 
   close ():void {
-    console.log(this.$slots)
    this.toggleModal(this.field, false)
   }
 
@@ -203,8 +221,7 @@ $padding: 40px;
   }
 
   .m-Mbody {
-    padding: $padding;
-    padding-top: 30px;
+    padding: 30px $padding;
     overflow: auto;
 
     .m-gridBox {
@@ -216,9 +233,8 @@ $padding: 40px;
 
   .m-Mfooter {
     display: flex;
-    justify-content: center;
-    padding: $padding;
-    padding-top: 0;
+    justify-content: flex-end;
+    padding-top: 16px;
 
     .s-btn {
       margin-right: 16px;
@@ -238,53 +254,6 @@ $padding: 40px;
 
     & > .item-inp {
       margin: 0;
-    }
-  }
-}
-
-.g-confirm {
-  .m-Mfooter {
-    display: flex;
-    justify-content: flex-end;
-
-    .s-btn {
-      margin-right: 5px;
-    }
-  }
-
-  .del-body {
-    display: flex;
-  }
-
-  .del-txt {
-    font-size: 16px;
-    line-height: 40px;
-    word-break: break-all;
-  }
-
-  .del-tip {
-    $color:#aaaeb3;
-
-    color: $color;
-    font-size: 12px;
-    position: relative;
-
-    &::before {
-      content: "";
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      border-radius: 100%;
-      background: $color;
-    }
-  }
-
-  .del-icon {
-    margin-right: 16px;
-
-    .fa {
-      font-size: 50px;
-      color: $error;
     }
   }
 }

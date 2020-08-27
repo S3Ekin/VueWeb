@@ -6,6 +6,7 @@
         :id="item.id"
         :key="item.id"
         :type="item.type"
+        @close="remove"
       >
         {{ item.text }}
       </Notice>
@@ -23,14 +24,6 @@ type messageItem = {
   type: "error" | "success" | "warn";
   timerId?: number;
 };
-// const Props = Vue.extend({
-//     props: {
-//         callback: {
-//             type: Function,
-//             required: true
-//         }
-//     }
-// })
 @Component({
   components: {
     Notice
@@ -38,12 +31,6 @@ type messageItem = {
 })
 export default class Toast extends Vue {
   messages: messageItem[] = [];
-//   mounted (): void {
-//     this.$nextTick().then(() => {
-//         console.log(3)
-//     })
-//   }
-
   add (obj: messageItem): void {
     this.messages.push(obj)
   }

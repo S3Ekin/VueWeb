@@ -49,9 +49,19 @@
                 <a
                   class="user-item"
                   title="退出系统"
-                  @click="logOut"
+                  @click="logOutEvent"
                 ><i class="fa fa-power" /> 退出系统</a>
               </div>
+              <Modal
+                title="modal"
+                field="showModal"
+                :toggle-modal="modalOpt"
+                :is-out="true"
+                :show="showModal"
+                :sure="logOut"
+              >
+                确定退出系统吗？
+              </Modal>
             </div>
           </div>
         </div>
@@ -68,8 +78,11 @@ import Vue from "vue"
 import Component from "vue-class-component"
 import { fetchApi } from "@api/postData"
 import { NOIDEA } from "../../global"
-
+import Modal from "@component/modal/index.vue"
 const HeadProps = Vue.extend({
+  components: {
+    Modal
+  },
   props: {
     appName: {
       type: String,
@@ -81,6 +94,15 @@ const HeadProps = Vue.extend({
 
 @Component
 export default class Head extends HeadProps {
+  showModal = false
+  logOutEvent ():void {
+    this.showModal = true
+  }
+
+  modalOpt (filed: "showModal", isOpen:boolean):void {
+      this[filed] = isOpen
+  }
+
   logOut ():void {
     if (NOIDEA) { // 本地资源
         fetchApi.get("login/logOut")

@@ -19,6 +19,7 @@
       <span
         class="m-alert-close"
         :data-id="id"
+        @click="close"
       >
         <i class="fa fa-close" />
       </span>
@@ -53,6 +54,11 @@ export default class Notice extends NoticeProps {
     success: "fa-fill-success",
     error: "fa-fill-error",
     warn: "fa-warning"
+  }
+
+  close (e:MouseEventEl<HTMLSpanElement>):void{
+    const id = e.currentTarget.dataset.id
+    this.$emit("close", id)
   }
 }
 </script>

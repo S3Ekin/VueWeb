@@ -24,9 +24,11 @@
       >
         <div id="innerModalRoot" />
         <div id="innerToastRoot" />
+        <div id="innerLoading" />
         <router-view />
       </article>
     </div>
+    <div id="outModalRoot" />
   </div>
 </template>
 
