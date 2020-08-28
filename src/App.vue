@@ -38,6 +38,7 @@ import Component from "vue-class-component"
 import Menu from "./js/main/menu.vue"
 import Head from "./js/main/AppHead.vue"
 import { fetchApi } from "@api/postData"
+
 type obj = {
     message: string;
     t:string;
@@ -71,6 +72,14 @@ type appInfo = {
        this.appInfo = res.data
      })
    }
+
+  destroyed ():void {
+    console.log("destroyed-app")
+  }
+
+  updated ():void {
+    console.log("update-app")
+  }
 
    toggleSlideMenu ():void {
      this.menuSlide = !this.menuSlide
@@ -121,6 +130,7 @@ $headH: 60px;
 .main {
   flex: 1;
   height: 100%;
+  overflow: hidden; // 生成BFC 防止子节点大小不受控制
 
   .main-content {
     background: #fafafb;

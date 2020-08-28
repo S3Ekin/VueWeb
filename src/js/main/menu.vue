@@ -52,6 +52,8 @@
   import Vue from "vue"
   import Component from "vue-class-component"
   import Api from "@api/main"
+  import noticeFn from "@component/Toast/index"
+  import LoadingFn from "@component/loading/index"
   type menuItem = {
     // eslint-disable-next-line camelcase
     app_code: string;
@@ -73,6 +75,10 @@
         this.$nextTick().then(() => {
           this.initListBoxHeight()
         })
+      },
+      $route: function () {
+        noticeFn.clear()
+        LoadingFn.close()
       }
     },
     methods: {

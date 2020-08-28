@@ -67,9 +67,9 @@ class Application extends app {
     }
 
     open ():void {
-      toastFn.add("sdfasd")
-      toastFn.add("sdfasd", "warn")
-      toastFn.add("sdfasd", "error")
+     // toastFn.add("sdfasd")
+    //  toastFn.add("sdfasd", "warn")
+     // toastFn.add("sdfasd", "error")
       toastFn.add("sdfasd", "success", true)
     }
 
