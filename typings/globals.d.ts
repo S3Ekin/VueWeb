@@ -5,11 +5,6 @@ interface NodeModule {
     }
 }
 
-interface Window {
-    // eslint-disable-next-line camelcase
-    hex_md5(str:string):string;
-}
-
 interface MouseEventEl<T extends HTMLElement> extends MouseEvent {
     target: T,
     currentTarget: T

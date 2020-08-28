@@ -5,7 +5,7 @@
     </span>
     <label class="j-btn">
       <span>
-        <slot />
+        <slot>选择文件</slot>
       </span>
       <input
         type="file"

@@ -22,9 +22,13 @@
         id="content"
         class="main-content"
       >
+        <div id="innerModalRoot" />
+        <div id="innerToastRoot" />
+        <div id="innerLoading" />
         <router-view />
       </article>
     </div>
+    <div id="outModalRoot" />
   </div>
 </template>
 
@@ -132,5 +136,6 @@ $headH: 60px;
 
 #content {
   height: calc(100% - #{$headH});
+  position: relative;
 }
 </style>
