@@ -38,6 +38,7 @@
             <router-link
               :to="'/'+menu.url"
               class="nav-item"
+              :replace="true"
             >
               {{ menu.name }}
             </router-link>
@@ -52,8 +53,6 @@
   import Vue from "vue"
   import Component from "vue-class-component"
   import Api from "@api/main"
-  import noticeFn from "@component/Toast/index"
-  import LoadingFn from "@component/loading/index"
   type menuItem = {
     // eslint-disable-next-line camelcase
     app_code: string;
@@ -77,8 +76,8 @@
         })
       },
       $route: function () {
-        noticeFn.clear()
-        LoadingFn.close()
+       // noticeFn.clear()
+       // LoadingFn.close()
       }
     },
     methods: {
@@ -97,7 +96,7 @@
      menuData: menuItem[] = [];
 
      mounted ():void {
-         Api.getMyAllMenu("admin").then(res => {
+         Api.getMyAllMenu().then(res => {
            this.menuData = res.data.menuChildList.map((val: menuItem) => {
              val.active = false
              val.menuChildList = val.menuChildList.map((node:menuItem) => {

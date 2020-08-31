@@ -2,7 +2,7 @@
 const ROOTSRC = "/user/"
 const SESSION = {
     id: 1,
-    code: "admin",
+    code: "demo",
     name: "系统管理员",
     roles: {
     kpi: "60",

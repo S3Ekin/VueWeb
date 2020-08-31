@@ -25,7 +25,9 @@
         <div id="innerModalRoot" />
         <div id="innerToastRoot" />
         <div id="innerLoading" />
-        <router-view />
+        <keep-alive>
+          <router-view />
+        </keep-alive>
       </article>
     </div>
     <div id="outModalRoot" />

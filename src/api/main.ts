@@ -1,8 +1,9 @@
 import { fetchApi, DataRes } from "./postData"
+import { SESSION } from "../global"
 const obj = {
-    getMyAllMenu (userCode:string):Promise<DataRes> {
+    getMyAllMenu ():Promise<DataRes> {
         return fetchApi.get("power/getMyAllMenu", {
-           userCode,
+           userCode: SESSION.code,
            appCode: "user"
          })
     }

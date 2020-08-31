@@ -7,6 +7,8 @@
 import VueRouter from "vue-router"
 import application from "./application/index.vue"
 import { CreateElement } from "vue/types/umd"
+import noticeFn from "@component/Toast/index"
+import LoadingFn from "@component/loading/index"
 const page1 = {
   render: function (h:Vue.CreateElement) {
     return h(application)
@@ -19,7 +21,7 @@ const page2 = {
   }
 }
 const router = new VueRouter({
- // mode: 'history',
+ mode: 'abstract', // 参数不变化的模式（react的内存模式）
   routes: [
     // 动态路径参数 以冒号开头
     { path: '/system/application', component: page1 },
@@ -33,6 +35,12 @@ const router = new VueRouter({
     },
     { path: '/system/menu', component: page2 }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  next()
+  noticeFn.clear()
+  LoadingFn.close()
 })
 
 export {

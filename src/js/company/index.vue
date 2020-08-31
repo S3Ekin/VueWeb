@@ -15,7 +15,7 @@
             name="enName"
             :handle="change"
             reg-tip="必须为英文字母"
-            :reg="/^[a-zA-Z]+$/"
+            :reg="/^[a-zA-Z ]+$/"
           >
             英文名称：
           </SInp>
@@ -68,6 +68,7 @@
               >
                 <img
                   v-if="information.logo"
+                  id="customer-img"
                   :src="information.logo"
                   alt="logo"
                 >
@@ -100,6 +101,7 @@
           <SInp
             :val="information.website"
             name="website"
+            :no-required="true"
             :handle="change"
           >
             官网：
@@ -109,9 +111,8 @@
             name="remark"
             row="4"
             is-text-area
-            :reg="/\d/"
-            reg-tip="必须为数字"
             :handle="change"
+            :no-required="true"
           >
             描述：
           </SInp>
@@ -137,6 +138,7 @@ import SInp from "@component/input/index.vue"
 import Checkbox from "@component/checkbox/index.vue"
 import UpFile from "@component/upfileBox/index.vue"
 import { fetchApi } from "@api/postData"
+import noticeFn from "@component/Toast/index"
 type data = {
     name: string;
     enName: string;
@@ -194,15 +196,24 @@ change (e:MouseEventEl<HTMLInputElement>):void {
       this.information[name as keyof data] = e.target.value
     } else {
       this.logoType = e.target.value
+      this.information.logo = ""
     }
 }
 
 upFile (e:MouseEventEl<HTMLInputElement>):void {
-  console.log(e.target)
+  const file = e.target.files![0]
+  const read = new FileReader()
+  read.onload = (e) => {
+    const base64 = e.target!.result as string
+    this.information.logo = base64
+  }
+  read.readAsDataURL(file)
 }
 
 submit ():void{
-    console.log(this.information)
+  fetchApi.postJson("company/edit", this.information).then(() => {
+      noticeFn.add("信息修改成功！")
+  })
 }
 }
 </script>
