@@ -4,6 +4,8 @@
  * @description: 封装fetch ;
  * @Last Modified time: 2020-08-06 14:04:48;
  */
+import noticeFn from "@component/Toast/index"
+import loadFn from "@component/loading/index"
 const paramsForm = (obj:{[key:string]:string}) => {
     const strArr = []
     for (const key in obj) {
@@ -20,7 +22,7 @@ const paramsForm = (obj:{[key:string]:string}) => {
 }
 
 const resAlertTip = function (data:DataRes) {
-    console.log(data)
+    noticeFn.add(data.msg || "操作失败", "error")
 }
 
 const checkTimeOut = function (res:Response) {
@@ -31,6 +33,7 @@ const checkTimeOut = function (res:Response) {
         window.location.href = "/login.html"
         return Promise.reject(new Error("session过期"))
     } else {
+        fetchCommon.after()
         return res.json().then((data:DataRes) => {
             if (data.code === 100) {
                 return data
@@ -45,9 +48,20 @@ const checkTimeOut = function (res:Response) {
     }
 }
 
+const fetchCommon = {
+    before: function () {
+        console.log("111")
+        loadFn.open()
+    },
+    after: function () {
+         loadFn.close()
+    }
+}
+
 const fetchApi = {
     baseUrl: "/user/",
     get (url:string, pramas?:{[k:string]:string}):Promise<DataRes> {
+        fetchCommon.before()
         const str = pramas ? "?" + paramsForm(pramas) : ""
         return fetch(this.baseUrl + url + str, {
         }).then((res) => {
@@ -57,6 +71,7 @@ const fetchApi = {
         })
     },
     post (url:string, body?:{[k:string]:string}):Promise<DataRes> {
+        fetchCommon.before()
         return fetch(this.baseUrl + url, {
             method: "post",
             headers: {
@@ -70,14 +85,30 @@ const fetchApi = {
             return Promise.reject(err)
         })
     },
-    postJson (url:string, body?:{[k:string]:string}):Promise<DataRes> {
+    postFile (url:string, body:{[k:string]:string}):Promise<DataRes> {
+        fetchCommon.before()
+        return fetch(this.baseUrl + url, {
+            method: "post",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            credentials: "include",
+            body: body ? paramsForm(body) : undefined
+        }).then(res => {
+           return checkTimeOut(res)
+        }).catch(err => {
+            return Promise.reject(err)
+        })
+    },
+    postJson (url:string, body:{[k:string]:string}):Promise<DataRes> {
+        fetchCommon.before()
         return fetch(this.baseUrl + url, {
             method: "post",
             credentials: "include",
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: body ? JSON.stringify(body) : undefined
+            body: JSON.stringify(body)
         }).then(res => {
             return checkTimeOut(res)
         }).catch(err => {

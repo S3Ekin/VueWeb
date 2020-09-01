@@ -1,5 +1,5 @@
 <template>
-  <div id="innerToastRooterr">
+  <div id="innerToastRoot">
     <div class="g-notification">
       <Notice
         v-for="item in messages"
@@ -27,6 +27,11 @@ type messageItem = {
 @Component({
   components: {
     Notice
+  },
+  watch: {
+    messages: function () {
+      console.log('warc')
+    }
   }
 })
 export default class Toast extends Vue {
@@ -42,9 +47,12 @@ export default class Toast extends Vue {
   }
 
   remove (id: string): void {
-    this.messages = this.messages.filter((val) => {
-      return val.id !== id
+    const index = this.messages.findIndex((val) => {
+      return val.id === id
     })
+    if (index !== -1) {
+      this.messages.splice(index, 1)
+    }
   }
 
   clear (): void {
@@ -59,7 +67,8 @@ export default class Toast extends Vue {
         window.clearTimeout(timerId)
       }
     })
-    this.messages.length = 0
+    this.messages = []
+    // this.messages.length = 0  //用这个不能清除值
   }
 }
 </script>
