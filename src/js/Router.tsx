@@ -31,7 +31,13 @@ const router = new VueRouter({
         )
       }
     },
-    { path: '/system/menu', component: page2 }
+    { path: '/system/menu', component: page2 },
+    {
+      path: '/user/user',
+      component: () => {
+        return import("./user/index.vue")
+      }
+    }
   ]
 })
 

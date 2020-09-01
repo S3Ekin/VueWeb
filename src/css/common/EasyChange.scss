@@ -1,0 +1,500 @@
+
+$gridBG-color:#f7f7f7;
+$gridBG-color-hover:rgba(225, 229, 240, 0.5);
+$gridBorder-color:#ececec;
+$font-color:#4d4f5c;
+$septal-color:#ebebf2;
+$comboFocus-color:#82bbf8;
+$blue-color:#577aaf;
+$green-color:#04c387;
+$red-color:#f35757;
+$inp-border-color:#aaa;
+
+// 数据表格DataGrid
+%borWidth {
+  border-width: 0 0 1px 0;
+  border-color: $gridBorder-color;
+}
+
+.panel-header,
+.panel-body {
+  border: none;
+
+  .tree-expanded {
+    background: url('../../assert/imgs/easy_icons.png') no-repeat -18px 0;
+  }
+
+  .tree-expanded-hover {
+    background: url('../../assert/imgs/easy_icons.png') no-repeat -50px 0;
+  }
+
+  .tree-collapsed {
+    background: url('../../assert/imgs/easy_icons.png') no-repeat 0 0;
+  }
+
+  .tree-collapsed-hover {
+    background: url('../../assert/imgs/easy_icons.png') no-repeat -32px 0;
+  }
+
+  .tree-lines .tree-expanded,
+  .tree-lines .tree-root-first .tree-expanded {
+    background: url('../../assert/imgs/easy_icons.png') no-repeat -144px 0;
+  }
+
+  .tree-lines .tree-collapsed,
+  .tree-lines .tree-root-first .tree-collapsed {
+    background: url('../../assert/imgs/easy_icons.png') no-repeat -128px 0;
+  }
+
+  .tree-lines .tree-node-last .tree-expanded,
+  .tree-lines .tree-root-one .tree-expanded {
+    background: url('../../assert/imgs/easy_icons.png') no-repeat -80px 0;
+  }
+
+  .tree-lines .tree-node-last .tree-collapsed,
+  .tree-lines .tree-root-one .tree-collapsed {
+    background: url('../../assert/imgs/easy_icons.png') no-repeat -64px 0;
+  }
+
+  .tree-line {
+    background: url('../../assert/imgs/easy_icons.png') no-repeat -176px 0;
+  }
+
+  .tree-join {
+    background: url('../../assert/imgs/easy_icons.png') no-repeat -192px 0;
+  }
+
+  .tree-joinbottom {
+    background: url('../../assert/imgs/easy_icons.png') no-repeat -160px 0;
+  }
+
+  .tree-folder {
+    background: url('../../assert/imgs/easy_icons.png') no-repeat -208px 0;
+  }
+
+  .tree-folder-open {
+    background: url('../../assert/imgs/easy_icons.png') no-repeat -224px 0;
+  }
+
+  .tree-file {
+    background: url('../../assert/imgs/easy_icons.png') no-repeat -240px 0;
+  }
+
+  .tree-checkbox0 {
+    background: url('../../assert/imgs/easy_icons.png') no-repeat -208px -18px;
+  }
+
+  .tree-checkbox1 {
+    background: url('../../assert/imgs/easy_icons.png') no-repeat -224px -18px;
+  }
+
+  .tree-checkbox2 {
+    background: url('../../assert/imgs/easy_icons.png') no-repeat -240px -18px;
+  }
+}
+
+.bor-grid {
+  .panel-body {
+    border: 1px solid #ececec;
+  }
+}
+
+.datagrid-header {
+  @extend %borWidth;
+
+  &,
+  .datagrid-htable {
+    height: 42px;
+    background: $gridBG-color;
+    color: $font-color;
+    border-color: $gridBorder-color;
+  }
+
+  .datagrid-cell-group span,
+  .datagrid-cell span {
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  td {
+    @extend %borWidth;
+
+    border-color: transparent;
+
+    &.datagrid-header-over {
+      background-color: $gridBG-color;
+    }
+  }
+}
+
+.datagrid-body {
+  td {
+    @extend %borWidth;
+
+    border-style: solid;
+  }
+
+  .datagrid-row-over,
+  .datagrid-row-selected {
+    background-color: $gridBG-color-hover;
+  }
+}
+
+.datagrid-cell {
+  padding: 6px 4px;
+  color: $font-color;
+  font-size: 14px;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.datagrid-header-check,
+.datagrid-cell-check {
+  input[type='checkbox'] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+    outline: none;
+
+    &:focus {
+      outline: none;
+    }
+
+    &:checked {
+      background: #1182fb;
+      border-color: #1182fb;
+
+      &::after {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 1px;
+        left: 5px;
+        width: 3px;
+        height: 7px;
+        border: solid #fff;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+      }
+
+      &:disabled {
+        background: #ebebe4;
+        border-color: #ebebe4;
+
+        &::after {
+          border-color: #1182fb;
+        }
+      }
+    }
+  }
+
+  input:disabled {
+    background: #ebebe4;
+    cursor: not-allowed;
+  }
+}
+
+// 数据表格加竖边框
+.grid-line {
+  .panel-header,
+  .panel-body {
+    border: 1px solid $gridBorder-color;
+  }
+
+  .datagrid-header,
+  .datagrid-body,
+  .datagrid-footer {
+    td {
+      border-width: 0 1px 1px 0;
+      border-style: solid;
+      border-color: $gridBorder-color;
+    }
+  }
+
+  .datagrid-body {
+    tr.datagrid-row {
+      &:nth-child(even) {
+        td {
+          background-color: $gridBG-color;
+        }
+      }
+
+      &.datagrid-row-over:nth-child(even),
+      &.datagrid-row-selected:nth-child(even) {
+        td {
+          background-color: $gridBG-color-hover;
+        }
+      }
+    }
+  }
+}
+
+.tree-node {
+  padding: 10px 4px;
+}
+// tree数据
+.tree {
+  position: relative;
+
+  .tree-node {
+    border-bottom: 1px solid #e9e9e9;
+    padding: 10px 4px;
+    height: auto;
+
+    &:hover {
+      background-color: $gridBG-color-hover;
+    }
+
+    .tree-checkbox-disabled {
+      display: inline-block;
+      width: 16px;
+      height: 18px;
+      vertical-align: top;
+      overflow: hidden;
+      // background: url(../../assert/imgs/tree_icons.png) no-repeat -257px -18px;
+      cursor: not-allowed;
+    }
+  }
+
+  .tree-node-selected {
+    background-color: $gridBG-color-hover;
+    color: $font-color;
+  }
+
+  .tree-title {
+    font-size: 14px;
+    width: 80%;
+    height: auto;
+    word-break: break-all;
+    white-space: initial;
+  }
+}
+
+.tree-lines {
+  &.tree-node {
+    .tree-expanded,
+    .tree-root-first .tree-expanded,
+    .tree-node-last .tree-expanded,
+    .tree-root-one .tree-expanded {
+      background-position: -18px 0;
+    }
+
+    .tree-node-last .tree-collapsed,
+    .tree-root-one .tree-collapsed,
+    .tree-collapsed,
+    .tree-root-first .tree-collapsed {
+      background-position: 0 0;
+    }
+  }
+}
+
+// 下拉框
+.CGEU-combo { display: inline-block; }
+
+.textbox {
+  border-color: $inp-border-color;
+  border-radius: 3px;
+
+  &:hover,
+  &:focus {
+    border-color: $comboFocus-color;
+  }
+
+  .textbox-text {
+    height: 36px;
+    line-height: 36px;
+    color: #333;
+    text-align: left;
+    font-size: 14px;
+  }
+
+  .textbox-prompt {
+    color: #aaa;
+  }
+}
+
+.textbox-focused {
+  border-color: $comboFocus-color;
+}
+
+.combo-arrow {
+  background-color: #fff;
+
+  &:hover {
+    background-color: #eee;
+  }
+}
+
+.combo-panel {
+  // height: auto;
+  padding: 4px;
+  margin-top: 4px;
+  border-radius: 3px;
+  background-color: #fff;
+  box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2);
+
+  .combobox-item {
+    height: auto;
+    border-bottom: 1px solid $septal-color;
+    padding: 7px 5px;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: -1px;
+    word-wrap: break-word;
+    white-space: normal;
+  }
+
+  .combobox-item:last-child {
+    border-color: transparent;
+  }
+
+  .combobox-item-selected {
+    background-color: #3091ff;
+
+    .commboIcon {
+      color: #333;
+    }
+  }
+
+  // 自定义在选项前的icon
+  .commboIcon {
+    font-size: 14px;
+    margin-right: 3px;
+    color: $blue-color;
+  }
+}
+
+// 开关按钮
+.switchbutton {
+  width: 45px;
+  height: 22px;
+  background-color: transparent;
+  border: none;
+  border-radius: 11px;
+  box-sizing: border-box;
+
+  .switchbutton-on {
+    box-sizing: border-box;
+    background: #7899cb;
+    border: solid 2px #7899cb;
+    border-radius: 11px 0 0 11px;
+  }
+
+  .switchbutton-handle {
+    box-sizing: border-box;
+    width: 23px !important;
+    height: 23px !important;
+    margin-left: -10px !important;
+    z-index: 5;
+    top: 1px;
+    border: solid 1px rgba(0, 0, 0, 0.1);
+    border-radius: 11px;
+    box-shadow: none;
+  }
+
+  .switchbutton-off {
+    box-sizing: border-box;
+    background: #fff;
+    border: solid 2px rgba(0, 0, 0, 0.1);
+    border-radius: 0 11px 11px 0;
+    left: calc(100% - 8px);
+  }
+
+  .f-content-center {
+    color: transparent;
+  }
+}
+
+.switchbutton-inner {
+  left: calc(-100% + 22px);
+}
+
+// tab标签页
+.tabs-container {
+  .tabs-header {
+    border-width: 0;
+    background-color: #f7f7f7;
+
+    .tabs-scroller-left,
+    .tabs-scroller-right {
+      background-color: #f7f7f7;
+      border-width: 0 1px 1px 1px;
+      border-color: #ecedef;
+    }
+
+    .tabs-scroller-left:hover,
+    .tabs-scroller-right:hover {
+      background-color: #fcfcfc;
+    }
+  }
+
+  .tabs {
+    height: 44px !important;
+    padding-left: 20px;
+    border-width: 0 0 1px 0;
+    border-color: rgba(0, 0, 0, 0.04);
+
+    li {
+      height: 100%;
+      margin: 0 30px -1px 0;
+
+      %selectTabs {
+        color: #232a2d;
+        border-bottom-color: #232a2d;
+      }
+
+      a.tabs-inner {
+        height: 44px !important;
+        color: #707070;
+        border: 2px solid transparent;
+        background: transparent;
+        transition: all 0.2s ease-in-out;
+
+        &:hover {
+          @extend %selectTabs;
+        }
+
+        .tabs-title {
+          font-size: 15px;
+        }
+      }
+
+      &.tabs-selected {
+        a.tabs-inner {
+          @extend %selectTabs;
+        }
+      }
+    }
+  }
+
+  .tabs-panels {
+    .panel-body {
+      color: #333;
+      background-color: transparent;
+      font-size: 14px;
+    }
+  }
+}
+
+// numberspinner数字微调器
+.textbox-icon {
+  width: 18px !important;
+
+  .spinner-arrow {
+    display: block;
+    height: 50%;
+
+    .spinner-arrow-up,
+    .spinner-arrow-down {
+      height: 100% !important;
+    }
+  }
+}

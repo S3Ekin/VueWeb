@@ -121,6 +121,7 @@ $headH: 60px;
 .main {
   flex: 1;
   height: 100%;
+  overflow: hidden;
 
   .main-content {
     background: #fafafb;

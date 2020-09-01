@@ -2,6 +2,7 @@
   <button
     class="s-btn"
     :class="[className,borderType,colorType,sizeName]"
+    :name="name"
     @click="handle"
     @mouseup="keyUp"
   >

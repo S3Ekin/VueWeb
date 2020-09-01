@@ -38,6 +38,7 @@ module.exports = function (env) {
           api: path.join(__dirname, "src/api"),
           assert: path.join(__dirname, "src/assert"),
           component: path.join(__dirname, "src/component"),
+          vue: 'vue/dist/vue.esm.js',
         },
       },
       mode: dev ? "development" : "production",
