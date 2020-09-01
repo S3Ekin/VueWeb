@@ -70,8 +70,14 @@ const toastFn = {
             addFn(obj, keep)
         }
     },
+    update: function ():void {
+        if (ToastRef) {
+            ToastRef.$forceUpdate()
+        }
+    },
     clear: function ():void {
         if (ToastRef) {
+            console.log(ToastRef.$data)
             ToastRef.clear()
         }
     }

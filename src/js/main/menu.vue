@@ -38,6 +38,7 @@
             <router-link
               :to="'/'+menu.url"
               class="nav-item"
+              :replace="true"
             >
               {{ menu.name }}
             </router-link>
@@ -73,6 +74,10 @@
         this.$nextTick().then(() => {
           this.initListBoxHeight()
         })
+      },
+      $route: function () {
+       // noticeFn.clear()
+       // LoadingFn.close()
       }
     },
     methods: {
@@ -91,7 +96,7 @@
      menuData: menuItem[] = [];
 
      mounted ():void {
-         Api.getMyAllMenu("admin").then(res => {
+         Api.getMyAllMenu().then(res => {
            this.menuData = res.data.menuChildList.map((val: menuItem) => {
              val.active = false
              val.menuChildList = val.menuChildList.map((node:menuItem) => {

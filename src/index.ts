@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+// Make sure to register before importing any components
+import "@component/class-component-hooks"
 import Vue from 'vue'
 import App from "./App.vue"
 import VueRouter from "vue-router"
