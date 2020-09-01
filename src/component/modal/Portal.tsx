@@ -20,7 +20,6 @@ export default class Portal extends PortalProps {
     targetComponent:null | Vue = null
 
     mounted ():void {
-        console.log(1)
          const targetDom = document.createElement("div")
         this.container.appendChild(targetDom)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

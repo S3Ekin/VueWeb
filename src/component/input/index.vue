@@ -13,10 +13,13 @@
         :name="name"
         :data-set="dataSet"
         :value="val"
+        :type="valType"
+        autoComplete="new-password"
         :class="[className,noFill]"
         :disabled="disabled"
         :style="{width: width ? width +'px':null}"
-        @change="handle"
+        :load="load"
+        @change="change"
       >
       <textarea
         v-else
@@ -28,7 +31,8 @@
         :class="[className,noFill]"
         :disabled="disabled"
         :style="{width: width ? width +'px':null}"
-        @change="handle"
+        :load="load"
+        @change="change"
       />
       <span
         v-show="warnTxt"
@@ -86,29 +90,52 @@
                 type: Number,
                 default: 3
             },
+            valType: {
+                type: String,
+                default: "text"
+            },
             isTextArea: Boolean,
-            noRequired: Boolean,
+            noRequired: {
+                type: Boolean,
+                default: true
+            },
             disabled: Boolean,
             vertical: Boolean
+        },
+        watch: {
+          val: function (val) {
+            console.log(val)
+          }
         }
     })
 
     @Component
     class SInp extends InpProps {
         warnTxt = ""
-        get noFill ():string {
+        noFill = ""
+        get load ():string {
+            this.judgeFill(this.val)
+            return ''
+        }
+
+        judgeFill (val:string):void {
+          if (val) {
             if (this.reg) {
-                const status = this.val.match(this.reg)
+                const status = val.match(this.reg)
                 this.warnTxt = !status ? this.regTip : ""
-                return status ? "" : "no-fill"
+                this.noFill = status ? "" : "no-fill"
             }
-            if (!this.noRequired) {
-                return !this.val ? "no-fill" : ""
-            }
-            return ""
+          } else {
+            this.noFill = ""
+            this.warnTxt = ""
+          }
+          if (!this.noRequired) {
+              this.noFill = !val ? "no-fill" : ""
+          }
         }
 
         change (e:MouseEventEl<HTMLInputElement>):void {
+            this.judgeFill(e.target.value)
             this.handle(e)
         }
     }

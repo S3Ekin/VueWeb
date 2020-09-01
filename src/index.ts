@@ -6,8 +6,12 @@ import App from "./App.vue"
 import VueRouter from "vue-router"
 import "./css/common/common.scss"
 import "./assert/fonts/iconfont.js"
+import 'vx-easyui/dist/themes/default/easyui.css'
+import 'vx-easyui/dist/themes/icon.css'
+import 'vx-easyui/dist/themes/vue.css'
 import { router } from "./js/Router"
-
+import EasyUI from 'vx-easyui'
+Vue.use(EasyUI)
 Vue.use(VueRouter)
 new Vue({
   router,
