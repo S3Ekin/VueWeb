@@ -5,26 +5,22 @@
  * @Last Modified time: 2020-08-16 17:42:09 ;
  */
 import VueRouter from "vue-router"
-import application from "./application/index.vue"
-import { CreateElement } from "vue/types/umd"
+import redirect from "@component/Redirect.vue"
 import noticeFn from "@component/Toast/index"
 import LoadingFn from "@component/loading/index"
-const page1 = {
-  render: function (h:Vue.CreateElement) {
-    return h(application)
-  }
-}
-const page2 = {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  render: function (h:CreateElement) {
-    return <div>page2</div>
-  }
-}
+
 const router = new VueRouter({
  mode: 'abstract', // 参数不变化的模式（react的内存模式）
   routes: [
     // 动态路径参数 以冒号开头
-    { path: '/system/application', component: page1 },
+    {
+      path: '/system/application',
+      component: () => {
+        return import(
+            /* webpackChunkName: "application" */ "./application/index.vue"
+          )
+      }
+  },
     {
       path: '/company/company',
       component: () => {
@@ -33,7 +29,10 @@ const router = new VueRouter({
         )
       }
     },
-    { path: '/system/menu', component: page2 }
+    {
+      path: '/redirect',
+       component: redirect
+    }
   ]
 })
 

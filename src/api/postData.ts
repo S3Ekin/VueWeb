@@ -50,7 +50,6 @@ const checkTimeOut = function (res:Response) {
 
 const fetchCommon = {
     before: function () {
-        console.log("111")
         loadFn.open()
     },
     after: function () {

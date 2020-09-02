@@ -25,9 +25,7 @@
         <div id="innerModalRoot" />
         <div id="innerToastRoot" />
         <div id="innerLoading" />
-        <keep-alive>
-          <router-view />
-        </keep-alive>
+        <router-view />
       </article>
     </div>
     <div id="outModalRoot" />
@@ -74,14 +72,6 @@ type appInfo = {
        this.appInfo = res.data
      })
    }
-
-  destroyed ():void {
-    console.log("destroyed-app")
-  }
-
-  updated ():void {
-    console.log("update-app")
-  }
 
    toggleSlideMenu ():void {
      this.menuSlide = !this.menuSlide

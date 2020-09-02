@@ -33,7 +33,7 @@
             :data-code="menu.code"
             :class="{active:menu.active}"
             class="menu-item menu-child"
-            @click="navMenuItem"
+            @click.capture="navMenuItem"
           >
             <router-link
               :to="'/'+menu.url"
@@ -74,10 +74,6 @@
         this.$nextTick().then(() => {
           this.initListBoxHeight()
         })
-      },
-      $route: function () {
-       // noticeFn.clear()
-       // LoadingFn.close()
       }
     },
     methods: {
@@ -94,7 +90,7 @@
   @Component
   export default class Menu extends Props {
      menuData: menuItem[] = [];
-
+     private preUrl = ""
      mounted ():void {
          Api.getMyAllMenu().then(res => {
            this.menuData = res.data.menuChildList.map((val: menuItem) => {
@@ -130,15 +126,26 @@
        this.slideFn(dom, isSlide)
      }
 
+     private refreshCurouter (newUrl:string) {
+         this.$router.push({
+           path: "/redirect",
+           query: {
+             url: newUrl
+           }
+         })
+     }
+
      navMenuItem (e:MouseEvent & {currentTarget:HTMLDivElement}):void {
        const dom = e.currentTarget
        const code = dom.dataset.code
        const parCode = (dom.parentElement?.parentElement?.previousElementSibling as HTMLDivElement).dataset.code
+       let newUrl = ""
        this.menuData.forEach(val => {
          if (val.code === parCode) {
            val.menuChildList = val.menuChildList.map(node => {
              if (node.code === code) {
                node.active = true
+               newUrl = "/" + node.url
              } else {
                node.active = false
              }
@@ -152,6 +159,10 @@
          }
          return val
        })
+       if (newUrl === this.preUrl) {
+         this.refreshCurouter(newUrl)
+       }
+       this.preUrl = newUrl
      }
   }
 </script>
