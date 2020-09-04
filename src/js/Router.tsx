@@ -5,7 +5,6 @@
  * @Last Modified time: 2020-08-16 17:42:09 ;
  */
 import VueRouter from "vue-router"
-import redirect from "@component/Redirect.vue"
 import noticeFn from "@component/Toast/index"
 import LoadingFn from "@component/loading/index"
 
@@ -28,10 +27,6 @@ const router = new VueRouter({
           /* webpackChunkName: "company" */ "./company/index.vue"
         )
       }
-    },
-    {
-      path: '/redirect',
-       component: redirect
     }
   ]
 })

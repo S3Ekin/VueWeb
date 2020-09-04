@@ -13,7 +13,7 @@
             title="所处部门"
           >
             <i class="fa fa-org" />
-            <span>信息科</span>
+            <span>{{ department }}</span>
           </div>
           <span class="septal-line" />
           <div
@@ -88,6 +88,12 @@ const HeadProps = Vue.extend({
       type: String,
       default: "",
       required: true
+    }
+  },
+  computed: {
+    department: function () {
+      console.log(this.$store.state)
+      return this.$store.state.user.departmentName
     }
   }
 })

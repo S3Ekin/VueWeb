@@ -126,15 +126,6 @@
        this.slideFn(dom, isSlide)
      }
 
-     private refreshCurouter (newUrl:string) {
-         this.$router.push({
-           path: "/redirect",
-           query: {
-             url: newUrl
-           }
-         })
-     }
-
      navMenuItem (e:MouseEvent & {currentTarget:HTMLDivElement}):void {
        const dom = e.currentTarget
        const code = dom.dataset.code
@@ -160,7 +151,7 @@
          return val
        })
        if (newUrl === this.preUrl) {
-         this.refreshCurouter(newUrl)
+         this.$router.push("/redirect")
        }
        this.preUrl = newUrl
      }
