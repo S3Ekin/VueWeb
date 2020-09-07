@@ -7,9 +7,9 @@
  * @Last Modified time: 2020-08-26 17:29:32 ;
  */
 
-import Vue from "vue"
 import { CombinedVueInstance } from "vue/types/vue"
 import Toast from "@component/Toast/Toast.vue"
+import { DefaultComputed, DefaultProps } from "vue/types/options"
 type messageItem = {
     id: string;
     text: string;
@@ -17,11 +17,14 @@ type messageItem = {
     timerId?:number;
 };
 
-let ToastRef: null | CombinedVueInstance<Vue, {
+type ToastCom = CombinedVueInstance<Toast, {
     messages: messageItem[]
 }, {
-    add:()=>void
-}, any, any> = null
+    add:(message:messageItem)=>void;
+    clear:()=>void;
+}, DefaultComputed, DefaultProps>
+
+let ToastRef: null | ToastCom = null
 
 let numId = 0
 const createTimekey = function () {
@@ -30,7 +33,7 @@ const createTimekey = function () {
 
 const createNotice = function (callback?:()=>void):void {
     const wrap = document.getElementById("innerToastRoot")!
-    ToastRef = new Toast().$mount(wrap)
+    ToastRef = new Toast().$mount(wrap) as ToastCom
     ToastRef.$nextTick().then(() => {
        callback && callback()
     })

@@ -21,7 +21,7 @@
             title="所处角色"
           >
             <i class="fa fa-role" />
-            <span>admin</span>
+            <span>{{ role }}</span>
           </div>
           <span class="septal-line" />
           <div class="panelTxt">
@@ -31,7 +31,7 @@
                 title="用户名"
               >
                 <i class="fa fa-user" />
-                <span>admin</span>
+                <span>{{ user }}</span>
                 <i
                   class="fa fa-arrow-bottom-line"
                   title="点击我"
@@ -79,7 +79,15 @@ import Component from "vue-class-component"
 import { fetchApi } from "@api/postData"
 import { NOIDEA } from "../../global"
 import Modal from "@component/modal/index.vue"
-const HeadProps = Vue.extend({
+import { mapState } from 'vuex'
+import { IStore } from "vue/types/vue"
+import { Accessors } from "vue/types/options"
+type computerType = {
+    department:string;
+    role: string;
+    user: string;
+  }
+const HeadProps = Vue.extend<unknown, unknown, computerType, unknown>({
   components: {
     Modal
   },
@@ -90,12 +98,11 @@ const HeadProps = Vue.extend({
       required: true
     }
   },
-  computed: {
-    department: function () {
-      console.log(this.$store.state)
-      return this.$store.state.user.departmentName
-    }
-  }
+  computed: mapState<computerType>({
+    department: (state:IStore) => state.user.departmentName,
+    role: (state:IStore) => state.user.level,
+    user: (state:IStore) => state.user.code
+  }) as Accessors<computerType>
 })
 
 @Component

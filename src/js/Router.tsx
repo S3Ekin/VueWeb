@@ -27,6 +27,14 @@ const router = new VueRouter({
           /* webpackChunkName: "company" */ "./company/index.vue"
         )
       }
+    },
+    {
+      path: '/system/menu',
+      component: () => {
+        return import(
+          /* webpackChunkName: "company" */ "./menu/index.vue"
+        )
+      }
     }
   ]
 })

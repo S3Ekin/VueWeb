@@ -11,7 +11,8 @@ declare module "vue/types/vue" {
     path: string;
     query: {[k:string]:unknown};
   }
-  type routerNext = (routerItem?:routerItem)=>void
+ 
+ type routerNext = (routerItem?:routerItem)=>void
  export interface Vue {
    beforeCreate(): void;
    created(): void;
@@ -26,5 +27,24 @@ declare module "vue/types/vue" {
    beforeRouteEnter (to:routerItem, from:routerItem, next:routerNext):void;
    beforeRouteUpdate(to:routerItem, from:routerItem, next:routerNext):void;
    beforeRouteLeave (to:routerItem, from:routerItem, next:routerNext):void;
+ }
+
+ export interface IStore {
+   user:{
+      id: string;
+      code: string;
+      name: string;
+      roles: {
+          kpi: string;
+          index: string;
+          portal: string;
+          user: string;
+      },
+      level: string;
+      email: string;
+      departmentId: string;
+      departmentName: string;
+   },
+   token:string
  }
 }

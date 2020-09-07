@@ -50,7 +50,7 @@
     }
 ```
 7. #### 给菜单加的点击事件，( 不是在router-link上) 当点击的时候，该事件会先触发路由，在对应的路由渲染完成后再调用，因为路由元素是其子元素。所以在点击菜单取消notice和loading时候，应该在路由钩子beforeEach里做关闭。要是给菜单的事件设置为捕获事件capture,则会先处理这个点击事件再会处理路由的触发事件,这样可以不用早路由钩子里关闭notice和loading
-```html
+```typescript
     <div
         v-for="menu in list.menuChildList"
         :key="menu.code"
@@ -69,4 +69,52 @@
         </router-link>
     </div>
 ```
+8. #### 组件自己调用自己的时候， 通过指定name属性名称，注意name指定在 Vue.extend({name:xxx})没用
+```js
+    const props = Vue.extend({
+        // 在这指定无用
+    })
+    @Component({
+        name:"My",
+    })
+    class My extends props {}
+```
+9. #### v-for 指令里，怎样取到循环里的变量item 来作为计算属性里的一个变量来计算其他的值？
+```typescript
+ <div class="m-child-list">
+      <ul>
+        <li
+          v-for="(item , index) in child"
+          :key="item[filedObj.id]"
+        >
+          <TreePar
+            v-if="item[filedObj.child].length" // 怎样把 item[filedObj.child].length 作为一个计算属性存起来
+            :filed-obj="filedObj" 
+            :node="item"
+            :path="path + '-' + index"
+            :lev="lev + 1"
+          />
+          <div
+            v-else
+            class="m-item"
+            :data-path="path + '-' + index"
+            :style="{paddingLeft: (lev+1)*20 + 'px'}"
+          >
+            {{ item[filedObj.text] }}-child
+          </div>
+        </li>
+      </ul>
+    </div>
+    ...
+    // 怎样取到item 的值作为一个变量 ？
+     new Vue({
+        computed:{
+            isPar: function(){
+                //  item 是 v-for指令里的变量 怎样取到它？
+                return item[filedObj.child].length
+            }
+        }
+    }) 
+```
+> ！<span style="color: red;">必须得用 render 来处理吗？</span>
     
