@@ -29,7 +29,7 @@
 <script lang="ts">
   import Vue, { PropType } from "vue"
   import { SvgIcon } from "@component/Icon/index"
-  import Component from "vue-class-component"
+  import { Component } from "vue-property-decorator"
   type data = {
     name:string;
     val:string;

@@ -7,7 +7,7 @@
           :class="type"
         >
           <SvgIcon
-            :class-name="iconObj[type]"
+            :class-name="className"
             size="middle"
           />
         </span>
@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from "vue"
-import Component from "vue-class-component"
+import { Component } from "vue-property-decorator"
 import { SvgIcon } from "@component/Icon/index"
 
 const NoticeProps = Vue.extend({
@@ -54,6 +54,10 @@ export default class Notice extends NoticeProps {
     success: "fa-fill-success",
     error: "fa-fill-error",
     warn: "fa-warning"
+  }
+
+  get className ():string {
+    return this.iconObj[this.type as "warn"]
   }
 
   close (e:MouseEventEl<HTMLSpanElement>):void{

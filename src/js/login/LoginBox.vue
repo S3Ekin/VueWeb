@@ -54,7 +54,7 @@
 
 <script lang="ts">
 import Vue from "vue"
-import Component from "vue-class-component"
+import { Component } from "vue-property-decorator"
 import { ROOTSRC, NOIDEA } from "../../global"
 import { fetchApi } from "@api/postData"
 import { hexMd5 } from "@assert/js/md5.js"

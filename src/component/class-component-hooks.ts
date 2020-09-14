@@ -5,7 +5,7 @@
  * @Last Modified time: 2020-08-28 16:27:31 ;
  */
 // class-component-hooks.js
-import Component from 'vue-class-component'
+import { Component } from "vue-property-decorator"
 
 // Register the router hooks with their names
 Component.registerHooks([

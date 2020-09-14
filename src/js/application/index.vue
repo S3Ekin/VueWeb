@@ -33,7 +33,7 @@
 
 <script lang="ts">
 import Vue from "vue"
-import Component from "vue-class-component"
+import { Component } from "vue-property-decorator"
 import Button from "@component/button/index.vue"
 import Modal from "@component/modal/index.vue"
 import toastFn from "@component/Toast/index"

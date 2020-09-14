@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import Vue from "vue"
-import Component from "vue-class-component"
+import { Component } from "vue-property-decorator"
 import Menu from "./js/main/menu.vue"
 import Head from "./js/main/AppHead.vue"
 import { fetchApi } from "@api/postData"

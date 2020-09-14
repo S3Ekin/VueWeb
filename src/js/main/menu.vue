@@ -51,8 +51,8 @@
 
 <script lang="ts">
   import Vue from "vue"
-  import Component from "vue-class-component"
   import Api from "@api/main"
+  import { Component } from "vue-property-decorator"
   type menuItem = {
     // eslint-disable-next-line camelcase
     app_code: string;

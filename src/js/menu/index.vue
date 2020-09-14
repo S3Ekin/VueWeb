@@ -12,22 +12,21 @@
 
 <script lang="ts">
 import Vue from "vue"
-import Component from "vue-class-component"
 import Tree from "@component/combo/Tree.vue"
+import { Component, Provide } from "vue-property-decorator"
 import menuData from "./data"
 const app = Vue.extend({
 })
 @Component({
  components: {
         Tree
-    },
-  provide: {
-    foo: "barrtrtrt"
-  }
+    }
 })
 class Menu extends app {
     node = menuData.data
     filedObj = { id: "code", text: "name", child: "menuChildList" }
+    @Provide("foo")
+    foo="eeee"
 }
 
 export default Menu

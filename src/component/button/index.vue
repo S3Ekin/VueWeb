@@ -11,7 +11,7 @@
 
 <script lang="ts">
     import Vue, { PropType } from "vue"
-    import Component from "vue-class-component"
+    import { Component } from "vue-property-decorator"
     const BtnProps = Vue.extend({
         name: "Button",
         props: {
@@ -101,12 +101,12 @@ $yellow:#e4d619;
   border-radius: 4px;
   height: 2em;
 
-  &:disabled {
-    background: darken($btn-disabled, 40%) !important;
+  &.button:disabled {
+    background: darken($btn-disabled, 40%);
     opacity: 0.6;
     cursor: not-allowed;
     border: none;
-    color: white !important;
+    color: white;
   }
 
   &.btn-big {

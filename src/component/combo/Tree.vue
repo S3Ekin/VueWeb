@@ -19,7 +19,7 @@
           :key="item[filedObj.id]"
         >
           <TreePar
-            v-if="item[filedObj.child].length"
+            v-if="getIsPar(item)"
             :filed-obj="filedObj"
             :node="item"
             :path="path + '-' + index"
@@ -40,7 +40,7 @@
 </template>
 <script lang="ts">
 import Vue, { PropType } from "vue"
-import Component from "vue-class-component"
+import { Component, Inject } from "vue-property-decorator"
 const treeProps = Vue.extend({
     props: {
         filedObj: {
@@ -57,7 +57,7 @@ const treeProps = Vue.extend({
         },
         node: {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            type: Object as PropType<{[k:string]:any}>,
+            type: Object as PropType<anyObj>,
             default: []
         },
         path: {
@@ -71,14 +71,32 @@ const treeProps = Vue.extend({
     }
 })
 @Component({
-    name: "TreePar",
-    inject: ["foo"]
+    name: "TreePar"
 })
 export default class Tree extends treeProps {
+    @Inject()
+    foo!:string;
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     get child (): any[] {
         const { node, filedObj: { child } } = this
         return node[child]
+    }
+
+    get isPar ():(item:anyObj)=>boolean {
+      const { filedObj: { child } } = this
+        console.log("create")
+      return function (item:anyObj) {
+        console.log("excute")
+        return !!item[child].length
+      }
+    }
+
+    // 比较直接用方法和用计算属性用什么不同
+    getIsPar (item:anyObj):boolean {
+        console.log("er")
+      const { filedObj: { child } } = this
+      return !!item[child].length
     }
 
     mounted ():void{

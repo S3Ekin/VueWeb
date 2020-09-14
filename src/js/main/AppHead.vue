@@ -75,7 +75,7 @@
 
 <script lang="ts">
 import Vue from "vue"
-import Component from "vue-class-component"
+import { Component } from "vue-property-decorator"
 import { fetchApi } from "@api/postData"
 import { NOIDEA } from "../../global"
 import Modal from "@component/modal/index.vue"

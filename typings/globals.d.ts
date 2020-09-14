@@ -9,3 +9,8 @@ interface MouseEventEl<T extends HTMLElement> extends MouseEvent {
     target: T,
     currentTarget: T
 }
+
+interface anyObj {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [k:string]:any
+}

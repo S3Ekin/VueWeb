@@ -63,7 +63,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from "vue"
-import Component from "vue-class-component"
+import { Component, Watch } from "vue-property-decorator"
 import Portal from "./Portal"
 import Button from "@component/button/index.vue"
 const ModalProps = Vue.extend({
@@ -100,18 +100,6 @@ const ModalProps = Vue.extend({
             },
             isOut: Boolean,
             show: Boolean
-    },
-    data: function () {
-      return {
-        hasInit: false
-      }
-    },
-    watch: {
-      show: function () {
-        if (!this.hasInit) {
-          this.hasInit = true
-        }
-      }
     }
 })
 
@@ -121,11 +109,20 @@ export default class Modal extends ModalProps {
     modalDom: HTMLDivElement
   }
 
+  hasInit = false;
+
   get containerDom ():HTMLElement {
     if (this.isOut) {
       return document.getElementById("outModalRoot")!
     }
       return document.getElementById("innerModalRoot")!
+  }
+
+  @Watch("show")
+  firstInit ():void{
+    if (!this.hasInit) {
+      this.hasInit = true
+    }
   }
 
   close ():void {

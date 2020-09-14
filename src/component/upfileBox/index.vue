@@ -18,7 +18,7 @@
 
 <script lang="ts">
   import Vue, { PropType } from "vue"
-  import Component from "vue-class-component"
+  import { Component } from "vue-property-decorator"
   const InpProps = Vue.extend({
         name: "UpFile",
         props: {

@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import Vue from "vue"
-import Component from "vue-class-component"
+import { Component } from "vue-property-decorator"
 import Notice from "./Notice.vue"
 type messageItem = {
   id: string;
@@ -27,15 +27,11 @@ type messageItem = {
 @Component({
   components: {
     Notice
-  },
-  watch: {
-    messages: function () {
-      console.log('warc')
-    }
   }
 })
 export default class Toast extends Vue {
   messages: messageItem[] = [];
+
   add (obj: messageItem): void {
     this.messages.push(obj)
   }
