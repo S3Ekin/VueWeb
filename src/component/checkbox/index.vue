@@ -27,53 +27,29 @@
 </template>
 
 <script lang="ts">
-  import Vue, { PropType } from "vue"
+  import Vue from "vue"
   import { SvgIcon } from "@component/Icon/index"
-  import { Component } from "vue-property-decorator"
+  import { Component, Prop } from "vue-property-decorator"
   type data = {
     name:string;
     val:string;
   }[]
-  const InpProps = Vue.extend({
-        name: "Checkbox",
-        components: {
-          SvgIcon
-        },
-        props: {
-            handle: {
-                type: Function as PropType<(e:MouseEvent)=>void>,
-                required: true
-            },
-            type: { // 边框样式
-                type: String as PropType<"radio" | "checkbox" >,
-                default: "radio"
-            },
-            name: {
-                type: String,
-                required: true
-            },
-            dataSet: {
-                type: String,
-                default: ""
-            },
-            data: {
-                type: Array as PropType<data>,
-                default: []
-            },
-            select: {
-                type: String,
-                required: true
-            },
-            disabled: Boolean
-        }
+
+    @Component({
+      name: "Checkbox",
+      components: {
+        SvgIcon
+      }
     })
-
-    @Component
-    class SInp extends InpProps {
+   export default class Checkbox extends Vue {
+      @Prop({ required: true }) handle!:(e:MouseEvent)=>void;
+      @Prop(String) type: "radio" | "checkbox" = "radio";
+      @Prop(String) name!: string;
+      @Prop(String) dataSet="";
+      @Prop({ required: true }) data: data = [];
+      @Prop({ required: true }) select!: string;
+      @Prop(Boolean) disabled = false;
     }
-
-    export default SInp
-
 </script>
 
 <style lang="scss">

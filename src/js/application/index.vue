@@ -1,80 +1,95 @@
 <template>
-  <div>
-    <Button
-      :handle="click"
-    >
-      按钮
-    </Button>
-    <Button
-      :handle="loading"
-    >
-      按钮3
-    </Button>
-    <Button
-      :handle="open"
-    >
-      按钮2
-    </Button>
-    <div>
-      <Modal
-        title="modal"
-        field="showModal"
-        :toggle-modal="modalOpt"
-        :show="showModal"
-      >
-        <template v-slot:default="ty">
-          {{ ty.slotProps }}
-          sadf
-        </template>
-      </Modal>
+  <div class="g-content">
+    <div class="g-grid">
+      <div class="page-head">
+        <Search :handle="search" />
+        <Button :handle="add">
+          新增
+        </Button>
+      </div>
+      <div class="page-main">
+        <Table
+          :data="list"
+          :no-order="true"
+          id-field="code"
+        >
+          <Column field="sn">
+            排序
+          </Column>
+          <Column field="name">
+            应用名称
+          </Column>
+          <Column field="code">
+            code
+          </Column>
+          <Column field="version">
+            版本号
+          </Column>
+          <Column
+            field="url"
+            :formatter="formatterFnObj.url"
+          >
+            URL
+          </Column>
+          <Column
+            field="opt"
+            :formatter="formatterFnObj.opt"
+          >
+            操作
+          </Column>
+        </Table>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue"
+import Vue, { VNode } from "vue"
 import { Component } from "vue-property-decorator"
+import Search from "@component/search/index.vue"
 import Button from "@component/button/index.vue"
-import Modal from "@component/modal/index.vue"
-import toastFn from "@component/Toast/index"
-import loadFn from "@component/loading/index"
-const app = Vue.extend({
-})
+import Table from "@component/tableList/index.vue"
+import Column from "@component/tableList/Column"
+import Api from "@api/application"
+
 @Component({
  components: {
+        Search,
         Button,
-        Modal
+        Table,
+        Column
     }
 })
-class Application extends app {
-    test = "23"
-    $refs!:{
-      dom:HTMLDivElement
+class Application extends Vue {
+    list: anyObj[] = [];
+    formatterFnObj = {
+      url: (node:anyObj): VNode => {
+        return this.$createElement("span", node.ip)
+      },
+      opt: ():VNode => {
+        return this.$createElement(Button, {
+          props: {
+            handle: function () {
+              console.log(1212)
+            }
+        }
+      }, "12")
+      }
+
     }
 
-    showModal = false
-    click (e:MouseEvent):void {
-        console.log(e)
-        this.showModal = true
-        this.test += "sekin"
+    mounted ():void{
+      Api.getList().then(res => {
+        this.list = res.data
+      })
     }
 
-    loading () :void {
-      loadFn.open("ddd")
-      setTimeout(function () {
-        loadFn.close()
-      }, 2000)
+    search ():void {
+      console.log(1)
     }
 
-    open ():void {
-     // toastFn.add("sdfasd")
-    //  toastFn.add("sdfasd", "warn")
-     // toastFn.add("sdfasd", "error")
-      toastFn.add("sdfasd", "success", true)
-    }
-
-    modalOpt (filed: "showModal", isOpen:boolean):void {
-      this[filed] = isOpen
+    add ():void {
+      console.log(2)
     }
 }
 

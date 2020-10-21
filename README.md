@@ -117,4 +117,51 @@
     }) 
 ```
 > ！<span style="color: red;">必须得用 render 来处理吗？</span>
+#### 可以在模板里调用方法来返回，也可以j计算属性返回个函数，然后调用
+```typescript
+   <li
+        v-for="(item , index) in child"
+        :key="item[filedObj.id]"
+    >
+    {{isPar(item)}}
+    {{getItem(item)}}
+    </li>
+    ... 
+    new Vue({
+        computed:{
+            isPar: function(item){
+                //  item 是 v-for指令里的变量 怎样取到它？
+                return function(){
+                    return item[filedObj.child].length
+                }
+            }
+        },
+        methods:{
+            getItem: function(item){
+                return item.some
+            }
+        }
+    }) 
+    //计算j属性会缓存，方法每次都会调用
+```
+10.  #### 怎样在模板里调用一个方法，返回的是html或是一个vue组件？
+```typescript
+    <li
+    >
+        {{getItem("e")}}
+    </li>
+     ... 
+     import Button from "button"
+    new Vue({
+        methods:{
+            getItem: function(item){
+                return <div>{{item}}<div>
+            },
+            getBtn: function(item) {
+                return <Button>{{item}}</Button>
+            }
+        }
+    }) 
+```
+11.  #### 废弃的slot属性，在组件已经挂载就j能获取j具名插槽，而v-slot要做组件挂载后？
     
