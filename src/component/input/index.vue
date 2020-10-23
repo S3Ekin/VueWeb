@@ -41,60 +41,28 @@
 </template>
 
 <script lang="ts">
-    import Vue, { PropType } from "vue"
-    import { Component } from "vue-property-decorator"
-    const InpProps = Vue.extend({
-        name: "SInp",
-        props: {
-            handle: {
-                type: Function as PropType<(e:MouseEvent)=>void>,
-                required: true
-            },
-            type: { // 边框样式
-                type: String as PropType<"text" | "number" >,
-                default: "text"
-            },
-            width: {
-                type: Number,
-                default: null
-            },
-            className: {
-                type: String as PropType<"normal" >,
-                default: "normal"
-            },
-            name: {
-                type: String,
-                default: ""
-            },
-            reg: {
-                type: RegExp,
-                default: null
-            },
-            val: {
-                type: String,
-                default: ""
-            },
-            dataSet: {
-                type: String,
-                default: ""
-            },
-            regTip: {
-                type: String,
-                default: ""
-            },
-            rows: {
-                type: Number,
-                default: 3
-            },
-            isTextArea: Boolean,
-            noRequired: Boolean,
-            disabled: Boolean,
-            vertical: Boolean
-        }
-    })
+    import Vue from "vue"
+    import { Component, Prop } from "vue-property-decorator"
 
-    @Component
-    class SInp extends InpProps {
+    @Component({
+        name: "SInp"
+    })
+    class SInp extends Vue {
+       @Prop({ type: Function, required: true }) handle!: (e:MouseEvent)=>void;
+       @Prop({ default: "text" }) type!: "text" | "number";
+       @Prop(Number) width!: number;
+       @Prop({ default: "normal" }) className!: "normal";
+       @Prop({ default: "" }) name!: string;
+       @Prop({ type: RegExp }) reg!: RegExp;
+       @Prop({ default: "" }) val!: string;
+       @Prop({ default: "" }) dataSet!: string;
+       @Prop({ default: "" }) regTip!: string;
+       @Prop({ default: 3 }) rows!: number;
+       @Prop(Boolean) isTextArea!: boolean;
+       @Prop(Boolean) noRequired!: boolean;
+       @Prop(Boolean) disabled!: boolean;
+       @Prop(Boolean) vertical!: boolean;
+
         warnTxt = ""
         get noFill ():string {
             if (this.reg) {

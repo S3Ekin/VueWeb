@@ -22,6 +22,7 @@
             <slot
               :name="column.field"
               :node="node"
+              :index="index"
             >
               {{ node[column.field] }}
             </slot>

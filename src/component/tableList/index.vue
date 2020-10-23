@@ -33,7 +33,7 @@
       >
         <template
           v-for="item in fileObj.column"
-          v-slot:[item.field]="{node}"
+          v-slot:[item.field]="node"
         >
           <slot
             :name="item.field"
@@ -94,8 +94,8 @@ export default class Table extends Vue {
         const { $scopedSlots } = this
         const column: IColumnItem[] = []
         for (const key in $scopedSlots) {
-          const slot = $scopedSlots[key]!
-            slot({})!.forEach(val => {
+          const slotArr = $scopedSlots[key]!({}) || []
+            slotArr.forEach(val => {
                   if (val.tag) {
                       const item = val.componentOptions!.propsData as IColumnItem
                       const { field, width, isRowSpanField, formatter, align = "center", name } = item

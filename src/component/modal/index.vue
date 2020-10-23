@@ -37,7 +37,6 @@
           >
             <slot
               name="default"
-              :slotProps="'asdf'"
             />
             <slot name="foot">
               <div class="m-Mfooter">
@@ -62,52 +61,31 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from "vue"
-import { Component, Watch } from "vue-property-decorator"
+import Vue from "vue"
+import { Component, Watch, Prop } from "vue-property-decorator"
 import Portal from "./Portal"
 import Button from "@component/button/index.vue"
-const ModalProps = Vue.extend({
-    name: "Modal",
+
+@Component({
+ name: "Modal",
     components: {
       Portal,
       Button
-    },
-    props: {
-            className: {
-                type: String as PropType<string>,
-                default: ""
-            },
-            toggleModal: {
-                type: Function as PropType<(filed:string, isClose:boolean)=>void>,
-                required: true
-            },
-            sure: {
-                type: Function as PropType<(e:MouseEvent)=> void>,
-                // eslint-disable-next-line @typescript-eslint/no-empty-function
-                default: function () {}
-            },
-            field: {
-                type: String,
-                required: true
-            },
-            width: {
-                type: Number,
-                default: null
-            },
-            title: {
-              type: String,
-              required: true
-            },
-            isOut: Boolean,
-            show: Boolean
     }
 })
-
-@Component
-export default class Modal extends ModalProps {
+export default class Modal extends Vue {
   $refs!:{
     modalDom: HTMLDivElement
   }
+
+  @Prop({ type: String, default: "" }) className!: string;
+  @Prop({ type: Function, required: true }) toggleModal!: (filed:string, show:boolean)=>void;
+  @Prop({ required: true, type: Function }) sure!: (e:MouseEvent)=> void;
+  @Prop({ type: String, required: true }) field!: string;
+  @Prop(Number) width!: number;
+  @Prop({ type: String, required: true }) title!: string;
+  @Prop(Boolean) isOut!: boolean;
+  @Prop(Boolean) show!: boolean;
 
   hasInit = false;
 

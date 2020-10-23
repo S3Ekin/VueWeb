@@ -9,6 +9,7 @@ import { IColumnItem } from "./myTable"
 export default class Column extends Vue {
     @Prop({ required: true, type: String }) field!:string;
     @Prop({ required: true, type: String }) name!:string;
+    @Prop(Number) nodeIndex?:number;
     @Prop(Number) width?:number;
     @Prop(Boolean) isRowSpanField?:boolean; // 是否为合并字段
     @Prop({ type: String, default: "center" }) align?:"center"|"left"|"right";
@@ -34,7 +35,7 @@ export default class Column extends Vue {
 
     render ():VNode {
         return (
-            <div>
+            <div data-index={this.nodeIndex !== undefined ? this.nodeIndex : undefined}>
                 {this.$slots.default}
             </div>
         )
