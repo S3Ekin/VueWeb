@@ -10,51 +10,24 @@
 </template>
 
 <script lang="ts">
-    import Vue, { PropType } from "vue"
-    import { Component } from "vue-property-decorator"
-    const BtnProps = Vue.extend({
-        name: "Button",
-        props: {
-            handle: {
-                type: Function as PropType<(e:MouseEvent)=>void>,
-                required: true
-            },
-            borderType: { // 边框样式
-                type: String as PropType<"normal-btn" | "dashed-btn" | "line-btn">,
-                default: "normal-btn"
-            },
-            colorType: { // 颜色
-                type: String as PropType<"danger" | "primary" | "green" | "yellow">,
-                default: "primary"
-            },
-            size: {
-                type: String as PropType<"big" | "small">,
-                default: ""
-            },
-            className: {
-                type: String,
-                default: ""
-            },
-            name: {
-                type: String,
-                default: ""
-            },
-            val: {
-                type: String,
-                default: ""
-            }, // button 里的value
-            dataSet: {
-                type: String,
-                default: ""
-            },
-            noAnimate: Boolean,
-            disabled: Boolean
-        }
-    })
+    import Vue from "vue"
+    import { Component, Prop } from "vue-property-decorator"
 
-    @Component
-    class Button extends BtnProps {
-      timeId = 0
+    @Component({
+        name: "Button"
+    })
+    class Button extends Vue {
+     timeId = 0
+    @Prop({ required: true }) handle!:(e:MouseEvent)=>void;
+    @Prop({ type: String, default: "normal-btn" }) borderType!:"normal-btn" | "dashed-btn" | "line-btn";
+    @Prop({ type: String, default: "primary" }) colorType!: "danger" | "primary" | "green" | "yellow";
+    @Prop({ type: String, default: "" }) size!: "big" | "small";
+    @Prop({ type: String, default: "" }) className!: string;
+    @Prop({ type: String, default: "" }) name!: string;
+    @Prop({ type: String, default: "" }) val!: string // button 里的value
+    @Prop({ type: String, default: "" }) dataSet!: string;
+    @Prop(Boolean) noAnimate!: boolean;
+    @Prop(Boolean) disabled!: boolean;
 
     get sizeName ():string {
       return this.size ? "btn-" + this.size : ""

@@ -1,32 +1,22 @@
 <template functional>
   <svg
     class="icon svg-icon"
-    :class="props.size"
+    :class="size"
     aria-hidden="true"
   >
-    <use :xlink:href="'#'+props.className" />
+    <use :xlink:href="'#'+className" />
   </svg>
 </template>
 <script lang="ts">
 import Vue from "vue"
- import { Component } from "vue-property-decorator"
-const props = Vue.extend({
-    name: "SvgIcon",
-    functional: true,
-    props: {
-        size: {
-            type: String,
-            default: ""
-        },
-        className: {
-            type: String,
-            required: true
-        }
-    }
-})
+ import { Component, Prop } from "vue-property-decorator"
 
-@Component
-export default class SvgIcon extends props {
+@Component({
+    name: "SvgIcon"
+})
+export default class SvgIcon extends Vue {
+  @Prop(String) size!: string;
+  @Prop({ type: String, required: true }) className!: string;
 }
 </script>
 <style lang="scss">

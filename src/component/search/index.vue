@@ -1,7 +1,15 @@
 <template>
-  <div class="search-box">
-    <input class="search-inp">
-    <Button :handle="handle">
+  <div
+    class="search-box"
+  >
+    <input
+      class="search-inp"
+      :style="{width: width ? width + 'px' :null}"
+    >
+    <Button
+      :handle="handle"
+      class-name="fa fa-search"
+    >
       搜索
     </Button>
   </div>
@@ -22,12 +30,13 @@ import Input from "../input/index.vue"
 })
 export default class Search extends Vue {
     @Prop({ required: true }) handle!: (e:MouseEventEl<HTMLButtonElement>)=>void;
+    @Prop(Number) width!: number;
 }
 </script>
 
 <style lang="scss">
   @import "../../css/scss/variate";
-  $inp-h:28px;
+  $inp-h:32px;
   $inp-border-color:#c6c9cf;
   $active:#82bbf8;
   $color:#5b5b5b;

@@ -19,12 +19,12 @@
             :key="column.field"
             :class="'td-' + column.align"
           >
-            <VNode
+            <slot
+              :name="column.field"
               :node="node"
-              :column="column"
-              :tab-field="fileObj.tabField"
-              :index="index"
-            />
+            >
+              {{ node[column.field] }}
+            </slot>
           </td>
         </tr>
       </tbody>
@@ -61,6 +61,10 @@ export default class Table extends Vue {
    getOrder (index:number):number {
        const startIndex = (this.curPage - 1) * this.perNums
        return startIndex + 1 + index
+   }
+
+   mounted (): void {
+     console.log(this)
    }
 
    // eslint-disable-next-line @typescript-eslint/no-explicit-any

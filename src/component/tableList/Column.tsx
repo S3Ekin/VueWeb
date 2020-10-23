@@ -1,6 +1,6 @@
 import Vue from "vue"
 import { Component, Prop } from "vue-property-decorator"
-import { CreateElement } from "vue/types/umd"
+import { CreateElement, VNode } from "vue/types/umd"
 import { IColumnItem } from "./myTable"
 
 @Component({
@@ -8,6 +8,7 @@ import { IColumnItem } from "./myTable"
 })
 export default class Column extends Vue {
     @Prop({ required: true, type: String }) field!:string;
+    @Prop({ required: true, type: String }) name!:string;
     @Prop(Number) width?:number;
     @Prop(Boolean) isRowSpanField?:boolean; // 是否为合并字段
     @Prop({ type: String, default: "center" }) align?:"center"|"left"|"right";
@@ -17,7 +18,7 @@ export default class Column extends Vue {
         tabField?: string // 表格标识
     ) => Vue.CreateElement;
 
-    config: IColumnItem = this.getConfig();
+    columnConfig: IColumnItem = this.getConfig();
 
     getConfig ():IColumnItem {
         const { width, isRowSpanField, align, formatter } = this
@@ -31,7 +32,11 @@ export default class Column extends Vue {
         }
     }
 
-    render (h:CreateElement):anyObj {
-        return h()
+    render ():VNode {
+        return (
+            <div>
+                {this.$slots.default}
+            </div>
+        )
     }
 }

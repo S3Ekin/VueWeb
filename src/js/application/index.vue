@@ -2,8 +2,14 @@
   <div class="g-content">
     <div class="g-grid">
       <div class="page-head">
-        <Search :handle="search" />
-        <Button :handle="add">
+        <Search
+          :handle="search"
+          :width="400"
+        />
+        <Button
+          :handle="add"
+          class-name="fa fa-add"
+        >
           新增
         </Button>
       </div>
@@ -13,30 +19,45 @@
           :no-order="true"
           id-field="code"
         >
-          <Column field="sn">
-            排序
-          </Column>
-          <Column field="name">
-            应用名称
-          </Column>
-          <Column field="code">
-            code
-          </Column>
-          <Column field="version">
-            版本号
-          </Column>
-          <Column
-            field="url"
-            :formatter="formatterFnObj.url"
-          >
-            URL
-          </Column>
-          <Column
-            field="opt"
-            :formatter="formatterFnObj.opt"
-          >
-            操作
-          </Column>
+          <template #default>
+            <Column
+              field="sn"
+              name="排序"
+            />
+            <Column
+              field="name"
+              name="应用名称"
+            />
+            <Column
+              field="code"
+              name="code"
+            />
+            <Column
+              field="version"
+              name="版本号"
+            />
+          </template>
+          <template v-slot:url="node">
+            <Column
+              field="url"
+              name="URL"
+            >
+              {{ node.ip + "/" + node.homePage }}
+            </Column>
+          </template>
+          <template v-slot:opt>
+            <Column
+              field="opt"
+              name="操作"
+            >
+              <Button :handle="add">
+                新增
+              </Button>
+              <Button :handle="add">
+                删除
+              </Button>
+            </Column>
+          </template>
         </Table>
       </div>
     </div>

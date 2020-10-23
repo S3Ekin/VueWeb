@@ -163,5 +163,123 @@
         }
     }) 
 ```
-11.  #### 废弃的slot属性，在组件已经挂载就j能获取j具名插槽，而v-slot要做组件挂载后？
+> 充分利用组件的 {components:} 来用临时组件，利用template里只能出现组件，具体看 tablelist/TBody.vye
+```typescript
+<td
+    v-for="column in fileObj.column"
+    :key="column.field"
+    :class="'td-' + column.align"
+    >
+    <VNode
+        :node="node"
+        :column="column"
+        :tabField="fileobj.tabField"
+        :index="index"
+    />
+    </td>
+...
+@Component({
+    name: "TBody",
+    components: {
+      Button,
+      VNode: {
+        functional: true,
+        render: (h:CreateElement, ctx: RenderContext) => {
+          const { node, column, tabField, index } = ctx.props
+          const a = column.formatter ? column.formatter(node, index, tabField) : h("span", node[column.field])
+          return a
+        }
+      }
+    }
+})
+```
+----
+> 
+11.  #### 废弃的slot属性，在组件已经挂载就能获取具名插槽，而v-slot要做组件挂载后才能获得？在使用了作用域j即使是在挂载后，也获取不j具名插槽
+```typescript
+    //具体看 tablelist/index.vue 和 applicaiton/index.vue 两个页面的引用关系
+    fileobj = this.init();
+    mounted ():void {
+      console.log(this.$slot)
+    }
+    init(){
+        console.log(this.$lot)
+    }
+```
+> 目解决方法是用$scopedSlots,但是也是在挂载后才能获取到,<span style="color: red;">在使用slot时，用j具名插槽j就把default也显示的标记，不然在获取所有的插槽时，会在获取default插槽时得到的顺序不一样</span>
+----
+12. #### v-slot 用v-slot 来传递作用域变量时，在真正要显示使用的地方（子组件），传递变量用v-bind 或声明名称 v-bind:obj="obj",就可以在把子组件的信息传递给父组件来使用。
+* 注意
+> 1. 在 在跨级传递时，会有些问题要注意，也就是在“爷父子”，三级组件从子通过父再传给爷时要注意插件对应的关系。通过文件<span style="color: red;"> application/index.vue - tablelist/index.vue - tablelist/TBody.vue </span> 来观察。
+> 2. 目前没有想到直接把爷组件j具名插槽直接给子组件的方法，得再中间层父组件在命名一具名插槽。因为要具名插槽一一分开传递，并且要带上作用域。
+> 3. 在三级组件插槽传递时，在爷组件使用作用域时，发现使用变量的第3层属性报错，不知道为什么
+```typescript
+// 子组件 TBody
+    <td
+        v-for="column in fileObj.column"
+        :key="column.field"
+        :class="'td-' + column.align"
+    >
+        <slot
+            :name="column.field"
+            :node="node"
+        >
+            {{ node[column.field] }}
+        </slot>
+    </td>
+    ...
+    // 父组件 Table
+     <TBody
+        :table-data="data"
+        :file-obj="fileObj"
+        :per-nums="perNums"
+        :cur-page="curPage"
+      >
+        <template
+          v-for="item in fileObj.column"
+          v-slot:[item.field]="{node}"
+        >
+          <slot
+            :name="item.field"
+            :node="node"
+          />
+        </template>
+      </TBody>
+      ...
+      // 爷组件
+      <div class="page-main">
+        <Table
+          :data="list"
+          :no-order="true"
+          id-field="code"
+        >
+          <template #default>
+            <Column
+              field="sn"
+              name="排序"
+            />
+           ...
+          </template>
+          <template v-slot:url="{node}">
+            <Column
+              field="url"
+              name="URL"
+            >
+              {{ node }} //可以
+              {{ node.ip + "/" + node.homePage }} //报错
+            </Column>
+          </template>
+         ...
+        </Table>
+      </div>
+```
+* 不明白为什么会这样，在爷组件里。作用域 node返回的也不是字符串就是不能引用里面的属性
+> 当把父组件在的 作用域改为如下就可以用了。正常的没有三级传递的没有这样的情况，看users/ 下的测试文件
+```typescript
+ <slot
+    :name="item.field"
+    v-bind="node"
+    />
+```
+----
     

@@ -29,10 +29,18 @@ const router = new VueRouter({
       }
     },
     {
+      path: '/user/user',
+      component: () => {
+        return import(
+          /* webpackChunkName: "user" */ "./users/index.vue"
+        )
+      }
+    },
+    {
       path: '/system/menu',
       component: () => {
         return import(
-          /* webpackChunkName: "company" */ "./menu/index.vue"
+          /* webpackChunkName: "menu" */ "./menu/index.vue"
         )
       }
     }

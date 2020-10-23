@@ -31,7 +31,15 @@
         :per-nums="perNums"
         :cur-page="curPage"
       >
-        <slot />
+        <template
+          v-for="item in fileObj.column"
+          v-slot:[item.field]="{node}"
+        >
+          <slot
+            :name="item.field"
+            v-bind="node"
+          />
+        </template>
       </TBody>
     </div>
   </div>
@@ -63,9 +71,9 @@ export default class Table extends Vue {
     // initSelectVal?:{id:string};// 通过外界改变表格的选中
     // children:React.ReactElement<IColumnItem>[];
     // bindGetSelectedFn?:(getSelected:()=>IImmutalbeList<IImmutalbeMap<any>>)=>void;// 把获取选中的项的函数传递给外部
-    fileObj:fieldObj = this.initFileObj();
     perNums= 20;
     curPage = this.initCurPage();
+    fileObj:fieldObj = this.initFileObj()
 
     initCurPage () :number {
         const { data, defaultSel, idField } = this
@@ -79,30 +87,36 @@ export default class Table extends Vue {
     }
 
     mounted ():void {
-      console.log(this.$slots)
+      this.fileObj.column = this.initColumn()
+    }
+
+    initColumn ():IColumnItem[] {
+        const { $scopedSlots } = this
+        const column: IColumnItem[] = []
+        for (const key in $scopedSlots) {
+          const slot = $scopedSlots[key]!
+            slot({})!.forEach(val => {
+                  if (val.tag) {
+                      const item = val.componentOptions!.propsData as IColumnItem
+                      const { field, width, isRowSpanField, formatter, align = "center", name } = item
+
+                      column.push({
+                        align,
+                        name,
+                        width,
+                        isRowSpanField,
+                        formatter,
+                        field
+                      })
+                  }
+              })
+        }
+        return column
     }
 
     initFileObj ():fieldObj {
-        const { idField, noOrder, checkbox, tabField, noPageNums, $slots } = this
+        const { idField, noOrder, checkbox, tabField, noPageNums } = this
         const column: IColumnItem[] = []
-        if ($slots.default) {
-            $slots.default.forEach(val => {
-                if (val.tag) {
-                    const item = val.componentOptions!.propsData as IColumnItem
-                    const name = val.componentOptions!.children![0].text!
-                    const { field, width, isRowSpanField, formatter, align = "center" } = item
-
-                    column.push({
-                       align,
-                       name,
-                      width,
-                      isRowSpanField,
-                      formatter,
-                      field
-                    })
-                }
-            })
-        }
         return {
             idField,
             noOrder,
