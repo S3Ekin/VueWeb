@@ -28,33 +28,25 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from "vue"
-import { Component } from "vue-property-decorator"
+import Vue from "vue"
+import { Component, Prop } from "vue-property-decorator"
 import { SvgIcon } from "@component/Icon/index"
 
-const NoticeProps = Vue.extend({
-    components: {
+@Component({
+  components: {
         SvgIcon
-    },
-    props: {
-            type: {
-                type: String as PropType<"error" | "success" | "warn">,
-                default: "success"
-            },
-            id: {
-                type: String,
-                required: true
-            }
-    }
+  },
+  name: "Notice"
 })
-
-@Component
-export default class Notice extends NoticeProps {
+export default class Notice extends Vue {
   iconObj = {
     success: "fa-fill-success",
     error: "fa-fill-error",
     warn: "fa-warning"
   }
+
+  @Prop({ type: String, default: "success" }) type!: "error" | "success" | "warn";
+  @Prop({ type: String, required: true }) id!: string;
 
   get className ():string {
     return this.iconObj[this.type as "warn"]

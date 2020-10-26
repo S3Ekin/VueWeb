@@ -1,10 +1,10 @@
-<template functional>
+<template>
   <svg
     class="icon svg-icon"
     :class="size"
     aria-hidden="true"
   >
-    <use :xlink:href="'#'+className" />
+    <use :xlink:href="'#'+ className" />
   </svg>
 </template>
 <script lang="ts">

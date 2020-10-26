@@ -2,26 +2,19 @@
   <div class="g-check-item">
     <span class="lab-tit"><slot /></span>
     <span class="g-check-box">
-      <label
+      <CheckBox
         v-for="item in data"
         :key="item.val"
-        class="m-label m-lab-radio "
+        :type="type"
+        :name="name"
+        :data-set="dataSet"
+        :value="item.val"
+        :checked="item.val === select"
+        :disabled="disabled"
+        :handle="handle"
       >
-        <span class="wrap-icon">
-          <SvgIcon :class-name="item.val === select?'fa-radio':'fa-unradio'" />
-          <input
-            :type="type"
-            class="checkBox-inp"
-            :name="name"
-            :data-set="dataSet"
-            :value="item.val"
-            :checked="item.val === select"
-            :disabled="disabled"
-            @change="handle"
-          >
-        </span>
         {{ item.name }}
-      </label>
+      </CheckBox>
     </span>
   </div>
 </template>
@@ -29,6 +22,7 @@
 <script lang="ts">
   import Vue from "vue"
   import { SvgIcon } from "@component/Icon/index"
+  import CheckBox from "./Checkbox.vue"
   import { Component, Prop } from "vue-property-decorator"
   type data = {
     name:string;
@@ -38,96 +32,24 @@
     @Component({
       name: "Checkbox",
       components: {
-        SvgIcon
+        SvgIcon,
+        CheckBox
       }
     })
    export default class Checkbox extends Vue {
       @Prop({ required: true }) handle!:(e:MouseEvent)=>void;
-      @Prop(String) type: "radio" | "checkbox" = "radio";
+      @Prop({ type: String, default: "radio" }) type!: "radio" | "checkbox";
       @Prop(String) name!: string;
-      @Prop(String) dataSet="";
-      @Prop({ required: true }) data: data = [];
+      @Prop(String) dataSet!: string;
+      @Prop({ required: true, default: [] }) data!: data;
       @Prop({ required: true }) select!: string;
-      @Prop(Boolean) disabled = false;
+      @Prop(Boolean) disabled!:boolean;
     }
 </script>
 
 <style lang="scss">
-@import "../../css/scss/variate";
-$inp-h:36px;
-$inp-border-color:#c6c9cf;
-$active:#82bbf8;
-$color:#5b5b5b;
-
 .g-check-item {
   display: flex;
   align-items: center;
-}
-
-%inpbox {
-  height: $inp-h;
-  display: flex;
-  align-items: center;
-
-  .m-label {
-    margin: 0 6px;
-  }
-}
-
-.m-label {
-  display: inline-flex;
-  align-items: center;
-  margin-right: 30px;
-  cursor: pointer;
-
-  .wrap-icon {
-    position: relative;
-    padding-right: 8px;
-  }
-
-  .fa {
-    color: $text-color;
-    cursor: pointer;
-    font-size: 18px;
-    margin-right: 8px;
-  }
-
-  .fa-checked,
-  .fa-radio {
-    color: #1182fb;
-  }
-
-  .checkBox-inp {
-    opacity: 0;
-    cursor: pointer;
-    position: absolute;
-    display: none;
-  }
-
-  &.active {
-    color: #3b90f2;
-  }
-}
-
-.disabled-box {
-  cursor: not-allowed;
-  color: #c6c9cf;
-
-  .checkBox-inp {
-    cursor: not-allowed;
-  }
-
-  .icon {
-    cursor: not-allowed;
-  }
-}
-
-/* radio */
-.m-radio {
-  @extend %inpbox;
-}
-
-.m-checkbox {
-  @extend %inpbox;
 }
 </style>

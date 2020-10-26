@@ -17,6 +17,7 @@
             :name="index"
             class="s-inp normal inp-sn"
             :value="node.sn"
+            :data-sn="node.sn"
             @blur="changeSn"
           >
         </Column>
@@ -103,6 +104,10 @@ class ApplicationList extends Vue {
      changeSn (e:MouseEventEl<HTMLButtonElement>):void {
       const index = +e.target.name
       const val = e.target.value!
+      const sn = e.target.dataset.sn
+      if (sn === val) {
+        return
+      }
       const { name, homePage, code, ip, version, remark } = this.list[index] as Info
       Api.edit({
         sn: val,
