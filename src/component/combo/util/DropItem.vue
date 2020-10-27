@@ -18,11 +18,17 @@
             :value="index"
           >
             <span class="combo-text">{{ text }}</span>
-            <SvgIcon :class-name="fileObj.itemIcon" />
+            <SvgIcon
+              v-if="filedObj.itemIcon"
+              :class-name="filedObj.itemIcon"
+            />
           </CheckBox>
         </span>
         <span v-else>
-          <SvgIcon :class-name="fileObj.itemIcon" />
+          <SvgIcon
+            v-if="filedObj.itemIcon"
+            :class-name="filedObj.itemIcon"
+          />
           <span class="combo-text">{{ text }}</span>
         </span>
       </span>
@@ -34,7 +40,7 @@
 import Vue from "vue"
 import { Component, Inject, Prop } from "vue-property-decorator"
 import { VNode } from "vue/types/umd"
-import { ISelected, filedObj } from "../Combobox"
+import { ISelected, filedObj } from "../Combobox.d"
 import { SvgIcon } from "@component/Icon/index"
 import { CheckBox } from "@component/checkbox/index"
 import { activeStatus } from "./util"
@@ -51,7 +57,7 @@ export default class ComboxInp extends Vue {
     @Prop(Boolean) multiply!:boolean;
     @Prop(Boolean) checkBox!:boolean;
     @Prop(Number) lev?:number;
-    @Inject() fileObj!:filedObj<"list">;
+    @Inject() filedObj !:filedObj<"list">;
     @Prop(Function) checkMethod!:(val: string)=>void;
     @Prop(Function) clickFn!:(index: string)=>void;
     @Prop() formatterDropItem?:(selected:ISelected[])=>VNode
@@ -71,8 +77,8 @@ export default class ComboxInp extends Vue {
     }
 
     get text ():string {
-        const { node, fileObj } = this
-        return node[fileObj.textField]
+        const { node, filedObj } = this
+        return node[filedObj.textField]
     }
 
     get checked ():boolean {

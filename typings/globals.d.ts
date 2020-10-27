@@ -10,7 +10,7 @@ interface MouseEventEl<T extends HTMLElement> extends MouseEvent {
     currentTarget: T
 }
 
-interface anyObj {
+type anyObj<T = Record<string, unknown>> = T & {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [k:string]:any
 }

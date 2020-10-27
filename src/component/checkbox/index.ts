@@ -1,4 +1,4 @@
-import CheckBox from "./CheckBox.vue"
-import CheckList from "./index.vue"
+import CheckBox from "./CheckCom.vue"
+import CheckList from "./CheckList.vue"
 
 export { CheckBox, CheckList }

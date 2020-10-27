@@ -1,6 +1,5 @@
 import { VNode } from "vue/types/umd"
 
-
 export interface ISelected {
         id:string;
         text:string;
@@ -12,7 +11,7 @@ export interface ISelected {
              noSearch?:boolean;
              parAbleClick?:boolean;
         };
-        list:{};
+        list: unknown;
     }
 
    export type filedObj<P extends keyof IDrop> = {
@@ -22,7 +21,7 @@ export interface ISelected {
         itemIcon?: string;
         defaultVal?: string;
         field:string;
-        clickOrCheckForbid:(node:anyObj,field:string,selectedArr?:ISelected[])=>boolean;
+        // clickOrCheckForbid:(node:anyObj, field:string, selectedArr?:ISelected[])=>boolean;
     } & IDrop[P];
 
     export type drop<P extends keyof IDrop> = {

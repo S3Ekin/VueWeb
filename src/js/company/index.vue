@@ -34,14 +34,14 @@
             地址：
           </SInp>
           <div class="inp-item">
-            <Checkbox
+            <CheckList
               :handle="change"
               :select="logoType"
               name="logo"
               :data="logoCheckboxArr"
             >
               LOGO图片：
-            </Checkbox>
+            </CheckList>
           </div>
           <div class="logo-box">
             <div
@@ -135,7 +135,7 @@ import Vue from "vue"
 import { Component } from "vue-property-decorator"
 import Button from "@component/button/index.vue"
 import SInp from "@component/input/index.vue"
-import Checkbox from "@component/checkbox/index.vue"
+import { CheckList } from "@component/checkbox/index"
 import UpFile from "@component/upfileBox/index.vue"
 import { fetchApi } from "@api/postData"
 import noticeFn from "@component/Toast/index"
@@ -156,7 +156,7 @@ type data = {
     components: {
         Button,
         SInp,
-        Checkbox,
+        CheckList,
         UpFile
     }
 })

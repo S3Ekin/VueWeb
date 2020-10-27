@@ -22,7 +22,7 @@
 <script lang="ts">
   import Vue from "vue"
   import { SvgIcon } from "@component/Icon/index"
-  import CheckBox from "./Checkbox.vue"
+  import CheckBox from "./CheckCom.vue"
   import { Component, Prop } from "vue-property-decorator"
   type data = {
     name:string;
