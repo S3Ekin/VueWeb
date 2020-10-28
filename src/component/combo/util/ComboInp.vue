@@ -4,7 +4,7 @@
     :class="className"
     @click="slideFn"
   >
-    <div className="combo-value">
+    <div class="combo-value">
       <span v-if="selected.length">
         {{ formatterVal(selected) }}
       </span>
@@ -15,15 +15,18 @@
         {{ tit }}
       </span>
     </div>
-    <SvgIcon
-      v-if="!noicon"
-      :class-name="'fa fa-' +slideIcon "
-    />
-    <span
-      v-if="clearIcon"
-      @click="clickFn"
-    >
-      <SvgIcon class-name="fa fa-close" />
+    <span>
+      <span
+        v-if="clearIcon"
+        class="close"
+        @click="clear"
+      >
+        <SvgIcon class-name="fa-close" />
+      </span>
+      <SvgIcon
+        v-if="!noicon"
+        :class-name="'fa-' +slideIcon "
+      />
     </span>
   </div>
 </template>
@@ -32,7 +35,7 @@
 import Vue from "vue"
 import { Component, Prop } from "vue-property-decorator"
 import { VNode } from "vue/types/umd"
-import { ISelected } from "../Combobox.d"
+import { comboMethods, ISelected } from "../Combobox.d"
 import { SvgIcon } from "@component/Icon/index"
 
 const defaultVal = (seleted:ISelected[]) => {
@@ -52,7 +55,7 @@ export default class ComboxInp extends Vue {
     @Prop(Boolean) noRequire?:boolean;
     @Prop(Boolean) ableClear?:boolean;
     @Prop(Function) slideFn!:()=>void;
-    @Prop(Function) clearFn!:()=>void;
+    @Prop(Function) clearFn?:comboMethods["click"];
     @Prop({ type: Function, default: defaultVal }) formatterVal!:(selected:ISelected[])=>VNode
 
     get clearIcon ():boolean {
@@ -66,12 +69,12 @@ export default class ComboxInp extends Vue {
     }
 
     get slideIcon ():string {
-        return this.drop ? "down" : "up"
+        return this.drop ? "arrow-bottom-line" : "arrow-top-line"
     }
 
-    clickFn (e: MouseEventEl<HTMLSpanElement>): void {
+    clear (e: MouseEventEl<HTMLSpanElement>): void {
         e.stopPropagation()
-        this.clearFn()
+       this.clearFn && this.clearFn()
     }
 }
 </script>
@@ -91,7 +94,6 @@ $combo-drop-padding:8px;
     height: 100%;
     padding-top: 0.3em;
     box-sizing: border-box;
-    pointer-events: none;
   }
 
   .combo-inp-tit {
@@ -112,13 +114,16 @@ $combo-drop-padding:8px;
   &.no-fill {
     border-color: $error;
   }
+
+  .close {
+    color: red;
+  }
 }
 
 .m-drop {
   .drop-ul {
     overflow: auto;
     position: absolute;
-    bottom: 0;
     width: 100%;
   }
 
@@ -140,10 +145,18 @@ $combo-drop-padding:8px;
 
   &.direction-up {
     bottom: 44px;
+
+    .drop-ul {
+      top: 0;
+    }
   }
 
   &.direction-down {
     margin-top: 10px;
+
+    .drop-ul {
+      bottom: 0;
+    }
   }
 
   .m-combo-item.active {

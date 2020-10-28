@@ -40,7 +40,7 @@
 import Vue from "vue"
 import { Component, Inject, Prop } from "vue-property-decorator"
 import { VNode } from "vue/types/umd"
-import { ISelected, filedObj } from "../Combobox.d"
+import { ISelected, filedObj, node } from "../Combobox.d"
 import { SvgIcon } from "@component/Icon/index"
 import { CheckBox } from "@component/checkbox/index"
 import { activeStatus } from "./util"
@@ -52,21 +52,22 @@ import { activeStatus } from "./util"
     }
 })
 export default class ComboxInp extends Vue {
-    @Prop(Object) node!: anyObj;
+    @Prop(Object) node!: node<activeStatus>;
     @Prop(String) index!: string;
     @Prop(Boolean) multiply!:boolean;
     @Prop(Boolean) checkBox!:boolean;
     @Prop(Number) lev?:number;
     @Inject() filedObj !:filedObj<"list">;
     @Prop(Function) checkMethod!:(val: string)=>void;
-    @Prop(Function) clickFn!:(index: string)=>void;
+    @Prop({ type: Function, required: true }) clickFn!:(index: string)=>void;
     @Prop() formatterDropItem?:(selected:ISelected[])=>VNode
 
     get activeName ():string {
-        return ""
+      const { node } = this
+      return node.active === activeStatus.select ? "active" : ""
     }
 
-     get clickItemFn (): undefined | this["clickItem"] {
+    get clickItemFn (): undefined | this["clickItem"] {
          const { multiply, lev } = this
          return multiply && lev ? undefined : this.clickItem
     }

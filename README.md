@@ -13,7 +13,8 @@
 > 3. 可以通过$scopedSlots里的插槽函数获取插槽 
 3. #### 注意模态框容器一个是在主体内容里面，一个是在外面，弹框也是放在主体里面，loading容器也是放在主体内容里面 
 4. #### vue在渲染的时候会把目标挂载元素 取代，换成模板里的html，也就是虚拟dom，怎样只是把VNode,增加到目标挂载元素的字节点上，不取代父元素. 
-5. #### vue 的data 某个属性为 数组， 把这个属性的 length = 0 ，是没有用的, 并且改变某个属性的值 对象直接改这个属性，不用重新赋值，react是得重新赋值,只要不是重新赋值，在watch时，deep：false ，时，改变节点属性不会被检查到，但是改变数组得长度会 
+---
+5. #### vue 的data 某个属性为 数组， 把这个属性的 length = 0 ，是没有用的, 并且改变某个属性的值(对象),直接改这个属性，不用重新赋值，react是得重新赋值,只要不是重新赋值，在watch时，deep：false ，时，改变节点属性不会被检查到，但是改变数组得长度会。
 ``` javascript
     arr = [1,3,4] ; 
     arr.length = 0; //没有用
@@ -285,4 +286,47 @@
 > 1. 因为涉及到异步请求，在第一次额渲染时，表格的数据为空[],从子作用域传来的数据是没有的是个空对象{},而在爷组件又使用了那些属性，所以报错
 > 2. 当涉及到作用域插件的作用域值就得判断，这个值存在不,特别这种异步传递值得
 ----
-    
+13. #### 在需要对vue的data（也是类的实例属性）初始化时，要是要用一个函数初始化多个属性，本来可以在构造函数constructor里来执行，为了不用构造函数，用vue的created生命周期钩子里初始化，这是周期的第2阶段，可以获取属性。第一阶段 beforeCreated不可以获取属性具体看combo/DropList.vue
+> 1. 注意必须先初始化值，让vue对据据进行 observe,否则数据不会与ui进行绑定渲染
+```typescript
+class DropList extends Vue {
+  ...
+    listData: node<activeStatus>[] = []; // 注意必须先初始化值，让vue对据据进行 observe
+    singleClickPre = ""
+    created ():void{
+      const { defaultVal } = this.filedObj
+      const prop = this.getProp()
+      const obj = formatterListData(prop as drop<"list">, defaultVal)
+      this.listData = obj.data
+      this.singleClickPre = obj.singleClickPre
+      this.bindMethod<"click">(this.clickItem, "click")
+    }
+}
+```
+---
+14. ### 不通过ref ,把子组件的方法给父组件使用时， 把子组件方法传给父组件时，要把类的直接的实例方法，传出去，不然通过这个方法获取类的成员时，获取的只是第一次的初始值具体看 combo/util/Combo.tsx
+```typescript
+class Combo extends Vue {
+  ...
+    selected:ISelected[] = [{ id: "1", text: "3333" }]
+    created ():void {
+      if (this.bindComMethods) {
+        this.bindComMethods(this.exportMethods)
+      }
+    }
+  // 暴露给外面的方法
+  exportMethods:comboMethods = {
+    // getSelected: this.getSelected
+    getSelected: () => { // 要是直接在这写返回函数是不会把 selected 的值动态返回出去，只会返回初始值，但是正常返回了this的上下文Combo,
+      console.log(this.drop)
+        return this.selected.slice()
+    }
+  }
+
+  getSelected (): ISelected[] {
+      return this.selected.map(val => val)
+  }
+}
+```
+> 1. 注意框加的数据的observer原理
+---
