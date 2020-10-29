@@ -5,6 +5,22 @@ import { VueConstructor } from "vue/types/umd"
 import { ISelected, filedObj, comboMethods } from "../Combobox"
 import ComboInp from "./ComboInp.vue"
 import { closertPar } from "@component/domUtil/util"
+import { event } from "./util"
+
+const slideOther = (excludekey?:string) => {
+  const activeCom = document.querySelector(".m-drop.active") as HTMLDivElement
+  if (!activeCom) {
+    return
+  }
+  const k = activeCom.dataset.event!
+  if (excludekey && excludekey === k) {
+    return
+  }
+  event.emit(k, activeCom)
+}
+document.body.addEventListener("click", function () {
+  slideOther()
+})
 
 export default (Drop:VueClass<Vue>):VueConstructor<Vue> => {
   @Component({
@@ -43,6 +59,7 @@ export default (Drop:VueClass<Vue>):VueConstructor<Vue> => {
       // 点击每行的回调函数
       @Prop(Function) clickCallback?: (selected: ISelected[], field: string, node?:anyObj)=> void;
 
+      eventKey = new Date().getTime()
       drop = false;
       selected:ISelected[] = []
       @Provide() filedObj = this.initFileObj()
@@ -56,9 +73,36 @@ export default (Drop:VueClass<Vue>):VueConstructor<Vue> => {
         }
       }
 
+      mounted () {
+        const k = this.eventKey + ""
+        event.on(k, this.slideUp)
+      }
+
+      destroyed ():void {
+        const k = this.eventKey + ""
+        event.remove(k)
+      }
+
+      clickBox (e:Event):void {
+        e.stopPropagation()
+      }
+
       // 暴露给外面的方法
       exportMethods:comboMethods = {
         getSelected: this.getSelected // 要是直接在这写返回函数是不会把 selected 的值动态返回出去，只会返回初始值，但是正常返回了this的上下文Combo,
+      }
+
+      slideUp (drop:HTMLElement):void {
+        this.slideDrop(drop, false)
+      }
+
+      slideDrop (dropEl:HTMLElement, drop: boolean):void {
+         let dropH = 0
+          if (drop) {
+            dropH = dropEl.firstElementChild!.clientHeight
+          }
+          dropEl.style.height = dropH + "px"
+          this.drop = drop
       }
 
       getSelected (): ISelected[] {
@@ -88,12 +132,9 @@ export default (Drop:VueClass<Vue>):VueConstructor<Vue> => {
           if (!drop) {
             return
           }
-          let dropH = 0
-          if (!this.drop) {
-            dropH = drop.firstElementChild!.clientHeight
-          }
-          drop.style.height = dropH + "px"
-          this.drop = !this.drop
+          const k = drop.dataset.event
+          slideOther(k)
+          this.slideDrop(drop, !this.drop)
       }
 
       changeSelect (selected:ISelected[], node?: anyObj):void{
@@ -113,12 +154,14 @@ export default (Drop:VueClass<Vue>):VueConstructor<Vue> => {
       }
 
       render () {
-        const { width, drop, tit, noicon, changeSelect, dropToggle, ableClear, noRequire, selected, dropWidth, data, exportMethods } = this
+        const { width, drop, tit, noicon, changeSelect, eventKey, dropToggle, ableClear, noRequire, selected, dropWidth, data, exportMethods } = this
+        const activeName = drop ? " active" : ""
         return (
           <div
             ref="wrapDomRef"
             class="g-combo"
             style={{ width: width ? width + "px" : undefined }}
+            onClick={this.clickBox}
           >
             <ComboInp
               drop={drop}
@@ -131,7 +174,8 @@ export default (Drop:VueClass<Vue>):VueConstructor<Vue> => {
               clearFn={exportMethods.click}
             />
             <div
-              class={"m-drop " + this.directionUpName}
+              class={"m-drop " + this.directionUpName + activeName}
+              data-event={eventKey}
               style={{ height: "0px", width: dropWidth ? dropWidth + "px" : undefined }}
             >
               <Drop
