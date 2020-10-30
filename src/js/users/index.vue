@@ -2,8 +2,14 @@
   <div class="test">
     <div>
       <Button :handle="click">
-        test {{ test }}
+        改变数据
       </Button>
+      <Button :handle="click2">
+        批量改变选择
+      </Button>
+      <template>
+        <p>111111111</p>
+      </template>
     </div>
     <div class="flex-between">
       <ComboList
@@ -20,6 +26,7 @@
         default-val="3,4"
         :multiply="true"
         :able-clear="true"
+        :init-combo-val="init"
       /> <ComboList
         :data="data"
         field="test3"
@@ -56,17 +63,7 @@ export default class User extends Vue {
     { id: 12, text: "eeee6" }
   ]
 
-  test:string
-
-  constructor () {
-    super()
-    this.test = "er"
-    console.log("constructor")
-  }
-
-  created ():void {
-    console.log("crate")
-  }
+  init: {id:string} | null = null;
 
   comboMethods:comboMethods | null = null
   bindMethod (methods:comboMethods):void {
@@ -74,9 +71,20 @@ export default class User extends Vue {
   }
 
   click ():void {
-    const a = this.comboMethods!.getSelected()
-    console.log(a)
-    this.comboMethods!.click!("2")
+    this.data = [
+    { id: 1, text: "w" },
+    { id: 2, text: "w2" },
+    { id: 3, text: "w3" },
+    { id: 4, text: "w4" },
+    { id: 5, text: "w5" },
+    { id: 12, text: "w6" }
+  ]
+  }
+
+  click2 ():void {
+  this.init = {
+    id: "1,2,3,4"
+  }
   }
 }
 </script>

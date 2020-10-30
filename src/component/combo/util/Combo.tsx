@@ -48,8 +48,7 @@ export default (Drop:VueClass<Vue>):VueConstructor<Vue> => {
       @Prop(Boolean) ableClear?:boolean;
       @Prop(Boolean) renderCallback?: boolean; // 组件第一次加载调用点击事件的回调函数
       @Prop(Function) bindComMethods?: (exportMethods:comboMethods)=> void;
-      // 外部通过这个值来控制下拉框的选中,id可以是字符串分隔
-      // initComboVal?:{id:string};
+      @Prop(Object) initComboVal?:{id:string}; // 外部通过这个值来控制下拉框的选中,id可以是字符串分隔
       // 点击或是选中之前做的操作，返回true不执行选中操作，默认返回false
       @Prop(Function) clickOrCheckForbid?:(node:anyObj, field:string, selectedArr:ISelected[])=>boolean;
       // 自定义显示框的文字内容，selected所选择的内容
@@ -154,7 +153,7 @@ export default (Drop:VueClass<Vue>):VueConstructor<Vue> => {
       }
 
       render () {
-        const { width, drop, tit, noicon, changeSelect, eventKey, dropToggle, ableClear, noRequire, selected, dropWidth, data, exportMethods } = this
+        const { width, initComboVal, drop, tit, noicon, changeSelect, eventKey, dropToggle, ableClear, noRequire, selected, dropWidth, data, exportMethods } = this
         const activeName = drop ? " active" : ""
         return (
           <div
@@ -181,6 +180,7 @@ export default (Drop:VueClass<Vue>):VueConstructor<Vue> => {
               <Drop
                 data={data}
                 initSelect={this.initSelect}
+                initComboVal={initComboVal}
                 selected={selected}
                 changeSelect={changeSelect}
                 bindMethod={this.bindFn}

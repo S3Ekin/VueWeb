@@ -53,6 +53,7 @@
   import Vue from "vue"
   import Api from "@api/main"
   import { Component } from "vue-property-decorator"
+  import menuData from "../menu/data"
   type menuItem = {
     // eslint-disable-next-line camelcase
     app_code: string;
@@ -101,6 +102,9 @@
              })
              return val
            })
+         }).catch(() => {
+           // eslint-disable-next-line @typescript-eslint/no-explicit-any
+           this.menuData = menuData.data.menuChildList as any[]
          })
      }
 

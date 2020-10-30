@@ -27,7 +27,7 @@ export default {
         menuChildList: [
           {
             code: "kpi_0101",
-            url: "statistics/list",
+            url: "user/user",
             name: "指标数据查询",
             remark: null,
             app_code: "kpi",

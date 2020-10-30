@@ -20,6 +20,36 @@ import { ISelected, filedObj, node, drop } from "./Combobox"
 import DropItem from "./util/DropItem.vue"
 import { activeStatus, formatterListData } from "./util/util"
 
+type obj<p> = {
+  t:p,
+  fn: (a:p) => p
+}
+
+const a:obj<string> = {
+  t: "2",
+  fn: function (c) {
+      console.log(c)
+      return c
+  }
+}
+a.fn("aa")
+
+const obj
+
+type fn<p>= (k:p)=>void;
+
+const fn:fn<string> = function (k:string) {
+  return k
+}
+
+fn("2")
+
+const fc = function<p> (k: p):p {
+  return k
+}
+
+fc(3)
+
 @Component({
     name: "ComboList",
     components: {
@@ -42,7 +72,7 @@ export default class ComboList extends Vue {
       const obj = formatterListData(prop as drop<"list">, defaultVal)
       this.listData = obj.data
       this.singleClickPre = obj.singleClickPre
-      this.bindMethod<"click">(this.clickItem, "click")
+      this.bindMethod(this.clickItem, "click")
     }
 
     getProp (): drop<"list"> {

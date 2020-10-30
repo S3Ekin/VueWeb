@@ -330,3 +330,28 @@ class Combo extends Vue {
 ```
 > 1. 注意框加的数据的observer原理
 ---
+15. #### 完全可以把<template></template> 当空标签用。 v-for 时很有用
+---
+16. #### 写tree类型时，知道几个固定的知道，但是children字段不清楚，目前写法是用 范型代替chidren字段并给默认值"children"。并给代表children类型的 类型范型，也给默认值“children”j具体看 combo/Combobox.d.ts
+```typescript
+type treeNode<a, p extends string = "children"> = {
+  [k in p]:treeNode<a, p>[];
+} & anyObj<{
+ active: a;
+ expand?: boolean;
+}>
+
+export type filedObj<P extends keyof IDrop, c extends string = "children"> = {
+  idField: string;
+  textField: string;
+  multiply?: boolean;
+  itemIcon?: string;
+  defaultVal: string;
+  field: string;
+  clickOrCheckForbid?: (
+    node: anyObj,
+    field: string,
+    selectedArr: ISelected[]
+  ) => boolean;
+} & IDrop<c>[P];
+```
