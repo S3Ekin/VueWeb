@@ -19,14 +19,12 @@
           >
             <span class="combo-text">{{ text }}</span>
             <SvgIcon
-              v-if="filedObj.itemIcon"
               :class-name="filedObj.itemIcon"
             />
           </CheckBox>
         </span>
         <span v-else>
           <SvgIcon
-            v-if="filedObj.itemIcon"
             :class-name="filedObj.itemIcon"
           />
           <span class="combo-text">{{ text }}</span>

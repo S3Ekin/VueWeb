@@ -20,36 +20,6 @@ import { ISelected, filedObj, node, drop } from "./Combobox"
 import DropItem from "./util/DropItem.vue"
 import { activeStatus, formatterListData } from "./util/util"
 
-type obj<p> = {
-  t:p,
-  fn: (a:p) => p
-}
-
-const a:obj<string> = {
-  t: "2",
-  fn: function (c) {
-      console.log(c)
-      return c
-  }
-}
-a.fn("aa")
-
-const obj
-
-type fn<p>= (k:p)=>void;
-
-const fn:fn<string> = function (k:string) {
-  return k
-}
-
-fn("2")
-
-const fc = function<p> (k: p):p {
-  return k
-}
-
-fc(3)
-
 @Component({
     name: "ComboList",
     components: {
@@ -62,7 +32,7 @@ export default class ComboList extends Vue {
     @Prop({ required: true, type: Function }) changeSelect!:drop<"list">["changeSelect"]
     @Prop({ required: true, type: Function }) bindMethod!:drop<"list">["bindMethods"]
     @Prop(Array) selected!: ISelected[];
-    @Prop(Number) maxHeight?: number;
+    @Prop({ type: Number, required: true }) maxHeight!:number;
     @Inject() filedObj !:filedObj<"list">;
     listData: node<activeStatus>[] = []; // 注意必须先初始化值，让vue对据据进行 observe
     singleClickPre = ""

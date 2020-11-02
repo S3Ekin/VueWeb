@@ -1,22 +1,28 @@
 <template>
-  <div>
-    <div :style="{paddingBottom: '0.5em'}">
-      <Search
-        field="search"
-      />
+  <div class="drop-ul">
+    <div class="g-search">
+      <input
+        class="search-inp"
+        placeholder="搜索关键字..."
+      >
+      <span
+        class="close"
+      >
+        <SvgIcon class-name="fa-search" />
+      </span>
     </div>
+    {{ treeData.length ? treeData[0].expand : "ddd" }}
     <ul
-      :style="{maxHeight: maxHeight ? maxHeight + 'px' : undefined}"
-      class="drop-ul"
+      :style="{maxHeight: maxHeight ? maxHeight + 'px' : undefined, overflow: 'auto'}"
     >
       <template
         v-for="(val, oindex) in treeData"
       >
-        <ParTreeItem
+        <ParItem
           v-if="val[filedObj.childField].length"
           :key="val[filedObj.idField]"
           :node="val"
-          :index="oindex"
+          :index="oindex + ''"
           :lev="0"
           :click-fn="clickItem"
           :check-method="check"
@@ -27,7 +33,7 @@
           v-else
           :key="val[filedObj.idField]"
           :node="val"
-          :index="oindex"
+          :index="oindex + ''"
           :lev="0"
           :click-fn="clickItem"
           :check-method="check"
@@ -44,14 +50,18 @@ import { Component, Prop, Inject, Watch } from "vue-property-decorator"
 import { ISelected, filedObj, treeNode, drop } from "./Combobox"
 import ParItem from "./util/ParItem.vue"
 import Search from "@component/search/index.vue"
+import { SvgIcon } from "@component/Icon/index"
 import { activeStatus, formatterTreeData } from "./util/util"
+import DropItem from "./util/DropItem.vue"
 
 type tree = treeNode<activeStatus>
 @Component({
     name: "ComboTree",
     components: {
         ParItem,
-        Search
+        SvgIcon,
+        Search,
+        DropItem
     }
 })
 export default class ComboTree extends Vue {
@@ -61,7 +71,7 @@ export default class ComboTree extends Vue {
     @Prop({ required: true, type: Function }) bindMethod!:drop<"list">["bindMethods"]
     @Prop(Array) selected!: ISelected[];
     @Prop(Object) initComboVal?:{id:string}; // 外部通过这个值来控制下拉框的选中,id可以是字符串分隔
-    @Prop(Number) maxHeight?: number;
+    @Prop({ type: Number, required: true }) maxHeight!:number;
     @Inject() filedObj!: filedObj<"tree">;
     treeData: tree[] = []; // 注意必须先初始化值，让vue对据据进行 observe
     oldSelectedIndex = ""
@@ -106,7 +116,11 @@ export default class ComboTree extends Vue {
     }
 
     expandToggle (index:string):void {
-        console.log(index)
+      const { filedObj: { childField } } = this
+        const indexArr = index.split(",").join(`,${childField},`).split(",")
+        const node = this.getNodeByPath(indexArr, this.treeData)
+        node.expand = false
+        console.log(this.treeData)
     }
 
     checkForPar (val:string):void {
@@ -179,3 +193,40 @@ export default class ComboTree extends Vue {
     }
 }
 </script>
+<style lang="scss">
+@import "../../css/scss/variate";
+$active:#82bbf8;
+
+.g-combo {
+  .g-search {
+    display: flex;
+    border-radius: 3px;
+    border: 1px solid #c6c9cf;
+    background: none;
+    height: 26px;
+    margin: 6px;
+
+    &:hover {
+      border-color: $active;
+    }
+  }
+
+  .search-inp {
+    cursor: pointer;
+    border: none;
+    text-indent: 0.5em;
+    outline: 0;
+    color: #5b5b5b;
+    flex: 1;
+  }
+
+  .close {
+    padding: 2px 4px;
+
+    .icon {
+      font-size: 22px;
+    }
+  }
+}
+
+</style>

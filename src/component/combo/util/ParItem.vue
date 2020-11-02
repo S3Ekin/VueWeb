@@ -3,14 +3,13 @@
     <div
       class="m-combo-item"
       :data-index="index"
-      @click="toggleExpand"
+      @click="toggleSlide"
     >
       <span
         class="g-item-text"
         :style="levSpaceStyle"
-        @click="clickItemFn"
       >
-        <span v-if=" filedObj.multiply">
+        <span v-if="filedObj.multiply">
           <CheckBox
             :handle="checkFn"
             :checked="checked"
@@ -19,21 +18,19 @@
           >
             <span class="combo-text">{{ text }}</span>
             <SvgIcon
-              v-if="filedObj.itemIcon"
-              :class-name="filedObj.itemIcon"
+              class-name="fa-folder"
             />
           </CheckBox>
         </span>
         <span v-else>
           <SvgIcon
-            v-if="filedObj.itemIcon"
-            :class-name="filedObj.itemIcon"
+            class-name="fa-folder"
           />
           <span class="combo-text">{{ text }}</span>
         </span>
       </span>
       <span>
-        <SvgIcon :class="slideIcon" />
+        <SvgIcon :class-name="slideIcon" />
       </span>
     </div>
     <div>
@@ -41,12 +38,12 @@
         <template
           v-for="(val, oindex) in child"
         >
-          <ParTreeItem
-            v-if="child.length"
+          <ParItem
+            v-if="val[filedObj.childField].length"
             :key="val[filedObj.idField]"
             :node="val"
             :index="`${index},${oindex}`"
-            :lev="lev"
+            :lev="lev + 1"
             :click-fn="clickFn"
             :check-method="checkMethod"
             :check-for-par="checkForPar"
@@ -57,7 +54,7 @@
             :key="val[filedObj.idField]"
             :node="val"
             :index="`${index},${oindex}`"
-            :lev="lev"
+            :lev="lev + 1"
             :click-fn="clickFn"
             :check-method="checkMethod"
             :check-box="filedObj.multiply"
@@ -73,11 +70,15 @@ import { Component, Inject, Prop } from "vue-property-decorator"
 import { SvgIcon } from "@component/Icon/index"
 import { filedObj, node } from "../Combobox.d"
 import { activeStatus } from "./util"
+import { CheckBox } from "@component/checkbox/index"
+import DropItem from "./DropItem.vue"
 
 @Component({
-    name: "TreePar",
+    name: "ParItem",
     components: {
-        SvgIcon
+        SvgIcon,
+        DropItem,
+        CheckBox
     }
 })
 export default class ParItem extends Vue {
@@ -92,7 +93,7 @@ export default class ParItem extends Vue {
     @Prop({ required: true, type: Function }) checkMethod!:(val:string) =>void;
 
     get slideIcon ():string {
-        return this.node.expand ? "arrow-bottom-line" : "arrow-top-line"
+        return this.node.expand ? "fa-arrow-bottom-line" : "fa-arrow-top-line"
     }
 
     get child (): node<activeStatus>[] {
@@ -130,6 +131,11 @@ export default class ParItem extends Vue {
         return node.active === activeStatus.hasSelect
     }
 
+    toggleSlide (e:MouseEventEl<HTMLInputElement>):void {
+      const index = e.currentTarget!.dataset.index!
+      this.toggleExpand(index)
+    }
+
     checkFn (e: MouseEventEl<HTMLInputElement>):void {
         const dom = e.currentTarget!
         const value = dom.value!
@@ -138,7 +144,7 @@ export default class ParItem extends Vue {
 
     clickItem (e: MouseEventEl<HTMLInputElement>):void {
         const dom = e.currentTarget!
-        const index = dom.dataset.index!
+        const index = dom.parentElement!.dataset.index!
         this.clickFn(index)
     }
 

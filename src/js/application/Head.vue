@@ -3,7 +3,9 @@
     <Search
       :handle="search"
       :width="400"
-    />
+    >
+      搜索
+    </Search>
     <Button
       :handle="addInfo"
       class-name="fa fa-add"
@@ -39,9 +41,3 @@ class Application extends Vue {
 
 export default Application
 </script>
-
-<style lang="scss">
-  .test {
-    background: red;
-  }
-</style>

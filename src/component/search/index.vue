@@ -10,7 +10,7 @@
       :handle="handle"
       class-name="fa fa-search"
     >
-      搜索
+      <slot />
     </Button>
   </div>
 </template>

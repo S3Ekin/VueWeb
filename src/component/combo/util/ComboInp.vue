@@ -86,6 +86,8 @@ $combo-text-color:$text-color;
 $combo-h:2em;
 $combo-drop-padding:8px;
 
+$theme:$theme-color;
+
 .m-combo-inp {
   .combo-value {
     flex: 1;
@@ -121,6 +123,10 @@ $combo-drop-padding:8px;
 }
 
 .m-drop {
+  .icon {
+    color: $theme;
+  }
+
   .drop-ul {
     overflow: auto;
     position: absolute;

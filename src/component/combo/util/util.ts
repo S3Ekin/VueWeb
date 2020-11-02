@@ -84,18 +84,19 @@ export const formatterTreeData = function (props: drop<"tree">, defaultVal:strin
         }
         let oldSelectedIndex = ""
         let listSelected: ISelected[] = []
-
-        const immutableData = JSON.parse(JSON.stringify(data), function (k, val) {
-            if (Object.toString.call(val) === "[object Object]") {
+        if (data.length && (!data[0][id] || typeof data[0][id] === "object")) {
+            throw new Error("请确定下拉框数据节点id字段的值是唯一，且为数字或为字符串！")
+        }
+        const mapTree = function (arr:anyObj[], parIndex:string) {
+            return arr.map((val, index) => {
+                 // 递归反遍历
                 const node = val as node<activeStatus>
-                let children = node[childField] as node<activeStatus>[]
-                if (!children) {
-                    children = []
-                    node[childField] = children
-                }
+                let children = node[childField] as node<activeStatus>[] || []
                 // 执行目录和文件两种情况 ,添加,是否展开:expand和是否选中：active的状态
                 let active: activeStatus
+                const path = parIndex + "," + index
                 if (children.length) {
+                     children = mapTree(children, path)
                     if (multiply) {
                         const hasSelected = children.some((val) => {
                                 return val.active === activeStatus.hasSelect
@@ -127,25 +128,27 @@ export const formatterTreeData = function (props: drop<"tree">, defaultVal:strin
                     }
                 } else {
                     // 文件
-                    const isDefault = defaultValArr.includes(`${node.get(id)}`)
+                    const isDefault = defaultValArr.includes(`${node.id}`)
                     active = isDefault ? activeStatus.select : activeStatus.noSelect
                     if (isDefault) {
                         listSelected.push({
-                            id: node.get(id),
-                            text: node.get(text)
+                            id: node[id],
+                            text: node[text]
                         })
                         if (!multiply) {
                             // 记录单选时的索引
-                            oldSelectedIndex = path!.join(",")
+                            oldSelectedIndex = path
                         }
                     }
                 }
                 // 添加字段
                 node.active = active
                 node.expand = true
-            }
-            return val
-        })
+                node[childField] = children
+                return node
+            })
+        }
+         const immutableData = mapTree(data, "") as treeNode<activeStatus>[]
 
         // 显示默认选中的,并且按照默认的顺序显示
         if (defaultVal) {
@@ -159,7 +162,6 @@ export const formatterTreeData = function (props: drop<"tree">, defaultVal:strin
         if (!noInitState) {
             initSelect(listSelected)
         }
-
         return {
             data: immutableData,
             oldSelectedIndex: oldSelectedIndex

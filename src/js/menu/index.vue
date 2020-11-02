@@ -1,39 +1,32 @@
 <template>
   <div>
-    <p>menu</p>
-    <Tree
-      :node="node"
-      :filed-obj="filedObj"
-      path="0"
-      :lev="0"
+    <ComboTree
+      :data="node"
+      field="test1"
+      :width="200"
+      id-field="code"
+      text-field="name"
+      child-field="menuChildList"
     />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue"
-import Tree from "@component/combo/Tree.vue"
-import { Component, Provide } from "vue-property-decorator"
+import { ComboTree } from "@component/combo/index"
+import { Component } from "vue-property-decorator"
 import menuData from "./data"
 const app = Vue.extend({
 })
 @Component({
+  name: "Menu",
  components: {
-        Tree
+        ComboTree
     }
 })
 class Menu extends app {
-    node = menuData.data
-    filedObj = { id: "code", text: "name", child: "menuChildList" }
-    @Provide("foo")
-    foo="eeee"
+    node = menuData.data.menuChildList
 }
 
 export default Menu
 </script>
-
-<style lang="scss">
-  .test {
-    background: red;
-  }
-</style>
