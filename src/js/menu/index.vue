@@ -1,8 +1,16 @@
 <template>
-  <div>
+  <div class="flex-between">
     <ComboTree
       :data="node"
       field="test1"
+      :width="200"
+      id-field="code"
+      text-field="name"
+      child-field="menuChildList"
+    />
+    <ComboTree
+      :data="node"
+      field="test2"
       :width="200"
       id-field="code"
       text-field="name"

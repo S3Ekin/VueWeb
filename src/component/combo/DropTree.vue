@@ -117,10 +117,9 @@ export default class ComboTree extends Vue {
 
     expandToggle (index:string):void {
       const { filedObj: { childField } } = this
-        const indexArr = index.split(",").join(`,${childField},`).split(",")
-        const node = this.getNodeByPath(indexArr, this.treeData)
-        node.expand = false
-        console.log(this.treeData)
+      const indexArr = index.split(",").join(`,${childField},`).split(",")
+      const node = this.getNodeByPath(indexArr, this.treeData)
+      node.expand = !node.expand
     }
 
     checkForPar (val:string):void {

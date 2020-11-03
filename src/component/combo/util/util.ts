@@ -148,7 +148,9 @@ export const formatterTreeData = function (props: drop<"tree">, defaultVal:strin
                 return node
             })
         }
-         const immutableData = mapTree(data, "") as treeNode<activeStatus>[]
+
+        const _data = JSON.parse(JSON.stringify(data))
+         const immutableData = mapTree(_data, "") as treeNode<activeStatus>[]
 
         // 显示默认选中的,并且按照默认的顺序显示
         if (defaultVal) {

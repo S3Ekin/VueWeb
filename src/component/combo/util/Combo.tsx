@@ -155,9 +155,8 @@ export default function Hqc (Drop:VueClass<Vue>):VueConstructor<Vue> {
       }
 
       changeSelect (selected:ISelected[], node?: anyObj):void{
-         const { multiply, clickCallback, field } = this
+         const { clickCallback, field } = this
           this.selected = selected
-          this.drop = !multiply ? false : this.drop // 单选的时候，点击后关闭下拉框
           clickCallback && clickCallback(selected, field, node)
       }
 
@@ -175,7 +174,6 @@ export default function Hqc (Drop:VueClass<Vue>):VueConstructor<Vue> {
         const activeName = drop ? " active" : ""
         return (
           <div
-            ref="wrapDomRef"
             class="g-combo"
             style={{ width: width ? width + "px" : undefined }}
             onClick={this.clickBox}

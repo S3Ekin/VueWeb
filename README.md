@@ -355,3 +355,28 @@ export type filedObj<P extends keyof IDrop, c extends string = "children"> = {
   ) => boolean;
 } & IDrop<c>[P];
 ```
+----
+17. #### Vue 更新data的方法，其关键还是返回新数据。与React的比较原理还是一样，要是运用Immutable.js 也很不错的。
+   * 发现了在ComTree 里总是更新不了数据的原因了，发现在通过prop传过来的属性data来构造自己的treeData时，没有进行深复制，**JSON.parse(JSON.stringify())**，
+   * 导致用 **.** 语法时，总是不能更新dom,即使数据更新了，dom还是没变。但是也发现了一个有趣现象。改变某个值的类型为 **string** 、**number**时，可以更新到dom上，不管其层级深度。但是Object和boolean 的类型不行。 
+   ```typescript
+   // 当直接使用 props的data来作为 自己的data时。
+   class ComBoTree {
+     @Prop() data:any[];
+     treeData = data
+    ... 
+    expandToggle (index:string):void {
+        const { filedObj: { childField } } = this
+        const indexArr = index.split(",").join(`,${childField},`).split(",")
+        const node = this.treeData[0]
+        // node[childField][0].name = new Date().getTime() // 会更新
+        // node.expand = !node.expand // 不会更新
+        // this.treeData[0].expand = !node.expand // 不会更新
+        // this.treeData[0] = Object.assign({}, node) // 不能更新
+        // this.$set(this.treeData, 0, node) // 子组件 ParItem 不会更新
+        this.$set(this.treeData, 0, Object.assign({}, node)) // 会更新
+    }
+    ...
+  }
+   ```
+   * 当把data的数据进行深复制，也就是不与props 里的值发生关联是，不管其层级，都可以用 **.** 语法的
