@@ -11,7 +11,6 @@
         <SvgIcon class-name="fa-search" />
       </span>
     </div>
-    {{ treeData.length ? treeData[0].expand : "ddd" }}
     <ul
       :style="{maxHeight: maxHeight ? maxHeight + 'px' : undefined, overflow: 'auto'}"
     >
@@ -26,7 +25,7 @@
           :lev="0"
           :click-fn="clickItem"
           :check-method="check"
-          :check-for-par="checkForPar"
+          :check-for-par="checkForParFn"
           :toggle-expand="expandToggle"
         />
         <DropItem
@@ -51,7 +50,7 @@ import { ISelected, filedObj, treeNode, drop } from "./Combobox"
 import ParItem from "./util/ParItem.vue"
 import Search from "@component/search/index.vue"
 import { SvgIcon } from "@component/Icon/index"
-import { activeStatus, formatterTreeData } from "./util/util"
+import { activeStatus, formatterTreeData, cascade, getNodeByPath } from "./util/util"
 import DropItem from "./util/DropItem.vue"
 
 type tree = treeNode<activeStatus>
@@ -112,27 +111,153 @@ export default class ComboTree extends Vue {
     }
 
     check (value:string):void {
-        console.log(value)
+      const { filedObj, selected } = this
+      const childField = filedObj.childField!
+      const idField = filedObj.idField
+      const textField = filedObj.textField
+      const clickForbid = filedObj.clickOrCheckForbid!
+      const comField = filedObj.field
+      const indexArr = value
+        .split(",")
+        .join(`,${childField},`)
+        .split(",")
+
+        let _data = this.treeData
+        let _select = selected.map(val => val)
+        const newNode = getNodeByPath(indexArr, _data)
+        if (!newNode) {
+          return
+        }
+        // 判断是否禁止点击
+        if (clickForbid && clickForbid(newNode, comField, selected)) {
+          return
+        }
+
+        // 判断这个node有没有被选中
+        const active =
+            newNode.active === activeStatus.select
+              ? activeStatus.noSelect
+              : activeStatus.select
+
+          if (active === activeStatus.select) {
+            _select.push({
+              id: newNode[idField],
+              text: newNode[textField]
+            })
+          } else {
+            _select = _select.filter(_val => {
+              return _val.id !== newNode[idField]
+            })
+          }
+          newNode.active = active
+
+        _data = cascade(value, _data, childField)
+        this.changeSelect(_select, newNode)
+    }
+
+    mapFn (
+        list: tree[],
+        active: activeStatus,
+        select: ISelected[],
+        filedObj: {
+          idField: string;
+          textField: string;
+          childField: string;
+        }
+      ):{
+          arr: tree[],
+          selecte: ISelected[]
+      } {
+        let _select = select
+        const { idField, childField, textField } = filedObj
+        const arr = list.map(val => {
+          const _child = val[childField as "children"]
+          const _node = val
+          if (_child.length) {
+            const result = this.mapFn(_child, active, _select, filedObj)
+            _node[childField] = result.arr
+            // 改变select
+            _select = result.selecte
+          } else {
+            if (active === activeStatus.select) {
+              // 清除之前选的，现在再选一次，保证选择的顺序
+              if (_node.active === activeStatus.select) {
+                _select = _select.filter(_val => {
+                  return _val.id !== _node.idField
+                })
+              }
+               _select.push({
+                id: _node[idField],
+                text: _node[textField]
+              })
+            } else {
+              _select = _select.filter(_val => {
+                return _val.id !== _node[idField]
+              })
+            }
+          }
+           _node.active = active
+           return _node
+        })
+
+        return {
+          arr: arr,
+          selecte: _select
+        }
+      }
+
+    checkForParFn (value: string):void {
+      const { filedObj, selected } = this
+      const childField = filedObj.childField!
+      const idField = filedObj.idField
+      const textField = filedObj.textField
+      const clickForbid = filedObj.clickOrCheckForbid
+      const comField = filedObj.field
+      const indexArr = value
+        .split(",")
+        .join(`,${childField},`)
+        .split(",")
+
+        const _data = this.treeData
+        let _select = selected.map(val => val)
+        const newNode = getNodeByPath(indexArr, _data)
+
+        if (!newNode) {
+          return
+        }
+        // 判断是否禁止点击
+        if (clickForbid && clickForbid(newNode, comField, selected)) {
+          return
+        }
+          // 判断这个node有没有被选中
+          const node = newNode
+          const active =
+            node.active === activeStatus.select
+              ? activeStatus.noSelect
+              : activeStatus.select
+
+          // 选中所有的子文件
+          const _child = newNode[childField]
+
+            const result = this.mapFn(_child, active, selected, {
+              idField,
+              childField,
+              textField
+            })
+           newNode[childField] = result.arr
+           newNode.active = active
+            // 改变selecte
+            _select = result.selecte
+
+        cascade(value, _data, childField)
+        this.changeSelect(_select, newNode)
     }
 
     expandToggle (index:string):void {
       const { filedObj: { childField } } = this
       const indexArr = index.split(",").join(`,${childField},`).split(",")
-      const node = this.getNodeByPath(indexArr, this.treeData)
+      const node = getNodeByPath(indexArr, this.treeData)
       node.expand = !node.expand
-    }
-
-    checkForPar (val:string):void {
-        console.log(val)
-    }
-
-    getNodeByPath (pathArr:string[], data: tree[]): tree {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        let node:any = data
-        pathArr.forEach(path => {
-            node = node[path] || {}
-        })
-        return node as tree
     }
 
     clickItem (index?: string):void {
@@ -152,7 +277,7 @@ export default class ComboTree extends Vue {
         const _data = this.treeData
         const oldSelectedIndex = this.oldSelectedIndex
         let _select = selected.map(val => val)
-        const newNode = this.getNodeByPath(indexArr, _data)
+        const newNode = getNodeByPath(indexArr, _data)
         if (!newNode) {
             return
         }
@@ -166,7 +291,7 @@ export default class ComboTree extends Vue {
             return
         }
         if (oldSelectedIndex) {
-            this.getNodeByPath(oldSelectedIndex.split(","), _data).active = activeStatus.noSelect
+            getNodeByPath(oldSelectedIndex.split(","), _data).active = activeStatus.noSelect
         }
         _select = []
         // 判断这个node有没有被选中

@@ -11,15 +11,17 @@
       >
         <span v-if="filedObj.multiply">
           <CheckBox
-            :handle="checkFn"
+            :handle="checkParFn"
             :checked="checked"
             :has-checked="hasChecked"
             :value="index"
+            :name="filedObj.field"
+            type="checkbox"
           >
-            <span class="combo-text">{{ text }}</span>
             <SvgIcon
               class-name="fa-folder"
             />
+            <span class="combo-text">{{ text }}</span>
           </CheckBox>
         </span>
         <span v-else>
@@ -46,7 +48,7 @@
             :lev="lev + 1"
             :click-fn="clickFn"
             :check-method="checkMethod"
-            :check-for-par="checkForPar"
+            :check-for-par="checkParFn"
             :toggle-expand="toggleExpand"
           />
           <DropItem
@@ -140,6 +142,12 @@ export default class ParItem extends Vue {
         const dom = e.currentTarget!
         const value = dom.value!
         this.checkMethod(value)
+    }
+
+    checkParFn (e: MouseEventEl<HTMLInputElement>):void {
+        const dom = e.currentTarget!
+        const value = dom.value!
+        this.checkForPar(value)
     }
 
     clickItem (e: MouseEventEl<HTMLInputElement>):void {

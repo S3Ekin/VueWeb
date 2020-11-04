@@ -169,3 +169,57 @@ export const formatterTreeData = function (props: drop<"tree">, defaultVal:strin
             oldSelectedIndex: oldSelectedIndex
         }
     }
+export const getNodeByPath = (pathArr:string[], data: treeNode<activeStatus>[]): treeNode<activeStatus> => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let node:any = data
+        pathArr.forEach(path => {
+            node = node[path] || {}
+        })
+        return node as treeNode<activeStatus>
+}
+// 级联选中
+export const cascade = function (
+    pathIndex: string,
+    data: treeNode<activeStatus>[],
+    childField: string
+):treeNode<activeStatus>[] {
+    const pathArr = pathIndex.split(",")
+    pathArr.pop()
+
+    // 检查上一级的状态
+    while (pathArr.length) {
+        const path = pathArr.join(`,${childField},`).split(",")
+        const _node = getNodeByPath(path, data)
+        const child = _node[childField as "children"]
+        const hasSelect = child.some(
+            val => val.active === activeStatus.hasSelect
+        )
+        let active: activeStatus
+        if (hasSelect) {
+            active = activeStatus.hasSelect
+        } else {
+            const selectCount = child.reduce((cur, val) => {
+                let total = cur
+                if (val.active === activeStatus.select) {
+                    total++
+                }
+                return total
+            }, 0)
+            const childSize = child.length
+
+            if (selectCount === childSize) {
+                active = activeStatus.select
+            } else if (selectCount === 0) {
+                active = activeStatus.noSelect
+            } else {
+                active = activeStatus.hasSelect
+            }
+        }
+
+        _node.active = active
+        // 删除最后一个路径，获取上一级的节点
+        pathArr.pop()
+    }
+
+    return data
+}

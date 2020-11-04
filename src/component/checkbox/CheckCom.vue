@@ -12,7 +12,7 @@
         :value="value"
         :checked="checked"
         :disabled="disabled"
-        @change="handle"
+        @change="change"
       >
     </span>
     <slot />
@@ -28,6 +28,11 @@
     val:string;
   }[]
 
+  const obj = {
+    checkbox: ["fa-unchecked", "fa-checked"],
+    radio: ["fa-unradio", "fa-radio"]
+  }
+
     @Component({
       name: "Checkbox",
       components: {
@@ -35,7 +40,7 @@
       }
     })
    export default class Checkbox extends Vue {
-      @Prop({ required: true }) handle!:(e:MouseEvent)=>void;
+      @Prop(Function) handle?:(e:MouseEvent)=>void;
       @Prop({ type: String, default: "radio" }) type!: "radio" | "checkbox";
       @Prop(String) name!: string;
       @Prop(String) value!: string;
@@ -43,8 +48,13 @@
       @Prop(Boolean) checked!: boolean;
       @Prop(Boolean) hasChecked!: boolean;
       @Prop(Boolean) disabled!: boolean;
+      change (e: MouseEventEl<HTMLInputElement>):void {
+         this.handle && this.handle(e)
+      }
+
       get className ():string {
-          return this.checked ? "fa-radio" : "fa-unradio"
+        const { type } = this
+          return this.hasChecked ? "fa-hasChecked" : this.checked ? obj[type][1] : obj[type][0]
       }
     }
 </script>

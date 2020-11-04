@@ -5,6 +5,7 @@
       field="test1"
       :width="200"
       id-field="code"
+      :multiply="true"
       text-field="name"
       child-field="menuChildList"
     />

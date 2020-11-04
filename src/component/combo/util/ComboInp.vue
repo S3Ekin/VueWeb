@@ -214,6 +214,10 @@ $theme:$theme-color;
 
   .m-label {
     margin-right: 0;
+
+    .wrap-icon {
+      padding-right: 4px;
+    }
   }
 
   .fa {

@@ -12,15 +12,17 @@
       >
         <span v-if="checkBox">
           <CheckBox
-            :handle="checkFn"
             :checked="checked"
             :has-checked="hasChecked"
+            :name="filedObj.field"
             :value="index"
+            type="checkbox"
+            :handle="checkFn"
           >
-            <span class="combo-text">{{ text }}</span>
             <SvgIcon
               :class-name="filedObj.itemIcon"
             />
+            <span class="combo-text">{{ text }}</span>
           </CheckBox>
         </span>
         <span v-else>
@@ -42,6 +44,8 @@ import { ISelected, filedObj, node } from "../Combobox.d"
 import { SvgIcon } from "@component/Icon/index"
 import { CheckBox } from "@component/checkbox/index"
 import { activeStatus } from "./util"
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const empty = () => {}
 @Component({
     name: "ComboxInp",
     components: {
@@ -52,7 +56,6 @@ import { activeStatus } from "./util"
 export default class ComboxInp extends Vue {
     @Prop(Object) node!: node<activeStatus>;
     @Prop(String) index!: string;
-    @Prop(Boolean) multiply!:boolean;
     @Prop(Boolean) checkBox!:boolean;
     @Prop(Number) lev?:number;
     @Inject() filedObj !:filedObj<"list">;
@@ -61,13 +64,13 @@ export default class ComboxInp extends Vue {
     @Prop() formatterDropItem?:(selected:ISelected[])=>VNode
 
     get activeName ():string {
-      const { node } = this
-      return node.active === activeStatus.select ? "active" : ""
+      const { node, checkBox } = this
+      return checkBox ? "" : node.active === activeStatus.select ? "active" : ""
     }
 
-    get clickItemFn (): undefined | this["clickItem"] {
-         const { multiply, lev } = this
-         return multiply && lev ? undefined : this.clickItem
+    get clickItemFn (): this["clickItem"] {
+         const { checkBox } = this
+         return checkBox ? empty : this.clickItem
     }
 
     get levSpaceStyle ():undefined | anyObj {
