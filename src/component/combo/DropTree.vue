@@ -25,7 +25,7 @@
           :lev="0"
           :click-fn="clickItem"
           :check-method="check"
-          :check-for-par="checkForParFn"
+          :check-par="checkForParFn"
           :toggle-expand="expandToggle"
         />
         <DropItem
@@ -90,7 +90,7 @@ export default class ComboTree extends Vue {
 
     initData (defaultVal:string):void {
       const prop = this.getProp()
-      const obj = formatterTreeData(prop as drop<"tree">, defaultVal, this.data, true)
+      const obj = formatterTreeData(prop as drop<"tree">, defaultVal, this.data)
       this.treeData = obj.data
       this.oldSelectedIndex = obj.oldSelectedIndex
     }

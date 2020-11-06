@@ -380,3 +380,6 @@ export type filedObj<P extends keyof IDrop, c extends string = "children"> = {
   }
    ```
    * 当把data的数据进行深复制，也就是不与props 里的值发生关联是，不管其层级，都可以用 **.** 语法的
+   ---
+   18. #### Vue 事件不能动态把指定为null 或是 undefind,这样会报错，怎么解决有时需要事件在具体的函数和null之间切换？
+

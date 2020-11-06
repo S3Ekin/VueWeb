@@ -10,12 +10,6 @@
       <Button :handle="click3">
         data
       </Button>
-      <template>
-        <p>111111111</p>
-      </template>
-    </div>
-    <div>
-      <Test :data="data" />
     </div>
     <div class="flex-between">
       <ComboList
@@ -51,13 +45,11 @@ import { Component } from "vue-property-decorator"
 import { ComboList } from "@component/combo/index"
 import Button from "@component/button/index.vue"
 import { comboMethods } from "@component/combo/Combobox"
-import Test from "./Test.vue"
 @Component({
     name: "User",
     components: {
         ComboList,
-        Button,
-        Test
+        Button
     }
 })
 export default class User extends Vue {

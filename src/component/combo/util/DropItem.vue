@@ -10,26 +10,28 @@
         className="g-item-text"
         :style="levSpaceStyle"
       >
-        <span v-if="checkBox">
-          <CheckBox
-            :checked="checked"
-            :has-checked="hasChecked"
-            :name="filedObj.field"
-            :value="index"
-            type="checkbox"
-            :handle="checkFn"
-          >
+        <span>
+          <template v-if="checkBox">
+            <CheckBox
+              :checked="checked"
+              :has-checked="hasChecked"
+              :name="filedObj.field"
+              :value="index"
+              type="checkbox"
+              :handle="checkFn"
+            >
+              <SvgIcon
+                :class-name="filedObj.itemIcon"
+              />
+              <span class="combo-text">{{ text }}</span>
+            </CheckBox>
+          </template>
+          <template v-else>
             <SvgIcon
               :class-name="filedObj.itemIcon"
             />
             <span class="combo-text">{{ text }}</span>
-          </CheckBox>
-        </span>
-        <span v-else>
-          <SvgIcon
-            :class-name="filedObj.itemIcon"
-          />
-          <span class="combo-text">{{ text }}</span>
+          </template>
         </span>
       </span>
     </div>

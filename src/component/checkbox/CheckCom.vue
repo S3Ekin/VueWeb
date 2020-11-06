@@ -1,6 +1,7 @@
 <template>
   <label
     class="m-label m-lab-radio "
+    @click.stop=""
   >
     <span class="wrap-icon">
       <SvgIcon :class-name="className" />

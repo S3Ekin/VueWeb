@@ -9,26 +9,28 @@
         class="g-item-text"
         :style="levSpaceStyle"
       >
-        <span v-if="filedObj.multiply">
-          <CheckBox
-            :handle="checkParFn"
-            :checked="checked"
-            :has-checked="hasChecked"
-            :value="index"
-            :name="filedObj.field"
-            type="checkbox"
-          >
+        <span>
+          <template v-if="filedObj.multiply">
+            <CheckBox
+              :handle="checkParEvent"
+              :checked="checked"
+              :has-checked="hasChecked"
+              :value="index"
+              :name="filedObj.field"
+              type="checkbox"
+            >
+              <SvgIcon
+                :class-name="expandIcon"
+              />
+              <span class="combo-text">{{ text }}</span>
+            </CheckBox>
+          </template>
+          <template v-else>
             <SvgIcon
               :class-name="expandIcon"
             />
             <span class="combo-text">{{ text }}</span>
-          </CheckBox>
-        </span>
-        <span v-else>
-          <SvgIcon
-            :class-name="expandIcon"
-          />
-          <span class="combo-text">{{ text }}</span>
+          </template>
         </span>
       </span>
       <span>
@@ -48,7 +50,7 @@
             :lev="lev + 1"
             :click-fn="clickFn"
             :check-method="checkMethod"
-            :check-for-par="checkParFn"
+            :check-par="checkPar"
             :toggle-expand="toggleExpand"
           />
           <DropItem
@@ -91,7 +93,7 @@ export default class ParItem extends Vue {
     // formatterDropItem?: (node: IImmutalbeMap<any>) => React.ReactNode;
     @Prop({ required: true, type: Function }) toggleExpand!:(index:string) =>void;
     @Prop({ required: true, type: Function }) clickFn!:(index:string) =>void;
-    @Prop({ required: true, type: Function }) checkForPar!:(val:string) =>void;
+    @Prop({ required: true, type: Function }) checkPar!:(val:string) =>void;
     @Prop({ required: true, type: Function }) checkMethod!:(val:string) =>void;
 
     get slideIcon ():string {
@@ -148,20 +150,16 @@ export default class ParItem extends Vue {
         this.checkMethod(value)
     }
 
-    checkParFn (e: MouseEventEl<HTMLInputElement>):void {
+    checkParEvent (e: MouseEventEl<HTMLInputElement>):void {
         const dom = e.currentTarget!
         const value = dom.value!
-        this.checkForPar(value)
+        this.checkPar(value)
     }
 
     clickItem (e: MouseEventEl<HTMLInputElement>):void {
         const dom = e.currentTarget!
         const index = dom.parentElement!.dataset.index!
         this.clickFn(index)
-    }
-
-    toggle ():void{
-        console.log(12)
     }
 }
 </script>

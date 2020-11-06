@@ -129,7 +129,7 @@ export const formatterTreeData = function (props: drop<"tree">, defaultVal:strin
                     }
                 } else {
                     // 文件
-                    const isDefault = defaultValArr.includes(`${node.id}`)
+                    const isDefault = defaultValArr.includes(`${node[id]}`)
                     active = isDefault ? activeStatus.select : activeStatus.noSelect
                     if (isDefault) {
                         listSelected.push({

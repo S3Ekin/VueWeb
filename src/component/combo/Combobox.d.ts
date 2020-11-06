@@ -20,7 +20,7 @@ export interface ISelected {
 }
 
 export interface comboMethods {
-  click?: (path?: string) => void;
+  click?: (id?: string) => void;
   getSelected: () => ISelected[];
 }
 export interface IDrop<c extends string = "children" > {
