@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import Vue from "vue"
-import { Component, Prop, Inject } from "vue-property-decorator"
+import { Component, Prop, Inject, Watch } from "vue-property-decorator"
 import { ISelected, filedObj, node, drop } from "./Combobox"
 import DropItem from "./util/DropItem.vue"
 import { activeStatus, formatterListData } from "./util/util"
@@ -31,18 +31,37 @@ export default class ComboList extends Vue {
     @Prop({ required: true, type: Function }) initSelect!: drop<"list">["initSelect"]
     @Prop({ required: true, type: Function }) changeSelect!:drop<"list">["changeSelect"]
     @Prop({ required: true, type: Function }) bindMethod!:drop<"list">["bindMethods"]
+    @Prop(Object) initComboVal?:{id:string}; // 外部通过这个值来控制下拉框的选中,id可以是字符串分隔
     @Prop(Array) selected!: ISelected[];
     @Prop({ type: Number, required: true }) maxHeight!:number;
     @Inject() filedObj !:filedObj<"list">;
+    @Watch("data")
+    updateDataByData ():void {
+      const { initComboVal, filedObj: { defaultVal } } = this
+      const val = initComboVal ? initComboVal.id : defaultVal
+      this.initData(val)
+    }
+
+    @Watch("initComboVal")
+    updateDataByInitComVal ():void {
+      const { initComboVal } = this
+      const val = initComboVal ? initComboVal.id : ""
+      this.initData(val)
+    }
+
     listData: node<activeStatus>[] = []; // 注意必须先初始化值，让vue对据据进行 observe
     singleClickPre = ""
-    created ():void{
-      const { defaultVal } = this.filedObj
+
+    initData (defaultVal:string):void {
       const prop = this.getProp()
       const obj = formatterListData(prop as drop<"list">, defaultVal)
       this.listData = obj.data
       this.singleClickPre = obj.singleClickPre
-      this.bindMethod(this.clickItem, "click")
+    }
+
+    created ():void{
+      this.initData(this.filedObj.defaultVal)
+      this.bindMethod(this.select, "click")
     }
 
     getProp (): drop<"list"> {
@@ -117,6 +136,16 @@ export default class ComboList extends Vue {
         if (!multipy) {
             this.singleClickPre = index
         }
+    }
+
+    select (id?: string):void {
+      if (!id) {
+        this.clear()
+        return
+      }
+      const { filedObj: { idField } } = this
+      const index = this.listData.findIndex(val => `${val[idField]}` === `${id}`)
+      index > -1 && this.clickItem(index + "")
     }
 }
 </script>

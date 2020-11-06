@@ -19,14 +19,14 @@
             type="checkbox"
           >
             <SvgIcon
-              class-name="fa-folder"
+              :class-name="expandIcon"
             />
             <span class="combo-text">{{ text }}</span>
           </CheckBox>
         </span>
         <span v-else>
           <SvgIcon
-            class-name="fa-folder"
+            :class-name="expandIcon"
           />
           <span class="combo-text">{{ text }}</span>
         </span>
@@ -96,6 +96,10 @@ export default class ParItem extends Vue {
 
     get slideIcon ():string {
         return this.node.expand ? "fa-arrow-bottom-line" : "fa-arrow-top-line"
+    }
+
+    get expandIcon ():string {
+        return this.node.expand ? 'fa-bg-open-folder' : 'fa-folder'
     }
 
     get child (): node<activeStatus>[] {

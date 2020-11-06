@@ -50,7 +50,7 @@ import { ISelected, filedObj, treeNode, drop } from "./Combobox"
 import ParItem from "./util/ParItem.vue"
 import Search from "@component/search/index.vue"
 import { SvgIcon } from "@component/Icon/index"
-import { activeStatus, formatterTreeData, cascade, getNodeByPath } from "./util/util"
+import { activeStatus, formatterTreeData, cascade, getNodeByPath, findNodeAndPathById } from "./util/util"
 import DropItem from "./util/DropItem.vue"
 
 type tree = treeNode<activeStatus>
@@ -97,7 +97,7 @@ export default class ComboTree extends Vue {
 
     created ():void{
       this.initData(this.filedObj.defaultVal)
-      this.bindMethod(this.clickItem, "click")
+      this.bindMethod(this.select, "click")
     }
 
     getProp (): drop<"tree"> {
@@ -314,6 +314,29 @@ export default class ComboTree extends Vue {
         newNode.active = active
         changeSelect(_select, newNode)
         this.oldSelectedIndex = indexArrString
+    }
+
+    select (id?:string):void {
+      if (!id) {
+          this.clear()
+          return
+      }
+      const { filedObj: { childField, multiply, idField } } = this
+      const { node, path } = findNodeAndPathById(this.treeData, "", {
+        childField,
+        idField,
+        targetId: id
+      })
+
+      if (!node) {
+        return
+      }
+
+      if (node[childField].length) {
+        multiply && this.checkForParFn(path)
+      } else {
+        multiply ? this.check(path) : this.clickItem(path)
+      }
     }
 }
 </script>

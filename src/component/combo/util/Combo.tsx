@@ -122,7 +122,7 @@ export default function Hqc (Drop:VueClass<Vue>):VueConstructor<Vue> {
                 idField,
                 textField,
                 multiply,
-                itemIcon,
+                itemIcon: "fa-file",
                 defaultVal,
                 field,
                 childField,

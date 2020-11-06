@@ -88,13 +88,14 @@ export const formatterTreeData = function (props: drop<"tree">, defaultVal:strin
             throw new Error("请确定下拉框数据节点id字段的值是唯一，且为数字或为字符串！")
         }
         const mapTree = function (arr:anyObj[], parIndex:string) {
+            const prePath = parIndex ? parIndex + "," : parIndex
             return arr.map((val, index) => {
                  // 递归反遍历
                 const node = val as node<activeStatus>
                 let children = node[childField] as node<activeStatus>[] || []
                 // 执行目录和文件两种情况 ,添加,是否展开:expand和是否选中：active的状态
                 let active: activeStatus
-                const path = parIndex + "," + index
+                const path = prePath + index
                 if (children.length) {
                      children = mapTree(children, path)
                     if (multiply) {
@@ -223,3 +224,33 @@ export const cascade = function (
 
     return data
 }
+
+export const findNodeAndPathById = function (arr:treeNode<activeStatus>[], parIndex:string, obj:{childField: "children";idField: string;targetId: string}): {node: treeNode<activeStatus> | undefined;path:string} {
+            const { childField, idField, targetId } = obj
+            const prePath = parIndex ? (parIndex + ",") : parIndex
+            let path = ""
+            let targetNode: undefined | treeNode<activeStatus>
+            arr.find((val, index) => {
+                 // 递归反遍历
+                const node = val
+                const children = node[childField] || []
+                // 执行目录和文件两种情况 ,添加,是否展开:expand和是否选中：active的状态
+                path = prePath + index
+                let isTarget = `${val[idField]}` === `${targetId}`
+                if (isTarget) {
+                    targetNode = node
+                    return isTarget
+                }
+                if (children.length) {
+                    const res = findNodeAndPathById(children, path, obj)
+                    path = res.path
+                    targetNode = res.node
+                    isTarget = !!res.node
+                }
+                return isTarget
+            })
+            return {
+                node: targetNode,
+                path
+            }
+        }
