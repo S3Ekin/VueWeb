@@ -13,25 +13,50 @@
         </Button>
       </div>
     </div>
-    <ComboTree
-      :data="node"
-      field="test1"
-      :width="200"
-      id-field="code"
-      :multiply="true"
-      text-field="name"
-      :init-combo-val="init"
-      child-field="menuChildList"
-    />
-    <ComboTree
-      :data="node"
-      field="test2"
-      :width="200"
-      id-field="code"
-      text-field="name"
-      child-field="menuChildList"
-      :bind-com-methods="bindMethod"
-    />
+    <div
+      class="flex-between"
+      style="width: 50%;"
+    >
+      <ComboTree
+        :data="node"
+        field="test1"
+        :width="200"
+        id-field="code"
+        :drop-width="300"
+        :multiply="true"
+        text-field="name"
+        :init-combo-val="init"
+        :able-clear="true"
+        child-field="menuChildList"
+      />
+      <ComboTree
+        :data="node"
+        field="test2"
+        :width="200"
+        id-field="code"
+        text-field="name"
+        child-field="menuChildList"
+        :bind-com-methods="bindMethod"
+      />
+    </div>
+    <div
+      style="padding: 15px;"
+      class="testBox"
+    >
+      <div>
+        <Button :handle="click4">
+          改变数据
+        </Button>
+      </div>
+      <SlideBox
+        :slide="slide"
+        :is-immedia="true"
+      >
+        <div style="height: 240px;">
+          123123
+        </div>
+      </SlideBox>
+    </div>
   </div>
 </template>
 
@@ -41,12 +66,14 @@ import { ComboTree } from "@component/combo/index"
 import { Component } from "vue-property-decorator"
 import { comboMethods } from "@component/combo/Combobox"
 import Button from "@component/button/index.vue"
+import { SlideBox } from "@component/animation/index"
 import menuData from "./data"
 const app = Vue.extend({})
 @Component({
   name: "Menu",
   components: {
     Button,
+    SlideBox,
     ComboTree
   }
 })
@@ -59,6 +86,7 @@ class Menu extends app {
   }
 
   init = {};
+  slide = false
 
   click (): void {
     this.node = [
@@ -101,7 +129,17 @@ class Menu extends app {
   click3 (): void {
     this.comboMethods && this.comboMethods.click!("kpi_0101")
   }
+
+  click4 (): void {
+    this.slide = !this.slide
+  }
 }
 
 export default Menu
 </script>
+<style lang="scss">
+  .testBox {
+    width: 300px;
+    height: 300px;
+  }
+</style>

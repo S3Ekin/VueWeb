@@ -2,13 +2,25 @@
   <div class="drop-ul">
     <div class="g-search">
       <input
+        v-model="searchKey"
         class="search-inp"
         placeholder="搜索关键字..."
+        @change="searchChange"
       >
-      <span
-        class="close"
-      >
-        <SvgIcon class-name="fa-search" />
+      <span class="icon-box">
+        <span
+          v-if="searchKey"
+          class="close"
+          @click="clearSearch"
+        >
+          <SvgIcon class-name="fa-close" />
+        </span>
+        <span
+          class="search"
+          @click="search"
+        >
+          <SvgIcon class-name="fa-search" />
+        </span>
       </span>
     </div>
     <ul
@@ -74,6 +86,7 @@ export default class ComboTree extends Vue {
     @Inject() filedObj!: filedObj<"tree">;
     treeData: tree[] = []; // 注意必须先初始化值，让vue对据据进行 observe
     oldSelectedIndex = ""
+    searchKey = ""
     @Watch("data")
     updateDataByData ():void {
       const { initComboVal, filedObj: { defaultVal } } = this
@@ -93,6 +106,64 @@ export default class ComboTree extends Vue {
       const obj = formatterTreeData(prop as drop<"tree">, defaultVal, this.data)
       this.treeData = obj.data
       this.oldSelectedIndex = obj.oldSelectedIndex
+    }
+
+    searchChange (e:MouseEventEl<HTMLInputElement>):void {
+      const inp = e.target
+      const val = inp.value.trim()
+      this.searchKey = val
+      this.search()
+    }
+
+    searchMap (
+      data: tree[],
+      childField: filedObj<"tree">["childField"],
+      key: string,
+      textField: string
+    ):tree[] {
+      return data.filter(val => {
+        const itemText = val[textField]
+        const isContainer = itemText.includes(key)
+        const child = val[childField]
+
+        if (child && child.length) {
+          if (isContainer) {
+            return true
+          } else {
+            const arr = this.searchMap(child, childField, key, textField)
+            val[childField] = arr
+            return arr.length
+          }
+        } else {
+          return isContainer
+        }
+      })
+    }
+
+    search () :void {
+      if (!this.searchKey) {
+        return
+      }
+      const key = this.searchKey
+      const { filedObj, data, selected } = this
+      const childField = filedObj.childField!
+      const textField = filedObj.textField
+      const prop = this.getProp()
+      const copyData = JSON.parse(JSON.stringify(data))
+      const searchReswult = this.searchMap(copyData, childField, key, textField)
+
+      const defaultVal = selected.map(val => val.id).join(",")
+      const obj = formatterTreeData(prop, defaultVal, searchReswult, true)
+      this.treeData = obj.data
+    }
+
+    clearSearch ():void {
+      const { selected } = this
+      this.searchKey = ""
+      const prop = this.getProp()
+      const defaultVal = selected.map(val => val.id).join(",")
+      const { data } = formatterTreeData(prop as drop<"tree">, defaultVal, this.data, true)
+      this.treeData = data
     }
 
     created ():void{
@@ -367,11 +438,20 @@ $active:#82bbf8;
     flex: 1;
   }
 
-  .close {
-    padding: 2px 4px;
+  .icon {
+    font-size: 22px;
+  }
+
+  .icon-box {
+    display: flex;
+    padding-top: 3px;
 
     .icon {
-      font-size: 22px;
+      cursor: pointer;
+
+      &:hover {
+        color: red;
+      }
     }
   }
 }
