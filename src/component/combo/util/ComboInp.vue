@@ -2,7 +2,7 @@
   <div
     class="m-combo-inp"
     :class="className"
-    @click="slideFn"
+    @click="dropToggle"
   >
     <div class="combo-value">
       <span v-if="selected.length">
@@ -37,6 +37,8 @@ import { Component, Prop } from "vue-property-decorator"
 import { VNode } from "vue/types/umd"
 import { comboMethods, ISelected } from "../Combobox.d"
 import { SvgIcon } from "@component/Icon/index"
+import { closertPar } from "@component/domUtil/util"
+import { slideOther } from "./util"
 
 const defaultVal = (seleted:ISelected[]) => {
             return seleted.map(val => val.text).join("，")
@@ -54,7 +56,7 @@ export default class ComboxInp extends Vue {
     @Prop(Boolean) noicon?:boolean;
     @Prop(Boolean) noRequire?:boolean;
     @Prop(Boolean) ableClear?:boolean;
-    @Prop(Function) slideFn!:()=>void;
+    @Prop(Function) slideFn!:(slideDown:boolean)=>void;
     @Prop(Function) clearFn?:comboMethods["click"];
     @Prop({ type: Function, default: defaultVal }) formatterVal!:(selected:ISelected[])=>VNode
 
@@ -75,6 +77,17 @@ export default class ComboxInp extends Vue {
     clear (e: MouseEventEl<HTMLSpanElement>): void {
         e.stopPropagation()
        this.clearFn && this.clearFn()
+    }
+
+    dropToggle (e:MouseEventEl<HTMLDivElement>):void {
+        const el = closertPar(e.target!, "m-combo-inp")
+        const drop = el.nextElementSibling! as HTMLDivElement
+        if (!drop) {
+          return
+        }
+        const k = drop.dataset.event
+        slideOther(k)
+        this.slideFn(!this.drop)
     }
 }
 </script>
@@ -129,7 +142,6 @@ $theme:$theme-color;
 
   .drop-ul {
     overflow: auto;
-    position: absolute;
     width: 100%;
   }
 
@@ -151,18 +163,10 @@ $theme:$theme-color;
 
   &.direction-up {
     bottom: 44px;
-
-    .drop-ul {
-      top: 0;
-    }
   }
 
   &.direction-down {
     margin-top: 10px;
-
-    .drop-ul {
-      bottom: 0;
-    }
   }
 
   .m-combo-item.active {

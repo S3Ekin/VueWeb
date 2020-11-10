@@ -24,6 +24,7 @@
         :width="200"
         default-val="3,4"
         :multiply="true"
+        :direction-up="true"
         :able-clear="true"
         :init-combo-val="init"
       /> <ComboList

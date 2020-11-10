@@ -4,20 +4,9 @@ import { Component, Prop, Provide } from "vue-property-decorator"
 import { VueConstructor } from "vue/types/umd"
 import { ISelected, filedObj, comboMethods, IDrop } from "../Combobox"
 import ComboInp from "./ComboInp.vue"
-import { closertPar } from "@component/domUtil/util"
-import { event } from "./util"
+import { event, slideOther } from "./util"
+import { SlideBox } from "@component/animation/index"
 
-const slideOther = (excludekey?:string) => {
-  const activeCom = document.querySelector(".m-drop.active") as HTMLDivElement
-  if (!activeCom) {
-    return
-  }
-  const k = activeCom.dataset.event!
-  if (excludekey && excludekey === k) {
-    return
-  }
-  event.emit(k, activeCom)
-}
 document.body.addEventListener("click", function () {
   slideOther()
 })
@@ -27,6 +16,7 @@ export default function Hqc (Drop:VueClass<Vue>):VueConstructor<Vue> {
     name: "Combo",
     components: {
         ComboInp,
+        SlideBox,
         Drop
     }
   })
@@ -94,16 +84,11 @@ export default function Hqc (Drop:VueClass<Vue>):VueConstructor<Vue> {
         getSelected: this.getSelected // 要是直接在这写返回函数是不会把 selected 的值动态返回出去，只会返回初始值，但是正常返回了this的上下文Combo,
       }
 
-      slideUp (drop:HTMLElement):void {
-        this.slideDrop(drop, false)
+      slideUp ():void {
+        this.slideDrop(false)
       }
 
-      slideDrop (dropEl:HTMLElement, drop: boolean):void {
-         let dropH = 0
-          if (drop) {
-            dropH = dropEl.firstElementChild!.clientHeight
-          }
-          dropEl.style.height = dropH + "px"
+      slideDrop (drop: boolean):void {
           this.drop = drop
       }
 
@@ -143,17 +128,6 @@ export default function Hqc (Drop:VueClass<Vue>):VueConstructor<Vue> {
           }
       }
 
-      dropToggle (e:MouseEventEl<HTMLDivElement>):void {
-          const el = closertPar(e.target!, "m-combo-inp")
-          const drop = el.nextElementSibling! as HTMLDivElement
-          if (!drop) {
-            return
-          }
-          const k = drop.dataset.event
-          slideOther(k)
-          this.slideDrop(drop, !this.drop)
-      }
-
       changeSelect (selected:ISelected[], node?: anyObj):void{
          const { clickCallback, field } = this
           this.selected = selected
@@ -170,7 +144,7 @@ export default function Hqc (Drop:VueClass<Vue>):VueConstructor<Vue> {
       }
 
       render () {
-        const { width, initComboVal, drop, tit, noicon, changeSelect, eventKey, dropToggle, ableClear, noRequire, selected, dropWidth, data, exportMethods } = this
+        const { width, initComboVal, drop, tit, noicon, changeSelect, eventKey, slideDrop, ableClear, noRequire, selected, dropWidth, data, exportMethods, directionUp } = this
         const activeName = drop ? " active" : ""
         return (
           <div
@@ -182,7 +156,7 @@ export default function Hqc (Drop:VueClass<Vue>):VueConstructor<Vue> {
               drop={drop}
               tit={tit}
               selected={selected}
-              slideFn={dropToggle}
+              slideFn={slideDrop}
               noicon={noicon}
               ableClear={ableClear}
               noRequire={noRequire}
@@ -191,17 +165,19 @@ export default function Hqc (Drop:VueClass<Vue>):VueConstructor<Vue> {
             <div
               class={"m-drop " + this.directionUpName + activeName}
               data-event={eventKey}
-              style={{ height: "0px", width: dropWidth ? dropWidth + "px" : undefined }}
+              style={{ width: dropWidth ? dropWidth + "px" : undefined }}
             >
-              <Drop
-                data={data}
-                initSelect={this.initSelect}
-                initComboVal={initComboVal}
-                selected={selected}
-                changeSelect={changeSelect}
-                bindMethod={this.bindFn}
-                maxHeight={this.maxHeight}
-              />
+              <SlideBox slide={drop} directionUp={directionUp}>
+                 <Drop
+                  data={data}
+                  initSelect={this.initSelect}
+                  initComboVal={initComboVal}
+                  selected={selected}
+                  changeSelect={changeSelect}
+                  bindMethod={this.bindFn}
+                  maxHeight={this.maxHeight}
+                />
+              </SlideBox>
             </div>
           </div>
         )

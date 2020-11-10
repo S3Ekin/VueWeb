@@ -37,7 +37,10 @@
         <SvgIcon :class-name="slideIcon" />
       </span>
     </div>
-    <div>
+    <SlideBox
+      :is-immedia="false"
+      :slide="node.expand"
+    >
       <ul>
         <template
           v-for="(val, oindex) in child"
@@ -65,7 +68,7 @@
           />
         </template>
       </ul>
-    </div>
+    </SlideBox>
   </li>
 </template>
 <script lang="ts">
@@ -75,6 +78,7 @@ import { SvgIcon } from "@component/Icon/index"
 import { filedObj, node } from "../Combobox.d"
 import { activeStatus } from "./util"
 import { CheckBox } from "@component/checkbox/index"
+import { SlideBox } from "@component/animation/index"
 import DropItem from "./DropItem.vue"
 
 @Component({
@@ -82,7 +86,8 @@ import DropItem from "./DropItem.vue"
     components: {
         SvgIcon,
         DropItem,
-        CheckBox
+        CheckBox,
+        SlideBox
     }
 })
 export default class ParItem extends Vue {

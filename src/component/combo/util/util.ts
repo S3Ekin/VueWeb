@@ -254,3 +254,14 @@ export const findNodeAndPathById = function (arr:treeNode<activeStatus>[], parIn
                 path
             }
         }
+export const slideOther = (excludekey?:string):void => {
+  const activeCom = document.querySelector(".m-drop.active") as HTMLDivElement
+  if (!activeCom) {
+    return
+  }
+  const k = activeCom.dataset.event!
+  if (excludekey && excludekey === k) {
+    return
+  }
+  event.emit(k, activeCom)
+}

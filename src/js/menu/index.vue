@@ -20,6 +20,7 @@
       <ComboTree
         :data="node"
         field="test1"
+        :direction-up="true"
         :width="200"
         id-field="code"
         :drop-width="300"
@@ -52,7 +53,7 @@
         :slide="slide"
         :is-immedia="true"
       >
-        <div style="height: 240px;">
+        <div style="height: 240px; border: 1px solid;">
           123123
         </div>
       </SlideBox>
@@ -69,7 +70,7 @@
       <SlideBox
         :slide="slide1"
       >
-        <div style="height: 240px;">
+        <div style="height: 240px; border: 1px solid;">
           123123
         </div>
       </SlideBox>
