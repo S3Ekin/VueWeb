@@ -57,6 +57,23 @@
         </div>
       </SlideBox>
     </div>
+    <div
+      style="padding: 15px;"
+      class="testBox"
+    >
+      <div>
+        <Button :handle="click5">
+          改变数据
+        </Button>
+      </div>
+      <SlideBox
+        :slide="slide1"
+      >
+        <div style="height: 240px;">
+          123123
+        </div>
+      </SlideBox>
+    </div>
   </div>
 </template>
 
@@ -87,6 +104,7 @@ class Menu extends app {
 
   init = {};
   slide = false
+  slide1 = true
 
   click (): void {
     this.node = [
@@ -132,6 +150,10 @@ class Menu extends app {
 
   click4 (): void {
     this.slide = !this.slide
+  }
+
+  click5 (): void {
+    this.slide1 = !this.slide1
   }
 }
 
