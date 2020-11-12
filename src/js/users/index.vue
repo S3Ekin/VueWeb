@@ -18,7 +18,20 @@
         :width="200"
         default-val="1,2"
         :able-clear="true"
-      /> <ComboList
+      >
+        <template v-slot:inp="{selected}">
+          <span
+            v-for="val in selected"
+            :key="val.id"
+          >
+            <b style="color: red;">{{ val.text }}，</b>
+          </span>
+        </template>
+        <template v-slot:item="{itemNode}">
+          <span>{{ itemNode.text }} + "自定义"</span>
+        </template>
+      </ComboList>
+      <ComboList
         :data="data"
         field="test2"
         :width="200"
@@ -70,6 +83,11 @@ export default class User extends Vue {
   comboMethods:comboMethods | null = null
   bindMethod (methods:comboMethods):void {
     this.comboMethods = methods
+  }
+
+  getItem (item:anyObj):string {
+    console.log(item)
+    return "rt"
   }
 
   click ():void {

@@ -23,14 +23,22 @@
               <SvgIcon
                 :class-name="filedObj.itemIcon"
               />
-              <span class="combo-text">{{ text }}</span>
+              <slot
+                :item-node="node"
+              >
+                <span class="combo-text">{{ text }}</span>
+              </slot>
             </CheckBox>
           </template>
           <template v-else>
             <SvgIcon
               :class-name="filedObj.itemIcon"
             />
-            <span class="combo-text">{{ text }}</span>
+            <slot
+              :item-node="node"
+            >
+              <span class="combo-text">{{ text }}</span>
+            </slot>
           </template>
         </span>
       </span>
@@ -41,8 +49,7 @@
 <script lang="ts">
 import Vue from "vue"
 import { Component, Inject, Prop } from "vue-property-decorator"
-import { VNode } from "vue/types/umd"
-import { ISelected, filedObj, node } from "../Combobox.d"
+import { filedObj, node } from "../Combobox.d"
 import { SvgIcon } from "@component/Icon/index"
 import { CheckBox } from "@component/checkbox/index"
 import { activeStatus } from "./util"
@@ -63,7 +70,10 @@ export default class ComboxInp extends Vue {
     @Inject() filedObj !:filedObj<"list">;
     @Prop(Function) checkMethod!:(val: string)=>void;
     @Prop({ type: Function, required: true }) clickFn!:(index: string)=>void;
-    @Prop() formatterDropItem?:(selected:ISelected[])=>VNode
+
+    updated ():void {
+      console.log("整个 node update")
+    }
 
     get activeName ():string {
       const { node, checkBox } = this

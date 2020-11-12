@@ -6,14 +6,23 @@
     <DropItem
       v-for="(node, index) in listData"
       :key="node[filedObj.idField]"
+      :scoped-slots="$scopedSlots"
       :node="node"
       :index="index+''"
       :click-fn="clickItem"
-    />
+    >
+      <template v-slot="{itemNode}">
+        <slot
+          name="item"
+          :item-node="itemNode"
+        />
+      </template>
+    </DropItem>
   </ul>
 </template>
 
 <script lang="ts">
+      // :slot-scope="$scopedSlots"
 import Vue from "vue"
 import { Component, Prop, Inject, Watch } from "vue-property-decorator"
 import { ISelected, filedObj, node, drop } from "./Combobox"
@@ -47,6 +56,11 @@ export default class ComboList extends Vue {
       const { initComboVal } = this
       const val = initComboVal ? initComboVal.id : ""
       this.initData(val)
+    }
+
+    test (a:anyObj):string {
+      console.log(a)
+      return ""
     }
 
     listData: node<activeStatus>[] = []; // 注意必须先初始化值，让vue对据据进行 observe
@@ -125,7 +139,7 @@ export default class ComboList extends Vue {
         } else {
             if (multipy) {
                 _select = _select.filter(_val => {
-                    return _val.id !== newNode[idField]
+                    return `${_val.id}` !== `${newNode[idField]}`
                 })
             }
         }

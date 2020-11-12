@@ -22,14 +22,24 @@
               <SvgIcon
                 :class-name="expandIcon"
               />
-              <span class="combo-text">{{ text }}</span>
+              <slot
+                name="item"
+                :item-node="node"
+              >
+                <span class="combo-text">{{ text }}</span>
+              </slot>
             </CheckBox>
           </template>
           <template v-else>
             <SvgIcon
               :class-name="expandIcon"
             />
-            <span class="combo-text">{{ text }}</span>
+            <slot
+              :item-node="node"
+              name="item"
+            >
+              <span class="combo-text">{{ text }}</span>
+            </slot>
           </template>
         </span>
       </span>
@@ -55,7 +65,14 @@
             :check-method="checkMethod"
             :check-par="checkPar"
             :toggle-expand="toggleExpand"
-          />
+          >
+            <template v-slot:item="{itemNode}">
+              <slot
+                name="item"
+                :item-node="itemNode"
+              />
+            </template>
+          </ParItem>
           <DropItem
             v-else
             :key="val[filedObj.idField]"
@@ -65,7 +82,14 @@
             :click-fn="clickFn"
             :check-method="checkMethod"
             :check-box="filedObj.multiply"
-          />
+          >
+            <template v-slot="{itemNode}">
+              <slot
+                name="item"
+                :item-node="itemNode"
+              />
+            </template>
+          </DropItem>
         </template>
       </ul>
     </SlideBox>
@@ -95,7 +119,6 @@ export default class ParItem extends Vue {
     @Inject() filedObj!: filedObj<"tree">;
     @Prop({ required: true, type: String }) index!: string; // 节点索引
     @Prop({ required: true, type: Number }) lev!: number; // 树形节点的层级
-    // formatterDropItem?: (node: IImmutalbeMap<any>) => React.ReactNode;
     @Prop({ required: true, type: Function }) toggleExpand!:(index:string) =>void;
     @Prop({ required: true, type: Function }) clickFn!:(index:string) =>void;
     @Prop({ required: true, type: Function }) checkPar!:(val:string) =>void;

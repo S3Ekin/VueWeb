@@ -5,9 +5,16 @@
     @click="dropToggle"
   >
     <div class="combo-value">
-      <span v-if="selected.length">
-        {{ formatterVal(selected) }}
-      </span>
+      <template v-if="selected.length">
+        <slot>
+          <span
+            v-for="val in selected"
+            :key="val.id"
+          >
+            {{ val.text }}
+          </span>
+        </slot>
+      </template>
       <span
         v-else
         class="combo-inp-tit"
@@ -34,15 +41,11 @@
 <script lang="ts">
 import Vue from "vue"
 import { Component, Prop } from "vue-property-decorator"
-import { VNode } from "vue/types/umd"
 import { comboMethods, ISelected } from "../Combobox.d"
 import { SvgIcon } from "@component/Icon/index"
 import { closertPar } from "@component/domUtil/util"
 import { slideOther } from "./util"
 
-const defaultVal = (seleted:ISelected[]) => {
-            return seleted.map(val => val.text).join("，")
-        }
 @Component({
     name: "ComboxInp",
     components: {
@@ -58,7 +61,6 @@ export default class ComboxInp extends Vue {
     @Prop(Boolean) ableClear?:boolean;
     @Prop(Function) slideFn!:(slideDown:boolean)=>void;
     @Prop(Function) clearFn?:comboMethods["click"];
-    @Prop({ type: Function, default: defaultVal }) formatterVal!:(selected:ISelected[])=>VNode
 
     get clearIcon ():boolean {
         const { ableClear, selected } = this

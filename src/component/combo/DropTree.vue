@@ -39,7 +39,14 @@
           :check-method="check"
           :check-par="checkForParFn"
           :toggle-expand="expandToggle"
-        />
+        >
+          <template v-slot:item="{itemNode}">
+            <slot
+              name="item"
+              :item-node="itemNode"
+            />
+          </template>
+        </ParItem>
         <DropItem
           v-else
           :key="val[filedObj.idField]"
@@ -49,7 +56,14 @@
           :click-fn="clickItem"
           :check-method="check"
           :check-box="filedObj.multiply"
-        />
+        >
+          <template v-slot="{itemNode}">
+            <slot
+              name="item"
+              :item-node="itemNode"
+            />
+          </template>
+        </DropItem>
       </template>
     </ul>
   </div>
@@ -217,7 +231,7 @@ export default class ComboTree extends Vue {
             })
           } else {
             _select = _select.filter(_val => {
-              return _val.id !== newNode[idField]
+                    return `${_val.id}` !== `${newNode[idField]}`
             })
           }
           newNode.active = active
@@ -254,7 +268,7 @@ export default class ComboTree extends Vue {
               // 清除之前选的，现在再选一次，保证选择的顺序
               if (_node.active === activeStatus.select) {
                 _select = _select.filter(_val => {
-                  return _val.id !== _node.idField
+                  return `${_val.id}` !== `${_node[idField]}`
                 })
               }
                _select.push({
@@ -263,7 +277,7 @@ export default class ComboTree extends Vue {
               })
             } else {
               _select = _select.filter(_val => {
-                return _val.id !== _node[idField]
+                return `${_val.id}` !== `${_node[idField]}`
               })
             }
           }
@@ -378,7 +392,7 @@ export default class ComboTree extends Vue {
         } else {
             if (multipy) {
                 _select = _select.filter(_val => {
-                    return _val.id !== newNode[idField]
+                    return `${_val.id}` !== `${newNode[idField]}`
                 })
             }
         }

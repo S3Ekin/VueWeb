@@ -132,26 +132,6 @@ export default class Table extends Vue {
 <style lang="scss">
 @import "../../css/scss/variate";
 
-.g-table-wrap {
-  height: 100%;
-  overflow: auto;
-
-  &.g-tab-border {
-    td {
-      border-right: 1px solid $normal;
-      border-bottom: 1px solid $normal;
-
-      &:first-child {
-        border-left: 1px solid $normal;
-      }
-    }
-
-    .m-fixTabBody {
-      border-bottom: 1px solid $normal;
-    }
-  }
-}
-
 .g-table {
   height: calc(100% - 4px);
   flex: 1;
@@ -208,4 +188,23 @@ export default class Table extends Vue {
   }
 }
 
+.g-table-wrap {
+  height: 100%;
+  overflow: auto;
+
+  &.g-tab-border {
+    td {
+      border-right: 1px solid $normal;
+      border-bottom: 1px solid $normal;
+
+      &:first-child {
+        border-left: 1px solid $normal;
+      }
+    }
+
+    .m-fixTabBody {
+      border-bottom: 1px solid $normal;
+    }
+  }
+}
 </style>

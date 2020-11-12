@@ -15,21 +15,36 @@
     </div>
     <div
       class="flex-between"
-      style="width: 50%;"
+      style="width: 90%;"
     >
       <ComboTree
         :data="node"
         field="test1"
-        :direction-up="true"
-        :width="200"
+        :direction-up="false"
+        :width="400"
         id-field="code"
         :drop-width="300"
         :multiply="true"
         text-field="name"
+        :click-callback="clickCallback"
         :init-combo-val="init"
         :able-clear="true"
         child-field="menuChildList"
-      />
+      >
+        <template v-slot:inp="{selected}">
+          <span
+            v-for="val in selected"
+            :key="val.id"
+          >
+            <b style="color: red;">{{ val.text }}，</b>
+          </span>
+        </template>
+        <template v-slot:item="{itemNode}">
+          <span>
+            {{ itemNode.name }} + "自定义"
+          </span>
+        </template>
+      </ComboTree>
       <ComboTree
         :data="node"
         field="test2"
@@ -82,7 +97,7 @@
 import Vue from "vue"
 import { ComboTree } from "@component/combo/index"
 import { Component } from "vue-property-decorator"
-import { comboMethods } from "@component/combo/Combobox"
+import { comboMethods, ISelected } from "@component/combo/Combobox"
 import Button from "@component/button/index.vue"
 import { SlideBox } from "@component/animation/index"
 import menuData from "./data"
@@ -106,6 +121,11 @@ class Menu extends app {
   init = {};
   slide = false
   slide1 = true
+  clickCallback (selected: ISelected[], field: string, node?:anyObj):void {
+    console.log(selected)
+    console.log(field)
+    console.log(node)
+  }
 
   click (): void {
     this.node = [

@@ -19,7 +19,7 @@ export const Tween = {
     easeOutQuint (x: number): number {
         return 1 - Math.pow(1 - x, 5)
     },
-    easeInCirc(x: number): number {
+    easeInCirc (x: number): number {
         return 1 - Math.sqrt(1 - Math.pow(x, 2))
     }
 }

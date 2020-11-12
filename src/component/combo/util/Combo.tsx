@@ -6,6 +6,7 @@ import { ISelected, filedObj, comboMethods, IDrop } from "../Combobox"
 import ComboInp from "./ComboInp.vue"
 import { event, slideOther } from "./util"
 import { SlideBox } from "@component/animation/index"
+import { NormalizedScopedSlot } from "vue/types/vnode"
 
 document.body.addEventListener("click", function () {
   slideOther()
@@ -44,16 +45,18 @@ export default function Hqc (Drop:VueClass<Vue>):VueConstructor<Vue> {
       @Prop(Object) initComboVal?:{id:string}; // 外部通过这个值来控制下拉框的选中,id可以是字符串分隔
       // 点击或是选中之前做的操作，返回true不执行选中操作，默认返回false
       @Prop(Function) clickOrCheckForbid?:<n>(node:n, field:string, selectedArr:ISelected[])=>boolean;
-      // 自定义显示框的文字内容，selected所选择的内容
-      // formatterVal?: (selected: states["selected"]) => React.ReactChild;
-      // 自定义下拉框的文字内容
-      // formatterDropItem?: (node:IImmutalbeMap<any>) => React.ReactChild;
       // 点击每行的回调函数
       @Prop(Function) clickCallback?: (selected: ISelected[], field: string, node?:anyObj)=> void;
 
       eventKey = new Date().getTime()
       drop = false;
       selected:ISelected[] = []
+
+      $scopedSlots!:{
+        inp?:NormalizedScopedSlot,
+        item?:NormalizedScopedSlot
+      }
+
       @Provide() filedObj = this.initFileObj()
       get directionUpName () {
         return this.directionUp ? 'direction-up' : 'direction-down'
@@ -93,7 +96,7 @@ export default function Hqc (Drop:VueClass<Vue>):VueConstructor<Vue> {
       }
 
       getSelected (): ISelected[] {
-          return this.selected.map(val => val)
+          return JSON.parse(JSON.stringify(this.selected))
       }
 
       bindFn<k extends keyof comboMethods> (fn: comboMethods[k], key: k):void {
@@ -131,7 +134,9 @@ export default function Hqc (Drop:VueClass<Vue>):VueConstructor<Vue> {
       changeSelect (selected:ISelected[], node?: anyObj):void{
          const { clickCallback, field } = this
           this.selected = selected
-          clickCallback && clickCallback(selected, field, node)
+          const slectedArr = JSON.parse(JSON.stringify(selected))
+          const obj = node ? JSON.parse(JSON.stringify(node)) : undefined
+          clickCallback && clickCallback(slectedArr, field, obj)
       }
 
       initSelect (selected:ISelected[]):void {
@@ -146,6 +151,7 @@ export default function Hqc (Drop:VueClass<Vue>):VueConstructor<Vue> {
       render () {
         const { width, initComboVal, drop, tit, noicon, changeSelect, eventKey, slideDrop, ableClear, noRequire, selected, dropWidth, data, exportMethods, directionUp } = this
         const activeName = drop ? " active" : ""
+        const { inp } = this.$scopedSlots
         return (
           <div
             class="g-combo"
@@ -161,7 +167,13 @@ export default function Hqc (Drop:VueClass<Vue>):VueConstructor<Vue> {
               ableClear={ableClear}
               noRequire={noRequire}
               clearFn={exportMethods.click}
-            />
+            >
+              {
+                inp ? inp({
+                  selected
+                }) : undefined
+              }
+            </ComboInp>
             <div
               class={"m-drop " + this.directionUpName + activeName}
               data-event={eventKey}
@@ -176,7 +188,8 @@ export default function Hqc (Drop:VueClass<Vue>):VueConstructor<Vue> {
                   changeSelect={changeSelect}
                   bindMethod={this.bindFn}
                   maxHeight={this.maxHeight}
-                />
+                  scopedSlots={this.$scopedSlots}
+                  />
               </SlideBox>
             </div>
           </div>
