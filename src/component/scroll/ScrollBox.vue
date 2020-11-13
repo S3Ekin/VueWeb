@@ -1,22 +1,24 @@
 <template>
   <div
-    ref="box"
     class="g-scrollBox"
     :style="{height: height ? height +'px':null}"
     @mouseenter="mouseOver"
     @mouseleave="mouseLeave"
-    @mousewheel="mousewheel"
+    @mousewheel="mainMousewheel"
   >
-    <div class="m-scrollMain">
-      <slot @hook:created="fn" />
-    </div>
+    <ScrollMain @hook:updated="upDateInit">
+      <slot />
+    </ScrollMain>
     <div
       v-show="showBar"
       class="m-scrollBar"
     >
       <div
+        ref="moveBar"
         class="m-moveBar"
         :style="{height: moveBarH + 'px',top:'0px'}"
+        @mousedown="barClick"
+        @mouseup="cancelBarWheel"
       />
     </div>
   </div>
@@ -25,106 +27,140 @@
 <script lang="ts">
 import Vue from "vue"
 import { Component, Prop } from "vue-property-decorator"
+import ScrollMain from "./ScrollMain"
 @Component({
     name: "ScrollBox",
     components: {
+      ScrollMain
     }
 })
 export default class Table extends Vue {
     @Prop(Boolean) hasBorder?:boolean;
     @Prop(Number) height?:number;
-    $refs!:{
-      box:HTMLDivElement
+    $refs!: {
+      moveBar:HTMLDivElement
     }
 
     showBar = false
     moveBarH = 0
-    timer = 0
-    record = 0
-    queueArr:number[] = []
     scrollBoxH = 0
-    scrollMian = 0
-
-    fn ():void {
-      console.log(12)
+    scrollMainH = 0
+    mounted ():void {
+      this.upDateInit()
     }
 
-    mouseOver (e:MouseEventEl<HTMLDivElement>):void {
+    upDateInit ():void { // 在 scrollMain 更新时和 鼠标划入整个div时， 会调用
+      const barInner = this.$refs.moveBar
+      const scrollMain = barInner.parentElement!.previousElementSibling! as HTMLDivElement
+
+      const curScrollMainH = scrollMain.clientHeight
+      if (curScrollMainH === this.scrollMainH) { // 鼠标划入整个div时
+        return
+      }
+      this.scrollBoxH = barInner.parentElement!.parentElement!.clientHeight
+      this.scrollMainH = curScrollMainH
+      if (curScrollMainH < this.scrollBoxH) { // 没有超出容器
+        scrollMain.style.top = 0
+        return
+      }
+      let moveBarH = Math.ceil((this.scrollBoxH / curScrollMainH) * this.scrollBoxH)
+       moveBarH = Math.max(16, moveBarH)
+      this.moveBarH = moveBarH
+
+      let curScrollMainTop = -parseInt(scrollMain.style.top || 0)
+      if ((curScrollMainTop + this.scrollBoxH) > curScrollMainH) { // 上次的scrollMain下滑的长度 大于现在的scrollMainH 整体的长度时，把现在的scrollMainH 下滑到最后
+          curScrollMainTop = (curScrollMainH - this.scrollBoxH)
+          scrollMain.style.top = -curScrollMainTop + "px"
+      }
+      // 重计算 moveBar的位置，因为scroll变化了
+       const maxH = this.scrollMainH - this.scrollBoxH
+       const factor = (this.scrollBoxH - this.moveBarH) / maxH
+       barInner.style.top = factor * curScrollMainTop + "px"
+    }
+
+    barWheel (e:MouseEventEl<HTMLDivElement>):void {
+     // 从静止开始启动
+      console.log(e)
+      const dom = e.currentTarget as HTMLDivElement
+      const scrollMain = dom.parentElement!.previousElementSibling! as HTMLDivElement
+      const startH = +dom.dataset.top
+      const moveDistance = +dom.dataset.y - e.clientY
+      const maxH = this.scrollBoxH - this.moveBarH
+
+      let h = startH + moveDistance
+       h = h < 0 ? 0 : h > maxH ? maxH : h
+
+       const factor = (this.scrollMainH - this.scrollBoxH) / maxH
+       dom.style.top = h + "px"
+       scrollMain.style.top = -h * factor + "px"
+    }
+
+    barClick (e:MouseEventEl<HTMLDivElement>):void {
+      e.currentTarget!.dataset.y = e.clientY
+      e.currentTarget!.dataset.top = parseInt(e.currentTarget!.style.top || 0)
+      this.$refs.moveBar.addEventListener("mousemove", this.barWheel)
+    }
+
+    cancelBarWheel ():void {
+       this.$refs.moveBar.removeEventListener("mousemove", this.barWheel)
+    }
+
+    beforeDestroy ():void {
+       this.$refs.moveBar.removeEventListener("mousemove", this.barWheel)
+    }
+
+    barinnerMove (e:MouseEventEl<HTMLDivElement>) :void {
       const dom = e.currentTarget
       const scrollBoxH = dom.clientHeight
-      this.scrollBoxH = scrollBoxH
       const scrollMainH = (dom.firstElementChild as HTMLDivElement)!.clientHeight
-      this.scrollMian = scrollMainH
+      this.scrollBoxH = scrollBoxH
+      this.scrollMainH = scrollMainH
       if (scrollMainH > scrollBoxH) {
         this.showBar = true
-        this.moveBarH = Math.ceil((scrollBoxH / scrollMainH) * scrollBoxH)
+        const moveBarH = Math.ceil((scrollBoxH / scrollMainH) * scrollBoxH)
+        this.moveBarH = Math.max(16, moveBarH)
         const barInner = dom.lastElementChild!.firstElementChild! as HTMLDivElement
         const maxH = this.scrollBoxH - this.moveBarH
         const startH = parseInt(barInner.style.top)
         if (startH > maxH) {
-          const factor = (this.scrollMian - this.scrollBoxH) / maxH
+          const factor = (this.scrollMainH - this.scrollBoxH) / maxH
           barInner.style.top = maxH + "px";
           (dom.firstElementChild as HTMLDivElement).style.top = -maxH * factor + "px"
         }
       }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    updated (...args:any[]):void{
-      console.log("update")
-      console.log(args)
+    mouseOver (e:MouseEventEl<HTMLDivElement>):void {
+      const dom = e.currentTarget
+      if (!dom.firstElementChild) {
+        return
+      }
+      if (this.scrollMainH > this.scrollBoxH) {
+        this.showBar = true
+      }
     }
 
     mouseLeave ():void {
      this.showBar = false
     }
 
-    easeInOutCubic (x: number): number {
-    return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2
-    }
-
-    queueFn (count:number, startH:number, innerBarDom:HTMLDivElement):void {
-        this.timer = window.setTimeout(() => {
-          const moveH = count * 25
-          console.log(count, moveH)
-          innerBarDom.style.top = moveH + "px"
-          if (this.queueArr.length) {
-            const recoder = this.queueArr.shift()!
-            this.queueFn(recoder, startH, innerBarDom)
-          } else {
-            this.timer = 0
-            this.record = 0
-          }
-        }, 40)
-    }
-
-    mousewheel (e:WheelEvent):void {
+    mainMousewheel (e:WheelEvent):void {
       if (!this.showBar) {
-        return
-      }
-      this.record++
-      this.queueArr.push(this.record)
-      if (this.timer) {
         return
       }
       // 从静止开始启动
       const dom = e.currentTarget as HTMLDivElement
-      const barInner = dom.lastElementChild!.firstElementChild! as HTMLDivElement
-      if (!barInner) {
-        throw new Error("dom")
-      }
-      const startH = parseInt(barInner.style.top)
+      const scrollMain = dom.firstElementChild! as HTMLDivElement
+      const startH = parseInt(scrollMain.style.top || 0)
+      let step = Math.sqrt(this.scrollMainH / this.scrollBoxH) * 12
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const step = (e as any).wheelDelta > 0 ? -8 : 8
-      let h = startH + step
-      const maxH = this.scrollBoxH - this.moveBarH
+      step = (e as any).wheelDelta > 0 ? step : -step
+      let h = -(startH + step)
+      const maxH = this.scrollMainH - this.scrollBoxH
        h = h < 0 ? 0 : h > maxH ? maxH : h
-       const factor = (this.scrollMian - this.scrollBoxH) / maxH
-       barInner.style.top = h + "px";
-      (dom.firstElementChild as HTMLDivElement).style.top = -h * factor + "px"
-
-     // const recoder = this.queueArr.shift()!
-    //  this.queueFn(recoder, startH, barInner)
+       const factor = (this.scrollBoxH - this.moveBarH) / maxH
+       scrollMain.style.top = -h + "px"
+       this.$refs.moveBar.style.top = h * factor + "px"
     }
 }
 </script>

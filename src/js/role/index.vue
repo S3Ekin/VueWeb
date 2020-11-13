@@ -4,6 +4,9 @@
       <Button :handle="click3">
         data {{ data.length }}
       </Button>
+      <Button :handle="click2">
+        test {{ test }}
+      </Button>
     </div>
     <div class="test-scroll">
       <ScrollBox>
@@ -13,7 +16,7 @@
             :key="val.id"
             class="item"
           >
-            <b>{{ val.id + 1 }}</b>&nbsp;&nbsp;&nbsp;&nbsp;<span>{{ Math.floor(Math.random() * 30)*(val.id) }}</span>
+            <b>{{ val.id + 1 }}</b>&nbsp;&nbsp;&nbsp;&nbsp;<span>{{ val.text }}</span>
           </div>
         </div>
       </ScrollBox>
@@ -43,13 +46,23 @@ export default class User extends Vue {
     { id: 6, text: "eeee6" }
   ]
 
+  test = 0
+
+  updated ():void {
+    console.log("update Root")
+  }
+
   click3 ():void {
-      this.data = new Array(Math.floor(Math.random() * 10000)).fill("").map((val, index) => {
+      this.data = new Array(Math.floor(Math.random() * 1000)).fill("").map((val, index) => {
           return {
               id: index,
-              text: "err" + index
+              text: Math.floor(Math.random() * 30) * index
           }
       })
+  }
+
+  click2 ():void {
+     this.test++
   }
 }
 </script>

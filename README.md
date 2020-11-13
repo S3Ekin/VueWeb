@@ -570,7 +570,7 @@ class ComBoTree {
 >  *  如果每次 renden 传给 scopedSlots 都是一个新对象，那肯定会全部更新。包括给直接写子元素（会转化为一个createElement函数的调用，相当于每次render都是新的。自己声明的不行，是因为，自己声明的对象没经经过vue内部的方法转化和观察，会先转化，于是生成新的对象。而直接把上级的scopedSlots传过就j避免了每次生成新对象的问题）
   20. #### 为什么 scopedSlots 在 created 和 beforeMount 都不能获取到具名插槽? 看到有直接在 created 给$slots赋值。加了作用域就不能获取到
 
-```html
+```vue
 <template>
   <div><slot></slot> //此处修改为slot</div>
 </template>
@@ -591,7 +591,7 @@ export default {
 ---
 
 21. ####父组j监听子组件的生命周期，当子组件在生命周期有变动时，执行某些操作，比如 滚动条组件，在包裹的子组件内容变化时，变多或变少，重j计算高度问题。但是slot 插槽用这个方j监听到。react有没这种？
-```html
+```vue
 <template>
       <ComboList
         :data="data"
@@ -605,7 +605,64 @@ export default {
         @hook:updated="test" 
       /> 
 </template>
-<script>
-  // 使用 @hook:updated 可以监听到 ComboList 组件更新时的变化
-  </script>
+```
+---
+
+22. #### 当组件里嵌套子组件时，只要根组件跟新，不管子组件j接收的数据有没变化都会更新。
+- 改变**User**组件的**test**数据时，ScrollBox也会更新，即使没有传入任何数据给他，他自己的内部的数据也没有变化。
+- 其实User每次 **render** ScrollBox的子组件都会重新生成。这点和React一，但是字符串和数字Vue也是重新生成对象，React这点不是。
+```vue
+<template>
+  <div class="role-page">
+    <div>
+      <Button :handle="click3">
+        data {{ data.length }}
+      </Button>
+      <Button :handle="click2">
+        test {{ test }}
+      </Button>
+    </div>
+    <div class="test-scroll">
+      <ScrollBox>
+        wer
+        or
+       <div>测试</div>
+        or
+        <div class="tab-list">
+          <div
+            v-for="val in data"
+            :key="val.id"
+            class="item"
+          >
+            <b>{{ val.id + 1 }}</b>&nbsp;&nbsp;&nbsp;&nbsp;<span>{{ val.text }}</span>
+          </div>
+        </div> 
+      </ScrollBox>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+export default class User extends Vue {
+  data = [
+    { id: 1, text: "er1" },
+    { id: 2, text: "er2" },
+  ]
+  test = 0
+  updated ():void {
+    console.log("update Root")
+  }
+  click3 ():void {
+      this.data = new Array(Math.floor(Math.random() * 10000)).fill("").map((val, index) => {
+          return {
+              id: index,
+              text: Math.floor(Math.random() * 30) * index
+          }
+      })
+  }
+  click2 ():void {
+     this.test++
+  }
+}
+</script>
 ```
