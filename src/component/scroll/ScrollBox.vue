@@ -5,6 +5,7 @@
     @mouseenter="mouseOver"
     @mouseleave="mouseLeave"
     @mousewheel="mainMousewheel"
+    @mousemove="barMoveEven"
   >
     <ScrollMain @hook:updated="upDateInit">
       <slot />
@@ -27,7 +28,8 @@
 <script lang="ts">
 import Vue from "vue"
 import { Component, Prop } from "vue-property-decorator"
-import ScrollMain from "./ScrollMain"
+import ScrollMain from "./ScrollMain.vue"
+import { fnUtil } from "@component/util/jsUtil"
 @Component({
     name: "ScrollBox",
     components: {
@@ -37,6 +39,11 @@ import ScrollMain from "./ScrollMain"
 export default class Table extends Vue {
     @Prop(Boolean) hasBorder?:boolean;
     @Prop(Number) height?:number;
+
+    get barMoveEven ():(e:MouseEventEl<HTMLDivElement>)=>void {
+      return fnUtil.throttle(this.barMove, 100)
+    }
+
     $refs!: {
       moveBar:HTMLDivElement
     }
@@ -45,6 +52,7 @@ export default class Table extends Vue {
     moveBarH = 0
     scrollBoxH = 0
     scrollMainH = 0
+    isBarMouseDown = false
     mounted ():void {
       this.upDateInit()
     }
@@ -60,14 +68,14 @@ export default class Table extends Vue {
       this.scrollBoxH = barInner.parentElement!.parentElement!.clientHeight
       this.scrollMainH = curScrollMainH
       if (curScrollMainH < this.scrollBoxH) { // 没有超出容器
-        scrollMain.style.top = 0
+        scrollMain.style.top = "0"
         return
       }
       let moveBarH = Math.ceil((this.scrollBoxH / curScrollMainH) * this.scrollBoxH)
        moveBarH = Math.max(16, moveBarH)
       this.moveBarH = moveBarH
 
-      let curScrollMainTop = -parseInt(scrollMain.style.top || 0)
+      let curScrollMainTop = -parseInt(scrollMain.style.top || "0")
       if ((curScrollMainTop + this.scrollBoxH) > curScrollMainH) { // 上次的scrollMain下滑的长度 大于现在的scrollMainH 整体的长度时，把现在的scrollMainH 下滑到最后
           curScrollMainTop = (curScrollMainH - this.scrollBoxH)
           scrollMain.style.top = -curScrollMainTop + "px"
@@ -78,13 +86,16 @@ export default class Table extends Vue {
        barInner.style.top = factor * curScrollMainTop + "px"
     }
 
-    barWheel (e:MouseEventEl<HTMLDivElement>):void {
+    barMove (e:MouseEventEl<HTMLDivElement>):void {
+      e.stopPropagation()
+      if (!this.isBarMouseDown) {
+        return
+      }
      // 从静止开始启动
-      console.log(e)
-      const dom = e.currentTarget as HTMLDivElement
+      const dom = this.$refs.moveBar
       const scrollMain = dom.parentElement!.previousElementSibling! as HTMLDivElement
-      const startH = +dom.dataset.top
-      const moveDistance = +dom.dataset.y - e.clientY
+      const startH = +dom.dataset.top!
+      const moveDistance = e.clientY - +dom.dataset.y!
       const maxH = this.scrollBoxH - this.moveBarH
 
       let h = startH + moveDistance
@@ -96,38 +107,13 @@ export default class Table extends Vue {
     }
 
     barClick (e:MouseEventEl<HTMLDivElement>):void {
-      e.currentTarget!.dataset.y = e.clientY
-      e.currentTarget!.dataset.top = parseInt(e.currentTarget!.style.top || 0)
-      this.$refs.moveBar.addEventListener("mousemove", this.barWheel)
+      this.isBarMouseDown = true
+      e.currentTarget!.dataset.y = e.clientY + ""
+      e.currentTarget!.dataset.top = parseInt(e.currentTarget!.style.top || "0") + ""
     }
 
     cancelBarWheel ():void {
-       this.$refs.moveBar.removeEventListener("mousemove", this.barWheel)
-    }
-
-    beforeDestroy ():void {
-       this.$refs.moveBar.removeEventListener("mousemove", this.barWheel)
-    }
-
-    barinnerMove (e:MouseEventEl<HTMLDivElement>) :void {
-      const dom = e.currentTarget
-      const scrollBoxH = dom.clientHeight
-      const scrollMainH = (dom.firstElementChild as HTMLDivElement)!.clientHeight
-      this.scrollBoxH = scrollBoxH
-      this.scrollMainH = scrollMainH
-      if (scrollMainH > scrollBoxH) {
-        this.showBar = true
-        const moveBarH = Math.ceil((scrollBoxH / scrollMainH) * scrollBoxH)
-        this.moveBarH = Math.max(16, moveBarH)
-        const barInner = dom.lastElementChild!.firstElementChild! as HTMLDivElement
-        const maxH = this.scrollBoxH - this.moveBarH
-        const startH = parseInt(barInner.style.top)
-        if (startH > maxH) {
-          const factor = (this.scrollMainH - this.scrollBoxH) / maxH
-          barInner.style.top = maxH + "px";
-          (dom.firstElementChild as HTMLDivElement).style.top = -maxH * factor + "px"
-        }
-      }
+      this.isBarMouseDown = false
     }
 
     mouseOver (e:MouseEventEl<HTMLDivElement>):void {
@@ -142,16 +128,18 @@ export default class Table extends Vue {
 
     mouseLeave ():void {
      this.showBar = false
+     this.isBarMouseDown = false
     }
 
     mainMousewheel (e:WheelEvent):void {
+      this.isBarMouseDown = false
       if (!this.showBar) {
         return
       }
       // 从静止开始启动
       const dom = e.currentTarget as HTMLDivElement
       const scrollMain = dom.firstElementChild! as HTMLDivElement
-      const startH = parseInt(scrollMain.style.top || 0)
+      const startH = parseInt(scrollMain.style.top || "0")
       let step = Math.sqrt(this.scrollMainH / this.scrollBoxH) * 12
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       step = (e as any).wheelDelta > 0 ? step : -step

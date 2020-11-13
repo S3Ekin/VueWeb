@@ -43,7 +43,7 @@ import Vue from "vue"
 import { Component, Prop } from "vue-property-decorator"
 import { comboMethods, ISelected } from "../Combobox.d"
 import { SvgIcon } from "@component/Icon/index"
-import { closertPar } from "@component/domUtil/util"
+import { closertPar } from "@component/util/domUtil"
 import { slideOther } from "./util"
 
 @Component({
