@@ -37,6 +37,14 @@ const router = new VueRouter({
       }
     },
     {
+      path: '/user/role',
+      component: () => {
+        return import(
+          /* webpackChunkName: "role" */ "./role/index.vue"
+        )
+      }
+    },
+    {
       path: '/system/menu',
       component: () => {
         return import(

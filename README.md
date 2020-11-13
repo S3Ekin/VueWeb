@@ -588,3 +588,24 @@ export default {
 };
 </script>
 ```
+---
+
+21. ####父组j监听子组件的生命周期，当子组件在生命周期有变动时，执行某些操作，比如 滚动条组件，在包裹的子组件内容变化时，变多或变少，重j计算高度问题。但是slot 插槽用这个方j监听到。react有没这种？
+```html
+<template>
+      <ComboList
+        :data="data"
+        field="test2"
+        :width="200"
+        default-val="3,4"
+        :multiply="true"
+        :direction-up="true"
+        :able-clear="true"
+        :init-combo-val="init"
+        @hook:updated="test" 
+      /> 
+</template>
+<script>
+  // 使用 @hook:updated 可以监听到 ComboList 组件更新时的变化
+  </script>
+```

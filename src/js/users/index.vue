@@ -40,6 +40,7 @@
         :direction-up="true"
         :able-clear="true"
         :init-combo-val="init"
+        @hook:updated="test"
       /> <ComboList
         :data="data"
         field="test3"
@@ -83,6 +84,10 @@ export default class User extends Vue {
   comboMethods:comboMethods | null = null
   bindMethod (methods:comboMethods):void {
     this.comboMethods = methods
+  }
+
+  test ():void{
+    console.log("asdf")
   }
 
   getItem (item:anyObj):string {

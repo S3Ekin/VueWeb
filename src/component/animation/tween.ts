@@ -21,5 +21,10 @@ export const Tween = {
     },
     easeInCirc (x: number): number {
         return 1 - Math.sqrt(1 - Math.pow(x, 2))
+    },
+    easeInOutCubic (curTime:number, begin:number, end:number, duration:number): number {
+        const x = curTime / duration
+        const factor = x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2
+        return progress(end, begin, factor)
     }
 }

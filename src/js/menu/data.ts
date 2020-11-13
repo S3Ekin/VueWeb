@@ -54,7 +54,7 @@ export default {
         menuChildList: [
           {
             code: "kpi_0201",
-            url: "weight/tree",
+            url: "user/role",
             name: "权重树设置",
             remark: null,
             app_code: "kpi",
