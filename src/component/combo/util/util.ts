@@ -45,28 +45,6 @@ export const formatterListData = function (props: drop<"list">, defaultVal:strin
             singleClickPre: oldSelected
         }
     }
-type fn = (arg: HTMLElement)=>void
-const eventData:{
-    [key:string]: fn
-} = {}
-
-export const event = {
-    on: function (k:string, fn: fn):void {
-       eventData[k] = fn
-    },
-    emit: function (k:string, argObj:HTMLElement):void {
-        const fn = eventData[k]
-        if (!fn) {
-            return
-        }
-        eventData[k](argObj)
-    },
-    remove: function (k:string):void{
-        if (eventData[k]) {
-            delete eventData[k]
-        }
-    }
-}
 
 export const formatterTreeData = function (props: drop<"tree">, defaultVal:string, data: anyObj[], noInitState?:boolean):{
     data: treeNode<activeStatus>[];
@@ -254,14 +232,3 @@ export const findNodeAndPathById = function (arr:treeNode<activeStatus>[], parIn
                 path
             }
         }
-export const slideOther = (excludekey?:string):void => {
-  const activeCom = document.querySelector(".m-drop.active") as HTMLDivElement
-  if (!activeCom) {
-    return
-  }
-  const k = activeCom.dataset.event!
-  if (excludekey && excludekey === k) {
-    return
-  }
-  event.emit(k, activeCom)
-}

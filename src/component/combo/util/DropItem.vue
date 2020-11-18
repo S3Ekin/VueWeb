@@ -4,7 +4,6 @@
       class="m-combo-item"
       :class="activeName"
       :data-index="index"
-      @click="clickItemFn"
     >
       <span
         className="g-item-text"
@@ -15,10 +14,7 @@
             <CheckBox
               :checked="checked"
               :has-checked="hasChecked"
-              :name="filedObj.field"
-              :value="index"
               type="checkbox"
-              :handle="checkFn"
             >
               <SvgIcon
                 :class-name="filedObj.itemIcon"
@@ -53,8 +49,6 @@ import { filedObj, node } from "../Combobox.d"
 import { SvgIcon } from "@component/Icon/index"
 import { CheckBox } from "@component/checkbox/index"
 import { activeStatus } from "./util"
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-const empty = () => {}
 @Component({
     name: "ComboxInp",
     components: {
@@ -68,21 +62,10 @@ export default class ComboxInp extends Vue {
     @Prop(Boolean) checkBox!:boolean;
     @Prop(Number) lev?:number;
     @Inject() filedObj !:filedObj<"list">;
-    @Prop(Function) checkMethod!:(val: string)=>void;
-    @Prop({ type: Function, required: true }) clickFn!:(index: string)=>void;
-
-    updated ():void {
-      console.log("整个 node update")
-    }
 
     get activeName ():string {
       const { node, checkBox } = this
       return checkBox ? "" : node.active === activeStatus.select ? "active" : ""
-    }
-
-    get clickItemFn (): this["clickItem"] {
-         const { checkBox } = this
-         return checkBox ? empty : this.clickItem
     }
 
     get levSpaceStyle ():undefined | anyObj {
@@ -103,18 +86,6 @@ export default class ComboxInp extends Vue {
     get hasChecked ():boolean {
         const { node } = this
         return node.active === activeStatus.hasSelect
-    }
-
-    checkFn (e: MouseEventEl<HTMLInputElement>):void {
-        const dom = e.currentTarget!
-        const value = dom.value!
-        this.checkMethod(value)
-    }
-
-    clickItem (e: MouseEventEl<HTMLInputElement>):void {
-        const dom = e.currentTarget!
-        const index = dom.dataset.index!
-        this.clickFn(index)
     }
 }
 </script>

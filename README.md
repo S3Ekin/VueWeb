@@ -666,3 +666,6 @@ export default class User extends Vue {
 }
 </script>
 ```
+
+---
+23. #### vue不会做事件代理，**v-on** 指令绑定的事件是直接绑定在对应的**dom**上的。

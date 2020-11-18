@@ -1,20 +1,14 @@
 <template>
   <label
-    class="m-label m-lab-radio "
-    @click.stop=""
+    class="m-label m-lab-radio"
+    :data-value="value"
+    :data-name="name"
+    :data-set="dataSet"
   >
-    <span class="wrap-icon">
+    <span
+      class="wrap-icon"
+    >
       <SvgIcon :class-name="className" />
-      <input
-        :type="type"
-        class="checkBox-inp"
-        :name="name"
-        :data-set="dataSet"
-        :value="value"
-        :checked="checked"
-        :disabled="disabled"
-        @change="change"
-      >
     </span>
     <slot />
   </label>
@@ -41,7 +35,6 @@
       }
     })
    export default class Checkbox extends Vue {
-      @Prop(Function) handle?:(e:MouseEvent)=>void;
       @Prop({ type: String, default: "radio" }) type!: "radio" | "checkbox";
       @Prop(String) name!: string;
       @Prop(String) value!: string;
@@ -49,10 +42,6 @@
       @Prop(Boolean) checked!: boolean;
       @Prop(Boolean) hasChecked!: boolean;
       @Prop(Boolean) disabled!: boolean;
-      change (e: MouseEventEl<HTMLInputElement>):void {
-         this.handle && this.handle(e)
-      }
-
       get className ():string {
         const { type } = this
           return this.hasChecked ? "fa-hasChecked" : this.checked ? obj[type][1] : obj[type][0]

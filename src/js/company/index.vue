@@ -190,12 +190,13 @@ mounted ():void {
   })
 }
 
-change (e:MouseEventEl<HTMLInputElement>):void {
-    const name = e.target.name
+change (dom:HTMLLabelElement):void {
+    const name = dom.dataset.name
+    const val = dom.dataset.value!
     if (name !== "logo") {
-      this.information[name as keyof data] = e.target.value
+      this.information[name as keyof data] = val
     } else {
-      this.logoType = e.target.value
+      this.logoType = val
       this.information.logo = ""
     }
 }

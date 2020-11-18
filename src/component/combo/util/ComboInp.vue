@@ -44,7 +44,7 @@ import { Component, Prop } from "vue-property-decorator"
 import { comboMethods, ISelected } from "../Combobox.d"
 import { SvgIcon } from "@component/Icon/index"
 import { closertPar } from "@component/util/domUtil"
-import { slideOther } from "./util"
+import { slideOther } from "@component/util/autoSlideUp"
 
 @Component({
     name: "ComboxInp",
@@ -83,6 +83,9 @@ export default class ComboxInp extends Vue {
 
     dropToggle (e:MouseEventEl<HTMLDivElement>):void {
         const el = closertPar(e.target!, "m-combo-inp")
+        if (!el) {
+          return
+        }
         const drop = el.nextElementSibling! as HTMLDivElement
         if (!drop) {
           return

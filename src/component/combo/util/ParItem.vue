@@ -3,7 +3,6 @@
     <div
       class="m-combo-item"
       :data-index="index"
-      @click="toggleSlide"
     >
       <span
         class="g-item-text"
@@ -12,11 +11,8 @@
         <span>
           <template v-if="filedObj.multiply">
             <CheckBox
-              :handle="checkParEvent"
               :checked="checked"
               :has-checked="hasChecked"
-              :value="index"
-              :name="filedObj.field"
               type="checkbox"
             >
               <SvgIcon
@@ -61,10 +57,6 @@
             :node="val"
             :index="`${index},${oindex}`"
             :lev="lev + 1"
-            :click-fn="clickFn"
-            :check-method="checkMethod"
-            :check-par="checkPar"
-            :toggle-expand="toggleExpand"
           >
             <template v-slot:item="{itemNode}">
               <slot
@@ -79,8 +71,6 @@
             :node="val"
             :index="`${index},${oindex}`"
             :lev="lev + 1"
-            :click-fn="clickFn"
-            :check-method="checkMethod"
             :check-box="filedObj.multiply"
           >
             <template v-slot="{itemNode}">
@@ -119,10 +109,6 @@ export default class ParItem extends Vue {
     @Inject() filedObj!: filedObj<"tree">;
     @Prop({ required: true, type: String }) index!: string; // 节点索引
     @Prop({ required: true, type: Number }) lev!: number; // 树形节点的层级
-    @Prop({ required: true, type: Function }) toggleExpand!:(index:string) =>void;
-    @Prop({ required: true, type: Function }) clickFn!:(index:string) =>void;
-    @Prop({ required: true, type: Function }) checkPar!:(val:string) =>void;
-    @Prop({ required: true, type: Function }) checkMethod!:(val:string) =>void;
 
     get slideIcon ():string {
         return this.node.expand ? "fa-arrow-bottom-line" : "fa-arrow-top-line"
@@ -140,11 +126,6 @@ export default class ParItem extends Vue {
     get activeName ():string {
       const { node } = this
       return node.active === activeStatus.select ? "active" : ""
-    }
-
-    get clickItemFn (): undefined | this["clickItem"] {
-         const { filedObj: { multiply } } = this
-         return multiply ? undefined : this.clickItem
     }
 
     get levSpaceStyle ():undefined | anyObj {
@@ -165,29 +146,6 @@ export default class ParItem extends Vue {
     get hasChecked ():boolean {
         const { node } = this
         return node.active === activeStatus.hasSelect
-    }
-
-    toggleSlide (e:MouseEventEl<HTMLInputElement>):void {
-      const index = e.currentTarget!.dataset.index!
-      this.toggleExpand(index)
-    }
-
-    checkFn (e: MouseEventEl<HTMLInputElement>):void {
-        const dom = e.currentTarget!
-        const value = dom.value!
-        this.checkMethod(value)
-    }
-
-    checkParEvent (e: MouseEventEl<HTMLInputElement>):void {
-        const dom = e.currentTarget!
-        const value = dom.value!
-        this.checkPar(value)
-    }
-
-    clickItem (e: MouseEventEl<HTMLInputElement>):void {
-        const dom = e.currentTarget!
-        const index = dom.parentElement!.dataset.index!
-        this.clickFn(index)
     }
 }
 </script>

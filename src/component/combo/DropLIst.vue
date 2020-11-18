@@ -2,6 +2,7 @@
   <ul
     class="drop-ul"
     :style="{maxHeight: maxHeight ? maxHeight + 'px' : undefined}"
+    @click="clickItemEvent"
   >
     <DropItem
       v-for="(node, index) in listData"
@@ -28,6 +29,7 @@ import { Component, Prop, Inject, Watch } from "vue-property-decorator"
 import { ISelected, filedObj, node, drop } from "./Combobox"
 import DropItem from "./util/DropItem.vue"
 import { activeStatus, formatterListData } from "./util/util"
+import { closertPar } from "@component/util/domUtil"
 
 @Component({
     name: "ComboList",
@@ -89,6 +91,16 @@ export default class ComboList extends Vue {
       })
       this.singleClickPre = ""
       this.changeSelect([])
+    }
+
+    clickItemEvent (e:MouseEventEl<HTMLDivElement>):void { // 这里是在父元素上做的事件代理
+      const dom = e.target
+      const par = closertPar(dom, "m-combo-item")
+      if (!par) {
+        return
+      }
+      const index = par.dataset.index
+      this.clickItem(index)
     }
 
     clickItem (index?: string):void {

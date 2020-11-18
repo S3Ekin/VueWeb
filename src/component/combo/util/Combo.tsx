@@ -4,13 +4,10 @@ import { Component, Prop, Provide } from "vue-property-decorator"
 import { VueConstructor } from "vue/types/umd"
 import { ISelected, filedObj, comboMethods, IDrop } from "../Combobox"
 import ComboInp from "./ComboInp.vue"
-import { event, slideOther } from "./util"
+import { event } from "@component/util/autoSlideUp"
 import { SlideBox } from "@component/animation/index"
 import { NormalizedScopedSlot } from "vue/types/vnode"
 
-document.body.addEventListener("click", function () {
-  slideOther()
-})
 type comboType = keyof IDrop
 export default function Hqc (Drop:VueClass<Vue>):VueConstructor<Vue> {
   @Component({

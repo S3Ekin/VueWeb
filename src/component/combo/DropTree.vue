@@ -25,6 +25,7 @@
     </div>
     <ul
       :style="{maxHeight: maxHeight ? maxHeight + 'px' : undefined, overflow: 'auto'}"
+      @click="clickItemEvent"
     >
       <template
         v-for="(val, oindex) in treeData"
@@ -35,10 +36,6 @@
           :node="val"
           :index="oindex + ''"
           :lev="0"
-          :click-fn="clickItem"
-          :check-method="check"
-          :check-par="checkForParFn"
-          :toggle-expand="expandToggle"
         >
           <template v-slot:item="{itemNode}">
             <slot
@@ -53,8 +50,6 @@
           :node="val"
           :index="oindex + ''"
           :lev="0"
-          :click-fn="clickItem"
-          :check-method="check"
           :check-box="filedObj.multiply"
         >
           <template v-slot="{itemNode}">
@@ -79,6 +74,7 @@ import { SvgIcon } from "@component/Icon/index"
 import { activeStatus, formatterTreeData, cascade, getNodeByPath, findNodeAndPathById } from "./util/util"
 import DropItem from "./util/DropItem.vue"
 
+import { closertPar } from "@component/util/domUtil"
 type tree = treeNode<activeStatus>
 @Component({
     name: "ComboTree",
@@ -422,6 +418,42 @@ export default class ComboTree extends Vue {
       } else {
         multiply ? this.check(path) : this.clickItem(path)
       }
+    }
+
+    clickItemEvent (e:MouseEventEl<HTMLDivElement>):void { // 这里是在父元素上做的事件代理
+      const dom = e.target
+      const { filedObj: { multiply } } = this
+      let par:HTMLElement|null
+      if (multiply) {
+        par = closertPar(dom, "m-lab-radio")
+        if (par) {
+          const dropItem = closertPar(par, "m-combo-item")!
+          const index = dropItem.dataset.index!
+          const isCatalog = dropItem.parentElement!.classList.contains("combo-par-item")
+          isCatalog ? this.checkForParFn(index) : this.check(index)
+          return
+        }
+      }
+       par = closertPar(dom, "m-combo-item")
+      if (!par) {
+        return
+      }
+      const index = par.dataset.index!
+      if (par.parentElement!.classList.contains("combo-par-item")) { // 点击目录
+        this.expandToggle(index)
+      } else { // 点击文件
+        !multiply && this.clickItem(index)
+      }
+    }
+
+    checkEvent (e:MouseEventEl<HTMLDivElement>):void {
+      const dom = e.target
+      const par = closertPar(dom, "m-combo-item")
+      if (!par) {
+        return
+      }
+      const index = par.dataset.index
+      this.clickItem(index)
     }
 }
 </script>
