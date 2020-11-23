@@ -2,13 +2,13 @@
   <div>
     <div>
       <div>
-        <Button :handle="click">
+        <Button @click="click">
           改变数据
         </Button>
-        <Button :handle="click2">
+        <Button @click="click2">
           批量改变选择
         </Button>
-        <Button :handle="click3">
+        <Button @click="click3">
           data
         </Button>
       </div>
@@ -60,7 +60,7 @@
       class="testBox"
     >
       <div>
-        <Button :handle="click4">
+        <Button @click="click4">
           改变数据
         </Button>
       </div>
@@ -78,7 +78,7 @@
       class="testBox"
     >
       <div>
-        <Button :handle="click5">
+        <Button @click="click5">
           改变数据
         </Button>
       </div>

@@ -1,10 +1,10 @@
 <template>
   <div class="test">
     <div>
-      <Button :handle="click">
+      <Button @click="click">
         改变数据
       </Button>
-      <Button :handle="click3">
+      <Button @click="click3">
         data
       </Button>
     </div>

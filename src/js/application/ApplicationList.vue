@@ -53,13 +53,13 @@
           :node-index="index"
         >
           <Button
-            :handle="editInfo"
+            @click="editInfo"
           >
             修改
           </Button>
           <Button
-            :handle="delConfirm"
             color-type="danger"
+            @click="delConfirm"
           >
             删除
           </Button>

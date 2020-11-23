@@ -41,13 +41,13 @@
             <slot name="foot">
               <div class="m-Mfooter">
                 <Button
-                  :handle="sure"
+                  @click="sure"
                 >
                   确定
                 </Button>
                 <Button
                   border-type="line-btn"
-                  :handle="close"
+                  @click="close"
                 >
                   关闭
                 </Button>

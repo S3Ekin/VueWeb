@@ -1,10 +1,10 @@
 <template>
   <div class="role-page">
     <div>
-      <Button :handle="click3">
+      <Button @click="click3">
         data {{ data.length }}
       </Button>
-      <Button :handle="click2">
+      <Button @click="click2">
         test {{ test }}
       </Button>
     </div>

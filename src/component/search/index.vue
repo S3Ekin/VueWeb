@@ -7,8 +7,8 @@
       :style="{width: width ? width + 'px' :null}"
     >
     <Button
-      :handle="handle"
       class-name="fa fa-search"
+      @click="handle"
     >
       <slot />
     </Button>

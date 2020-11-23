@@ -7,8 +7,8 @@
       搜索
     </Search>
     <Button
-      :handle="addInfo"
       class-name="fa fa-add"
+      @click="addInfo"
     >
       新增
     </Button>

@@ -1,10 +1,12 @@
 <template>
   <div
     class="g-scrollBox"
+    :class="className"
     :style="{height: height ? height +'px':null}"
     @mouseenter="mouseOver"
     @mouseleave="mouseLeave"
     @mousewheel="mainMousewheel"
+    @mouseup="cancelBarWheel"
     @mousemove="barMoveEven"
   >
     <ScrollMain @hook:updated="upDateInit">
@@ -13,13 +15,13 @@
     <div
       v-show="showBar"
       class="m-scrollBar"
+      @click="locateBar"
     >
       <div
         ref="moveBar"
         class="m-moveBar"
         :style="{height: moveBarH + 'px',top:'0px'}"
         @mousedown="barClick"
-        @mouseup="cancelBarWheel"
       />
     </div>
   </div>
@@ -39,6 +41,7 @@ import { fnUtil } from "@component/util/jsUtil"
 export default class Table extends Vue {
     @Prop(Boolean) hasBorder?:boolean;
     @Prop(Number) height?:number;
+    @Prop(String) className?:string;
 
     get barMoveEven ():(e:MouseEventEl<HTMLDivElement>)=>void {
       return fnUtil.throttle(this.barMove, 100)
@@ -150,6 +153,17 @@ export default class Table extends Vue {
        scrollMain.style.top = -h + "px"
        this.$refs.moveBar.style.top = h * factor + "px"
     }
+
+    locateBar (e:MouseEventEl<HTMLDivElement>) :void {
+      let h = e.offsetY
+      const dom = this.$refs.moveBar
+      const maxH = this.scrollBoxH - this.moveBarH
+       const factor = (this.scrollMainH - this.scrollBoxH) / maxH
+      const scrollMain = dom.parentElement!.previousElementSibling! as HTMLDivElement
+       h = h < 0 ? 0 : h > maxH ? maxH : h
+       dom.style.top = h + "px"
+       scrollMain.style.top = -h * factor + "px"
+    }
 }
 </script>
 
@@ -167,14 +181,18 @@ $barInnerW: 8px;
   .m-scrollBar {
     position: absolute;
     height: 100%;
-    background: violet;
     top: 0;
     right: 0;
     width: $barW;
-    opacity: 0.85;
-    border-radius: $barW;
     padding: 6px ($barW - $barInnerW ) / 2;
     z-index: 2;
+    background: none;
+    cursor: pointer;
+
+    &:hover {
+      background: gray;
+      box-shadow: 2px 1px 10px 4px rgba(136, 141, 148, 0.7);
+    }
   }
 
   .m-scrollMain {
@@ -186,13 +204,12 @@ $barInnerW: 8px;
 
   .m-moveBar {
     width: $barInnerW;
-    background: red;
+    background: rgb(197, 208, 215);
     border-radius: $barInnerW;
-    cursor: pointer;
     position: absolute;
 
     &:hover {
-      background: darken($color:red, $amount: 40);
+      background: white;
     }
   }
 }

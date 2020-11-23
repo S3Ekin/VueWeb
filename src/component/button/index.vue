@@ -2,8 +2,7 @@
   <button
     class="s-btn"
     :class="[className,borderType,colorType,sizeName]"
-    @click="handle"
-    @mouseup="keyUp"
+    v-on="$listeners"
   >
     <slot />
   </button>
@@ -17,8 +16,7 @@
         name: "Button"
     })
     class Button extends Vue {
-     timeId = 0
-    @Prop({ required: true }) handle!:(e:MouseEvent)=>void;
+    timeId = 0
     @Prop({ type: String, default: "normal-btn" }) borderType!:"normal-btn" | "dashed-btn" | "line-btn";
     @Prop({ type: String, default: "primary" }) colorType!: "danger" | "primary" | "green" | "yellow";
     @Prop({ type: String, default: "" }) size!: "big" | "small";

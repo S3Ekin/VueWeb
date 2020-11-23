@@ -37,11 +37,9 @@
 import Vue, { CreateElement, RenderContext } from "vue"
 import { Component, Prop } from "vue-property-decorator"
 import { fieldObj, IColumnItem } from "./myTable"
-import Button from "@component/button/index.vue"
 @Component({
     name: "TBody",
     components: {
-      Button,
       VNode: {
         functional: true,
         render: (h:CreateElement, ctx: RenderContext) => {

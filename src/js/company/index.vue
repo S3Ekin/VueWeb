@@ -120,8 +120,8 @@
       </div>
       <div class="submit-box">
         <Button
-          :handle="submit"
           size="big"
+          @click="submit"
         >
           保存
         </Button>
