@@ -669,3 +669,30 @@ export default class User extends Vue {
 
 ---
 23. #### vue不会做事件代理，**v-on** 指令绑定的事件是直接绑定在对应的**dom**上的。
+24. #### vue 怎样 再template里使用不是类成员的数据?
+```vue
+<template>
+  <div>{{ data }}</div>
+</template>
+
+<script>
+const data = "test" // 要把这个数据给tempalte里使用，必须让它成为类成员吗？
+export default {
+  methods: {
+    renderChild() {
+      return <div>Child</div>; //在vue jsx插件 3.4.0 之后， h 会自动注入
+    },
+  },
+  data:{
+
+  },
+  created() {
+    this.$slots.default = [this.renderChild()]; //其实原理就是手动给slot赋值。
+  },
+};
+</script>
+```
+25. #### 觉得vue好神奇
+    1. 通过表格的全选和单选，涉及的计算属性和对应的渲染策略，让我更觉得vue的模式和用法好神奇， 特别是那个 【allChecked】属性。不用显示的直接去改变它，只要改动了它所依赖的属性的值，它就会变化
+    2. 当第一次发现vue没有做事件代理时，觉得好愚蠢。同时生气几乎在所有的for循环的字节的里绑定了事件，也就是说我这样给所有的真实的dom绑定了事件。要是不该，我太难忍了。只用自己做事件代理了。我还去特地看了看react的，它是事件代理，但也给每个dom绑定了事件，不过这个直接的事件不是正式触发行为的事件，正式的事件是在document里，所以删掉也不影响。
+    3. 当在vue的组件里做了事件代理后，发现组件简洁了，不用给子组件传递很多东西。组件交互可以就放在最外层的组件上，可以让逻辑集中，子组件更专注于ui渲染。

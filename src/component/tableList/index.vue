@@ -2,6 +2,7 @@
   <div
     class="g-table-wrap"
     :style="{height: height ? height +'px':null}"
+    @click="boxClickEvent"
   >
     <div class="g-table">
       <div class="m-fixTabHead">
@@ -9,10 +10,21 @@
           <thead>
             <tr>
               <th
-                v-if="!noOrder"
+                v-if="!noOrder || checkbox"
                 class="td-left"
               >
-                序号
+                <span v-if="!checkbox">
+                  序号
+                </span>
+                <CheckBox
+                  v-else
+                  type="checkbox"
+                  :checked="allChecked === allChekedStatus.checked"
+                  :has-checked="allChecked === allChekedStatus.hasChecked"
+                  @click="allCheckEvent"
+                >
+                  全选
+                </CheckBox>
               </th>
               <th
                 v-for="column in fileObj.column"
@@ -25,35 +37,60 @@
           </thead>
         </table>
       </div>
-      <TBody
-        :table-data="data"
-        :file-obj="fileObj"
-        :per-nums="perNums"
+      <div class="m-fixTabBody">
+        <ScrollBox>
+          <TBody
+            :table-data="curPageData"
+            :file-obj="fileObj"
+            :per-nums="perNums"
+            :cur-page="curPage"
+          >
+            <template
+              v-for="item in fileObj.column"
+              v-slot:[item.field]="node"
+            >
+              <slot
+                :name="item.field"
+                v-bind="node"
+              />
+            </template>
+          </TBody>
+        </ScrollBox>
+      </div>
+      <PageSize
+        v-if="!noPageNums"
         :cur-page="curPage"
-      >
-        <template
-          v-for="item in fileObj.column"
-          v-slot:[item.field]="node"
-        >
-          <slot
-            :name="item.field"
-            v-bind="node"
-          />
-        </template>
-      </TBody>
+        :per-nums="perNums"
+        :total-nums="listData.length"
+        :total-pages="totalPages"
+        :change-state="changeState"
+      />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue"
-import { Component, Prop } from "vue-property-decorator"
-import { fieldObj, IColumnItem } from "./myTable"
+import { Component, Prop, Watch } from "vue-property-decorator"
+import { fieldObj, IColumnItem, ITabNode } from "./myTable"
 import TBody from "./TBody.vue"
+import PageSize from "./PageSize.vue"
+import { ScrollBox } from "@component/scroll/index"
+import { CheckBox } from "@component/checkbox/index"
+import { closertPar } from "@component/util/domUtil"
+
+enum allCheckedStatus {
+  checked = "checked",
+  hasChecked = "hasChecked",
+  noChecked = "noChecked"
+}
 @Component({
     name: "Table",
     components: {
-        TBody
+        TBody,
+        PageSize,
+        ScrollBox,
+        CheckBox
     }
 })
 export default class Table extends Vue {
@@ -69,11 +106,37 @@ export default class Table extends Vue {
     @Prop({ type: String, default: "当前没有数据！" }) emptyTxt!: string;// 空数据时显示文字
     @Prop() getCheckFn?:(fn:()=>void)=>void;// 获取选中的
     // initSelectVal?:{id:string};// 通过外界改变表格的选中
-    // children:React.ReactElement<IColumnItem>[];
-    // bindGetSelectedFn?:(getSelected:()=>IImmutalbeList<IImmutalbeMap<any>>)=>void;// 把获取选中的项的函数传递给外部
+
+    // 把获取选中的项的函数传递给外部
+    @Prop(Function) bindGetSelectedFn?:(getSelected:()=>anyObj[])=>void;
     perNums= 20;
     curPage = this.initCurPage();
     fileObj:fieldObj = this.initFileObj()
+    listData = this.formatterListData()
+    private allChekedStatus = allCheckedStatus
+
+    @Watch("data")
+    updateListData ():void {
+      this.listData = this.formatterListData()
+    }
+
+    formatterListData (): anyObj<ITabNode>[] {
+      const { defaultSel, idField } = this
+      const defaultSelArr = defaultSel ? defaultSel.split(",") : []
+      return JSON.parse(JSON.stringify(this.data)).map((val: anyObj) => {
+        val.checked = defaultSelArr.includes(val[idField])
+        return val
+      })
+    }
+
+    allCheckEvent (e:MouseEventEl<HTMLLabelElement>) :void {
+      e.stopPropagation()
+      const { allChecked } = this
+      const checked = allCheckedStatus.checked !== allChecked
+      this.curPageData.forEach(val => {
+        val.checked = checked
+      })
+    }
 
     initCurPage () :number {
         const { data, defaultSel, idField } = this
@@ -81,9 +144,30 @@ export default class Table extends Vue {
             return 1
         } else {
             // tslint:disable-next-line: triple-equals
-            const index = data.findIndex(val => val[idField!] === defaultSel)
-            return index > -1 ? Math.ceil((index + 1) / 20) : 1
+            const index = data.findIndex(val => defaultSel.includes(val[idField!]))
+            return index > -1 ? Math.ceil((index + 1) / this.perNums) : 1
         }
+    }
+
+    get totalPages ():number {
+      const { data, perNums } = this
+      return Math.ceil(data.length / perNums)
+    }
+
+    get curPageData ():anyObj<ITabNode>[] {
+      const { curPage, perNums, noPageNums, listData } = this
+      if (noPageNums) {
+        return listData
+      } else {
+        const start = (curPage - 1) * perNums
+        const end = start + perNums > listData.length ? listData.length : start + perNums
+        return listData.slice(start, end)
+      }
+    }
+
+    get allChecked ():allCheckedStatus {
+      // 指的是当前页的全选
+      return this.curPageData.every(val => val.checked) ? allCheckedStatus.checked : this.curPageData.some(val => val.checked) ? allCheckedStatus.hasChecked : allCheckedStatus.noChecked
     }
 
     mounted ():void {
@@ -126,6 +210,18 @@ export default class Table extends Vue {
             column
         }
     }
+
+    boxClickEvent (e:MouseEventEl<HTMLDivElement>):void { // 事件代理
+      const par = closertPar(e.target, "m-lab-radio")
+      if (!par) { return }
+      const val = +par.dataset.value! - 1
+      const checked = this.listData[val].checked
+       this.listData[val].checked = !checked
+    }
+
+    changeState (k:string, val:number):void {
+     this[k as "perNums"] = val
+    }
 }
 </script>
 
@@ -140,7 +236,7 @@ export default class Table extends Vue {
   overflow: hidden;
 
   .m-label {
-    margin-right: 6px;
+    margin-right: 0;
   }
 
   table {

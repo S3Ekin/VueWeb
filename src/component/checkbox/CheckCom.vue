@@ -4,6 +4,7 @@
     :data-value="value"
     :data-name="name"
     :data-set="dataSet"
+    v-on="$listeners"
   >
     <span
       class="wrap-icon"

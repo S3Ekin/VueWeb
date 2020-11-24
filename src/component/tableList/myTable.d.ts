@@ -26,11 +26,15 @@ export interface ITableStates {
     curPage: number; // 当前页数
     tableData: anyObj[];
     preData:anyObj[];
-    preInitSelectVal?:{id:string};
 }
 export interface ITableFn {
     changeState<P extends keyof ITableStates>(
         field: P,
         data: ITableStates[P]
     ): void;
+}
+
+export interface ITabNode {
+    checked:boolean;
+    selected:boolean;
 }

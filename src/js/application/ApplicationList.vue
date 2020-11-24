@@ -2,7 +2,8 @@
   <div class="page-main">
     <Table
       :data="list"
-      :no-order="true"
+      :no-order="false"
+      :checkbox="true"
       id-field="code"
     >
       <template v-slot:sn="{node,index}">
