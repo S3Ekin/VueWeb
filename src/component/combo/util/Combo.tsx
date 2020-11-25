@@ -38,7 +38,7 @@ export default function Hqc (Drop:VueClass<Vue>):VueConstructor<Vue> {
       @Prop(Boolean) parAbleClick?:boolean;
       @Prop(Boolean) ableClear?:boolean;
       @Prop(Boolean) renderCallback?: boolean; // 组件第一次加载调用点击事件的回调函数
-      @Prop(Function) bindComMethods?: (exportMethods:comboMethods)=> void;
+      @Prop(Function) bindComMethods?: (comboMethods:comboMethods)=> void;
       @Prop(Object) initComboVal?:{id:string}; // 外部通过这个值来控制下拉框的选中,id可以是字符串分隔
       // 点击或是选中之前做的操作，返回true不执行选中操作，默认返回false
       @Prop(Function) clickOrCheckForbid?:<n>(node:n, field:string, selectedArr:ISelected[])=>boolean;
@@ -61,7 +61,7 @@ export default function Hqc (Drop:VueClass<Vue>):VueConstructor<Vue> {
 
       created ():void {
         if (this.bindComMethods) {
-          this.bindComMethods(this.exportMethods)
+          this.bindComMethods(this.comboMethods)
         }
       }
 
@@ -80,7 +80,7 @@ export default function Hqc (Drop:VueClass<Vue>):VueConstructor<Vue> {
       }
 
       // 暴露给外面的方法
-      exportMethods:comboMethods = {
+      comboMethods:comboMethods = {
         getSelected: this.getSelected // 要是直接在这写返回函数是不会把 selected 的值动态返回出去，只会返回初始值，但是正常返回了this的上下文Combo,
       }
 
@@ -97,7 +97,7 @@ export default function Hqc (Drop:VueClass<Vue>):VueConstructor<Vue> {
       }
 
       bindFn<k extends keyof comboMethods> (fn: comboMethods[k], key: k):void {
-          this.exportMethods[key] = fn
+          this.comboMethods[key] = fn
       }
 
       initFileObj ():filedObj<comboType, string> {
@@ -146,7 +146,7 @@ export default function Hqc (Drop:VueClass<Vue>):VueConstructor<Vue> {
       }
 
       render () {
-        const { width, initComboVal, drop, tit, noicon, changeSelect, eventKey, slideDrop, ableClear, noRequire, selected, dropWidth, data, exportMethods, directionUp } = this
+        const { width, initComboVal, drop, tit, noicon, changeSelect, eventKey, slideDrop, ableClear, noRequire, selected, dropWidth, data, comboMethods, directionUp } = this
         const activeName = drop ? " active" : ""
         const { inp } = this.$scopedSlots
         return (
@@ -163,7 +163,7 @@ export default function Hqc (Drop:VueClass<Vue>):VueConstructor<Vue> {
               noicon={noicon}
               ableClear={ableClear}
               noRequire={noRequire}
-              clearFn={exportMethods.click}
+              clearFn={comboMethods.click}
             >
               {
                 inp ? inp({

@@ -72,7 +72,7 @@
 <script lang="ts">
 import Vue from "vue"
 import { Component, Prop, Watch } from "vue-property-decorator"
-import { fieldObj, IColumnItem, ITabNode } from "./myTable"
+import { fieldObj, IColumnItem, ITabApi, ITabNode } from "./myTable"
 import TBody from "./TBody.vue"
 import PageSize from "./PageSize.vue"
 import { ScrollBox } from "@component/scroll/index"
@@ -108,7 +108,7 @@ export default class Table extends Vue {
     // initSelectVal?:{id:string};// 通过外界改变表格的选中
 
     // 把获取选中的项的函数传递给外部
-    @Prop(Function) bindGetSelectedFn?:(getSelected:()=>anyObj[])=>void;
+    @Prop(Function) bindGetSelectedFn?:(tabApi:ITabApi)=>void;
     perNums= 20;
     curPage = this.initCurPage();
     fileObj:fieldObj = this.initFileObj()
@@ -118,6 +118,41 @@ export default class Table extends Vue {
     @Watch("data")
     updateListData ():void {
       this.listData = this.formatterListData()
+    }
+
+    created ():void {
+      const { bindGetSelectedFn } = this
+      bindGetSelectedFn && bindGetSelectedFn(this.tabApi)
+    }
+
+    tabApi:ITabApi = {
+      setChecked: this.setChecked,
+      getChecked: this.getChecked,
+      setAll: this.setAll
+    }
+
+    getChecked (): anyObj<ITabNode>[] {
+        return this.listData.filter(val => val.checked)
+    }
+
+    setAll (checked:boolean):void {
+       this.listData.forEach(val => {
+         val.checked = checked
+       })
+    }
+
+    setChecked (setArr:string[], checked = true):void {
+      if (setArr && setArr.length) {
+        const { idField } = this
+        let hasCount = 0
+        this.listData.find(val => {
+          if (setArr.includes(val[idField])) {
+            val.checked = checked
+            hasCount++
+          }
+          return hasCount === setArr.length
+        })
+      }
     }
 
     formatterListData (): anyObj<ITabNode>[] {

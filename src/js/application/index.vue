@@ -85,7 +85,7 @@ class Application extends Vue {
       Api.getList().then((res) => {
         // this.list = res.data
        this.list = new Array(208).fill("").map((val, index) => {
-          return Object.assign({}, res.data[0], { code: index + 1 })
+          return Object.assign({}, res.data[0], { code: index + 1 + "" })
         })
       })
     }

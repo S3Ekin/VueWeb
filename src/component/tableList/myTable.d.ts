@@ -38,3 +38,9 @@ export interface ITabNode {
     checked:boolean;
     selected:boolean;
 }
+
+export interface ITabApi {
+   setChecked: (setArr:string[], checked?:boolean) =>void,
+   getChecked():anyObj<ITabNode>[];
+   setAll (checked:boolean):void ;
+}

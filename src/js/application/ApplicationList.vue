@@ -5,6 +5,7 @@
       :no-order="false"
       :checkbox="true"
       id-field="code"
+      :bind-get-selected-fn="bindCheckFn"
     >
       <template v-slot:sn="{node,index}">
         <Column
@@ -79,6 +80,7 @@ import Column from "@component/tableList/Column"
 import { Info, modalOpt } from "./application"
 import Api from "@api/application"
 import noticeFn from "@component/Toast/index"
+import { ITabApi } from "@component/tableList/myTable"
 
 @Component({
  components: {
@@ -92,6 +94,13 @@ class ApplicationList extends Vue {
     @Prop({ type: Function, required: true }) reloadList!:()=>void;
     @Prop({ required: true }) list!:anyObj[]
 
+   tabApi: undefined | ITabApi = undefined;
+
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   bindCheckFn (tabApi:ITabApi):void {
+     this.tabApi = tabApi
+   }
+
    editInfo (e:MouseEventEl<HTMLButtonElement>):void {
       const index = +e.target.parentElement!.dataset.index!
       this.modalOpt(index, "showInfoModal", false)
@@ -100,6 +109,10 @@ class ApplicationList extends Vue {
     delConfirm (e:MouseEventEl<HTMLButtonElement>):void {
       const index = +e.target.parentElement!.dataset.index!
       this.modalOpt(index, "showDelModal", false)
+    }
+
+    click ():void {
+      this.tabApi!.setAll(false)
     }
 
      changeSn (e:MouseEventEl<HTMLButtonElement>):void {
