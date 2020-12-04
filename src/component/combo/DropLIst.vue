@@ -60,11 +60,6 @@ export default class ComboList extends Vue {
       this.initData(val)
     }
 
-    test (a:anyObj):string {
-      console.log(a)
-      return ""
-    }
-
     listData: node<activeStatus>[] = []; // 注意必须先初始化值，让vue对据据进行 observe
     singleClickPre = ""
 

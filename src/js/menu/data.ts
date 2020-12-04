@@ -93,7 +93,7 @@ export default {
           },
           {
             code: "kpi_0204",
-            url: "weight/show",
+            url: "system/menu",
             name: "展示权重",
             remark: null,
             app_code: "kpi",

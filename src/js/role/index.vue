@@ -7,9 +7,17 @@
       <Button @click="click2">
         test {{ test }}
       </Button>
+      <Button @click="click1">
+        下滑400px
+      </Button>
     </div>
     <div class="test-scroll">
-      <ScrollBox>
+      <ScrollBox
+        :keep-bar-show="true"
+        :no-stop-page-scroll="false"
+        :height="400"
+        :bind-inti-scroll="bindScrollMethods "
+      >
         <div class="tab-list">
           <div
             v-for="val in data"
@@ -21,6 +29,7 @@
         </div>
       </ScrollBox>
     </div>
+    <div :style="{height: '200px',background: 'red'}" />
   </div>
 </template>
 
@@ -29,6 +38,7 @@ import Vue from "vue"
 import { Component } from "vue-property-decorator"
 import { ScrollBox } from "@component/scroll/index"
 import Button from "@component/button/index.vue"
+import { IScrollMethods } from "@component/scroll/scroll"
 @Component({
     name: "User",
     components: {
@@ -47,6 +57,10 @@ export default class User extends Vue {
   ]
 
   test = 0
+  scrollMethods:IScrollMethods | undefined;
+  bindScrollMethods (api:IScrollMethods):void{
+    this.scrollMethods = api
+  }
 
   updated ():void {
     console.log("update Root")
@@ -56,7 +70,7 @@ export default class User extends Vue {
       this.data = new Array(Math.floor(Math.random() * 1000)).fill("").map((val, index) => {
           return {
               id: index,
-              text: Math.floor(Math.random() * 30) * index
+              text: Math.floor(Math.random() * 30) * index + ""
           }
       })
   }
@@ -64,19 +78,21 @@ export default class User extends Vue {
   click2 ():void {
      this.test++
   }
+
+  click1 ():void {
+    this.scrollMethods!.scrollToTop(400)
+  }
 }
 </script>
 
 <style lang="scss">
 .role-page {
-  height: 100%;
   padding: 30px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  height: 100%;
+  overflow: auto;
 
   .test-scroll {
-    flex: 1;
+    height: 500px;
     margin-top: 16px;
     overflow: hidden; //不加这个属性， 在没用显示指定 height 在子容器超出时，不能限制子容器的超出
   }

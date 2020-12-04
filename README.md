@@ -407,7 +407,7 @@ export type filedObj<P extends keyof IDrop, c extends string = "children"> = {
 
 ---
 
-17. #### Vue 更新 data 的方法，其关键还是返回新数据。与 React 的比较原理还是一样，要是运用 Immutable.js 也很不错的。
+17. ### Vue 更新 data 的方法，其关键还是返回新数据。与 React 的比较原理还是一样，要是运用 Immutable.js 也很不错的。
 
 - 发现了在 ComTree 里总是更新不了数据的原因了，发现在通过 prop 传过来的属性 data 来构造自己的 treeData 时，没有进行深复制，**JSON.parse(JSON.stringify())**，
 - 导致用 **.** 语法时，总是不能更新 dom,即使数据更新了，dom 还是没变。但是也发现了一个有趣现象。改变某个值的类型为 **string** 、**number**时，可以更新到 dom 上，不管其层级深度。但是 Object 和 boolean 的类型不行。
@@ -432,9 +432,139 @@ class ComBoTree {
  ...
 }
 ```
-
 - 当把 data 的数据进行深复制，也就是不与 props 里的值发生关联是，不管其层级，都可以用 **.** 语法的
+- 使用 **.** 语法可以更新数据，也会重新render，但是如果当前组件的dom没用用到这个状态就不会触发**updated**,如果dom用了会引使组件的 **updated** 方法调用，下面的例子当点击树性节点的时候，**其实官网已经说明了“由于数据更改*导致的虚拟 DOM 重新渲染和打补丁*，在这之后会调用该钩子。”**，之前没看明白，以为知道了，现在明白了。**导致当前组件的虚拟dom重新渲染和打补丁**。这样有好处也有弊端，减少不必要的调用。但是有的时候即使当前组件dom不需要变动，但是它子组件（*注意子组件不是虚拟dom，是一个组件函数*）要根据组件的updated调用来更新，比如scrollBox组件。这点和react完全不一样，react只要数据变更就会render和调用组件更新的生命周期函数
+- 再次强调，要使 **.** 语法起作用。设置的属性，一定是在赋值数据时就有的，不然vue不会oberver 这个属性，改变它不会引起render。除非重新给整个数据赋值。
+```vue
+<template>
+  <div class="drop-ul">
+  // 这里故意把所有节点渲染出来成dom,以前是把节点传入子组件，直接用.语法改节点不会调用 updated
+    <div
+      v-for="val in treeData"
+      :key="val.code"
+      :style="{height: '50px', overflow: 'hidden'}"
+    >
+      {{
+        val.active
+      }}
+      <div
+        v-for="item in val[filedObj.childField]"
+        :key="item.code"
+      >
+        {{ item.active }}
+        <div
+          v-for="node in item[filedObj.childField]"
+          :key="node.code"
+        >
+          {{ node.active }}
+        </div>
+      </div>
+    </div>
+    or 
+    <ul
+      :style="{maxHeight: maxHeight ? maxHeight + 'px' : undefined, overflow: 'auto'}"
+      @click="clickItemEvent"
+    >
+      <template
+        v-for="(val, oindex) in treeData"
+      >
+        <ParItem
+          v-if="val[filedObj.childField].length"
+          :key="val[filedObj.idField]"
+          :node="val"
+          :index="oindex + ''"
+          :lev="0"
+        >
+          <template v-slot:item="{itemNode}">
+            <slot
+              name="item"
+              :item-node="itemNode"
+            />
+          </template>
+        </ParItem>
+        <DropItem
+          v-else
+          :key="val[filedObj.idField]"
+          :node="val"
+          :index="oindex + ''"
+          :lev="0"
+          :check-box="filedObj.multiply"
+        >
+          <template v-slot="{itemNode}">
+            <slot
+              name="item"
+              :item-node="itemNode"
+            />
+          </template>
+        </DropItem>
+      </template>
+    </ul>
+  </div>
+</template>
+<script lang="typescript">
+// 当直接使用 props的data来作为 自己的data时。
+class ComBoTree {
+ ...
+ clickItem (index?: string):void {
+      const { filedObj, selected, changeSelect } = this
+      if (!index) {
+        this.clear()
+        return
+      }
+      const multipy = filedObj.multiply
+      const idField = filedObj.idField
+      const textField = filedObj.textField
+      const childField = filedObj.childField
+      const clickForbid = filedObj.clickOrCheckForbid!
+      const comField = filedObj.field
+      const indexArr = index.split(",").join(`,${childField},`).split(",")
+      const indexArrString = indexArr.join(",")
+      const _data = this.treeData
+      const oldSelectedIndex = this.oldSelectedIndex
+      let _select = selected.map(val => val)
+      const newNode = getNodeByPath(indexArr, _data)
+      if (!newNode) {
+          return
+      }
+      // 判断是否禁止点击
+      if (clickForbid && clickForbid(newNode, comField, selected)) {
+          return
+      }
+      // 单选清除以前选中的
+      if (oldSelectedIndex === indexArrString) {
+          // 点击的是同一个
+          return
+      }
+      if (oldSelectedIndex) {
+          getNodeByPath(oldSelectedIndex.split(","), _data).active = activeStatus.noSelect
+      }
+      _select = []
+      // 判断这个node有没有被选中
+      const active = newNode.active === activeStatus.select
+              ? activeStatus.noSelect
+              : activeStatus.select
 
+      if (active === activeStatus.select) {
+          _select.push({
+              id: newNode[idField],
+              text: newNode[textField]
+          })
+      } else {
+          if (multipy) {
+              _select = _select.filter(_val => {
+                  return `${_val.id}` !== `${newNode[idField]}`
+              })
+          }
+      }
+      newNode.active = active // 这里改变节点的状态，相应的dom上应用这个状态的也会改变，但是却不会使组件的调用updated方法
+      // 这里使改变父节点的数据，而且这个数据又作为属性传给该组件，所以会更新
+      changeSelect(_select, newNode) // 这里使改变父节点的数据，而且这个数据又作为属性传给该组件，所以会更新会使组件调用 updated 方法
+      this.oldSelectedIndex = indexArrString
+  }
+ ...
+}
+</script>
+```
 ---
 
 18. #### Vue 事件不能动态把指定为 null 或是 undefind,这样会报错，怎么解决有时需要事件在具体的函数和 null 之间切换？

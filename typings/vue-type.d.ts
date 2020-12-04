@@ -11,7 +11,7 @@ declare module "vue/types/vue" {
     path: string;
     query: {[k:string]:unknown};
   }
- 
+
  type routerNext = (routerItem?:routerItem)=>void
  export interface Vue {
    beforeCreate(): void;

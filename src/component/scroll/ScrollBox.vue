@@ -7,9 +7,8 @@
     @mouseleave="mouseLeave"
     @mousewheel="mainMousewheel"
     @mouseup="cancelBarWheel"
-    @mousemove="barMoveEven"
   >
-    <ScrollMain @hook:updated="upDateInit">
+    <ScrollMain @hook:updated="childChange">
       <slot />
     </ScrollMain>
     <div
@@ -22,6 +21,7 @@
         class="m-moveBar"
         :style="{height: moveBarH + 'px',top:'0px'}"
         @mousedown="barClick"
+        @click.stop=""
       />
     </div>
   </div>
@@ -31,6 +31,7 @@
 import Vue from "vue"
 import { Component, Prop } from "vue-property-decorator"
 import ScrollMain from "./ScrollMain.vue"
+import { IScrollMethods } from "./scroll"
 import { fnUtil } from "@component/util/jsUtil"
 @Component({
     name: "ScrollBox",
@@ -39,13 +40,14 @@ import { fnUtil } from "@component/util/jsUtil"
     }
 })
 export default class Table extends Vue {
-    @Prop(Boolean) hasBorder?:boolean;
     @Prop(Number) height?:number;
     @Prop(String) className?:string;
+    @Prop(Number) time?:number; // 有的scroll主体的高度变化是有动画的，需要过一段动画时间才能获取到最终的高度，这里传入动画时间。
+    @Prop() bindIntiScroll?:(scrollMethods:IScrollMethods)=>void;
+    @Prop(Boolean) keepBarShow?:boolean;
+    @Prop(Boolean) noStopPageScroll?:boolean;
 
-    get barMoveEven ():(e:MouseEventEl<HTMLDivElement>)=>void {
-      return fnUtil.throttle(this.barMove, 100)
-    }
+    barMoveEven = fnUtil.throttle(this.barMove, 100) as (e:MouseEvent)=>void;
 
     $refs!: {
       moveBar:HTMLDivElement
@@ -55,29 +57,64 @@ export default class Table extends Vue {
     moveBarH = 0
     scrollBoxH = 0
     scrollMainH = 0
-    isBarMouseDown = false
-    mounted ():void {
-      this.upDateInit()
+    created ():void {
+      this.showBar = !!this.keepBarShow
+      if (this.bindIntiScroll) {
+        this.bindIntiScroll(this.scrollMethods)
+      }
     }
 
-    upDateInit ():void { // 在 scrollMain 更新时和 鼠标划入整个div时， 会调用
+    scrollMethods:IScrollMethods = {
+      initScroll: this.upDateInit,
+      scrollToTop: this.scrollToTop
+    }
+
+    scrollToTop (top:number):void{
+      const { moveBarH } = this
+      const scrollMain = this.$refs.moveBar!.parentElement!.previousElementSibling as HTMLDivElement
+      let h = top
+      const maxH = this.scrollMainH - this.scrollBoxH
+      if (maxH <= 0) { // 没有超出
+        return
+      }
+      h = h < 0 ? 0 : h > maxH ? maxH : h
+      const factor = (this.scrollBoxH - moveBarH) / maxH
+      scrollMain.style.top = `${-h}px`
+      this.$refs.moveBar!.style.top = `${h * factor}px`
+    }
+
+    childChange ():void {
+      if (this.time) {
+        window.setTimeout(() => {
+          this.upDateInit(this.height)
+        }, this.time)
+      } else {
+        this.upDateInit(this.height)
+      }
+    }
+
+    mounted ():void {
+      this.upDateInit(this.height)
+    }
+
+    upDateInit (defaultH?:number):void { // 在 scrollMain 更新时和 鼠标划入整个div时， 会调用
       const barInner = this.$refs.moveBar
       const scrollMain = barInner.parentElement!.previousElementSibling! as HTMLDivElement
 
       const curScrollMainH = scrollMain.clientHeight
-      if (curScrollMainH === this.scrollMainH) { // 鼠标划入整个div时
+      if (!defaultH && curScrollMainH === this.scrollMainH) { // 鼠标划入整个div时
         return
       }
-      this.scrollBoxH = barInner.parentElement!.parentElement!.clientHeight
+      this.scrollBoxH = defaultH || barInner.parentElement!.parentElement!.clientHeight
       this.scrollMainH = curScrollMainH
       if (curScrollMainH < this.scrollBoxH) { // 没有超出容器
         scrollMain.style.top = "0"
+        this.showBar = false
         return
       }
       let moveBarH = Math.ceil((this.scrollBoxH / curScrollMainH) * this.scrollBoxH)
        moveBarH = Math.max(16, moveBarH)
       this.moveBarH = moveBarH
-
       let curScrollMainTop = -parseInt(scrollMain.style.top || "0")
       if ((curScrollMainTop + this.scrollBoxH) > curScrollMainH) { // 上次的scrollMain下滑的长度 大于现在的scrollMainH 整体的长度时，把现在的scrollMainH 下滑到最后
           curScrollMainTop = (curScrollMainH - this.scrollBoxH)
@@ -87,13 +124,11 @@ export default class Table extends Vue {
        const maxH = this.scrollMainH - this.scrollBoxH
        const factor = (this.scrollBoxH - this.moveBarH) / maxH
        barInner.style.top = factor * curScrollMainTop + "px"
+       this.showBar = true
     }
 
     barMove (e:MouseEventEl<HTMLDivElement>):void {
       e.stopPropagation()
-      if (!this.isBarMouseDown) {
-        return
-      }
      // 从静止开始启动
       const dom = this.$refs.moveBar
       const scrollMain = dom.parentElement!.previousElementSibling! as HTMLDivElement
@@ -110,13 +145,13 @@ export default class Table extends Vue {
     }
 
     barClick (e:MouseEventEl<HTMLDivElement>):void {
-      this.isBarMouseDown = true
       e.currentTarget!.dataset.y = e.clientY + ""
       e.currentTarget!.dataset.top = parseInt(e.currentTarget!.style.top || "0") + ""
+      e.currentTarget.parentElement!.parentElement!.addEventListener("mousemove", this.barMoveEven)
     }
 
     cancelBarWheel ():void {
-      this.isBarMouseDown = false
+      this.$refs.moveBar!.parentElement!.parentElement!.removeEventListener("mousemove", this.barMoveEven)
     }
 
     mouseOver (e:MouseEventEl<HTMLDivElement>):void {
@@ -130,12 +165,17 @@ export default class Table extends Vue {
     }
 
     mouseLeave ():void {
-     this.showBar = false
-     this.isBarMouseDown = false
+    if (!this.keepBarShow) {
+      this.showBar = false
+    }
+     this.cancelBarWheel()
     }
 
     mainMousewheel (e:WheelEvent):void {
-      this.isBarMouseDown = false
+      if (!this.noStopPageScroll) {
+        e.preventDefault()
+      }
+      this.cancelBarWheel()
       if (!this.showBar) {
         return
       }
@@ -185,7 +225,7 @@ $barInnerW: 8px;
     right: 0;
     width: $barW;
     padding: 6px ($barW - $barInnerW ) / 2;
-    z-index: 2;
+    z-index: 100;
     background: none;
     cursor: pointer;
 

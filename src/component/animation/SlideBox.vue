@@ -62,6 +62,8 @@ export default class SlideBox extends Vue {
     const end = !slideDown ? 0 : origin
     const direct = this.directionUp ? "top" : "bottom"
     child.style.position = "absolute"
+    const originW = child.style.width
+    child.style.width = "100%"
     child.style[direct] = "0"
     const fn = () => {
       this.timer = window.requestAnimationFrame(() => {
@@ -80,6 +82,7 @@ export default class SlideBox extends Vue {
           }
           child.style.position = ""
           child.style[direct] = ""
+          child.style.width = originW
         }
       })
     }
